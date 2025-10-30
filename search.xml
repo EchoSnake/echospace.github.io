@@ -237,153 +237,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Linux 磁盘分区自动挂载配置指南</title>
-    <url>/2025/10/18/Linux%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BD/</url>
-    <content><![CDATA[<p class="post-excerpt">
-本教程详细介绍了如何在 Linux 系统中配置磁盘分区的自动挂载，包括查看磁盘信息、创建挂载点、配置 fstab 文件以及处理 NTFS 分区等常见场景。
-</p>
-
-<h1 id="Linux-磁盘分区自动挂载配置指南"><a href="#Linux-磁盘分区自动挂载配置指南" class="headerlink" title="Linux 磁盘分区自动挂载配置指南"></a>Linux 磁盘分区自动挂载配置指南</h1><h2 id="🔍-前期准备"><a href="#🔍-前期准备" class="headerlink" title="🔍 前期准备"></a>🔍 前期准备</h2><p>在开始配置自动挂载之前，请确保：</p>
-<ul>
-<li>具有 root 或 sudo 权限</li>
-<li>了解目标磁盘的文件系统类型</li>
-<li>备份重要数据（如修改 fstab）</li>
-</ul>
-<h2 id="📋-详细步骤"><a href="#📋-详细步骤" class="headerlink" title="📋 详细步骤"></a>📋 详细步骤</h2><h3 id="🧩-步骤-1：查看磁盘信息"><a href="#🧩-步骤-1：查看磁盘信息" class="headerlink" title="🧩 步骤 1：查看磁盘信息"></a>🧩 步骤 1：查看磁盘信息</h3><p>首先需要获取磁盘的 UUID 和文件系统类型：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 显示所有磁盘的详细信息，包括 UUID 和文件系统类型</span></span><br><span class="line"><span class="built_in">sudo</span> lsblk -f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或使用 blkid 命令（需要 root 权限）</span></span><br><span class="line"><span class="built_in">sudo</span> blkid</span><br></pre></td></tr></table></figure>
-
-<p>示例输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NAME   FSTYPE LABEL UUID                                 MOUNTPOINT</span><br><span class="line">sda                                                      </span><br><span class="line">├─sda1 ext4         a1b2c3d4-e5f6-1234-5678-abcdef123456  /</span><br><span class="line">sdb                                                      </span><br><span class="line">└─sdb1 ext4         9988aabb-ccdd-eeff-0011-223344556677  </span><br></pre></td></tr></table></figure>
-
-<h3 id="📁-步骤-2：创建挂载目录"><a href="#📁-步骤-2：创建挂载目录" class="headerlink" title="📁 步骤 2：创建挂载目录"></a>📁 步骤 2：创建挂载目录</h3><p>为磁盘分区创建挂载点：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建挂载目录</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /mnt/data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置适当的权限（可选）</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chmod</span> 755 /mnt/data</span><br></pre></td></tr></table></figure>
-
-<h3 id="📝-步骤-3：配置-fstab"><a href="#📝-步骤-3：配置-fstab" class="headerlink" title="📝 步骤 3：配置 fstab"></a>📝 步骤 3：配置 fstab</h3><p>编辑 <code>/etc/fstab</code> 文件添加自动挂载配置：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用你喜欢的编辑器打开 fstab</span></span><br><span class="line"><span class="built_in">sudo</span> nano /etc/fstab</span><br></pre></td></tr></table></figure>
-
-<p>添加配置行（基本格式）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># &lt;file system&gt;  &lt;mount point&gt;  &lt;type&gt;  &lt;options&gt;  &lt;dump&gt;  &lt;pass&gt;</span><br><span class="line">UUID=9988aabb-ccdd-eeff-0011-223344556677  /mnt/data  ext4  defaults  0  2</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>💡 <strong>参数说明</strong></p>
-<ul>
-<li><code>UUID=xxx</code>：分区的唯一标识符</li>
-<li><code>/mnt/data</code>：挂载点路径</li>
-<li><code>ext4</code>：文件系统类型</li>
-<li><code>defaults</code>：默认挂载选项</li>
-<li><code>0</code>：dump 备份选项（0 表示不备份）</li>
-<li><code>2</code>：fsck 检查顺序（0 不检查，1 根分区，2 其他分区）</li>
-</ul>
-</blockquote>
-<h3 id="🧪-步骤-4：测试配置"><a href="#🧪-步骤-4：测试配置" class="headerlink" title="🧪 步骤 4：测试配置"></a>🧪 步骤 4：测试配置</h3><p>在重启之前，先测试配置是否正确：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试 fstab 中的所有挂载点</span></span><br><span class="line"><span class="built_in">sudo</span> mount -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查挂载结果</span></span><br><span class="line"><span class="built_in">df</span> -h | grep /mnt/data</span><br></pre></td></tr></table></figure>
-
-<h2 id="🪟-NTFS-分区挂载示例"><a href="#🪟-NTFS-分区挂载示例" class="headerlink" title="🪟 NTFS 分区挂载示例"></a>🪟 NTFS 分区挂载示例</h2><p>如果需要挂载 Windows NTFS 分区，请先安装必要的驱动：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 NTFS 支持</span></span><br><span class="line"><span class="built_in">sudo</span> apt install ntfs-3g</span><br></pre></td></tr></table></figure>
-
-<p>在 <code>/etc/fstab</code> 中添加 NTFS 配置：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Windows NTFS 分区示例</span><br><span class="line">UUID=XXXX-XXXX  /mnt/windows  ntfs-3g  defaults,uid=1000,gid=1000,umask=022  0  0</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>🔔 <strong>NTFS 挂载选项说明</strong></p>
-<ul>
-<li><code>uid=1000,gid=1000</code>：指定所有者和组（使用 <code>id</code> 命令查看）</li>
-<li><code>umask=022</code>：设置默认权限</li>
-<li><code>defaults</code>：包含 <code>rw,suid,dev,exec,auto,nouser,async</code></li>
-</ul>
-</blockquote>
-<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
-<li><p>修改 fstab 前务必备份：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">cp</span> /etc/fstab /etc/fstab.backup</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>确保挂载点目录存在且权限正确</p>
-</li>
-<li><p>UUID 比设备名（如 &#x2F;dev&#x2F;sdb1）更可靠</p>
-</li>
-<li><p>使用 <code>mount -a</code> 测试新配置</p>
-</li>
-<li><p>如遇问题，可用备份恢复：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">cp</span> /etc/fstab.backup /etc/fstab</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><p>如果遇到挂载问题：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看挂载错误</span></span><br><span class="line">dmesg | <span class="built_in">tail</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查文件系统</span></span><br><span class="line"><span class="built_in">sudo</span> fsck /dev/sdb1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看详细挂载信息</span></span><br><span class="line">mount | grep /mnt/data</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统管理</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>磁盘管理</tag>
-        <tag>fstab</tag>
-        <tag>自动挂载</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Prometheus 配置文件 (prometheus.yml) 完整解析</title>
-    <url>/2025/10/28/Prometheus%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6yml%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p class="post-excerpt">
-本文详细解析了 Prometheus 配置文件 (prometheus.yml) 的所有关键部分，包括全局设置、规则加载、告警配置、指标采集和远程存储等核心功能的配置方法。
-</p>
-
-<h1 id="Prometheus-配置文件完整解析"><a href="#Prometheus-配置文件完整解析" class="headerlink" title="Prometheus 配置文件完整解析"></a>Prometheus 配置文件完整解析</h1><h2 id="📝-配置文件概述"><a href="#📝-配置文件概述" class="headerlink" title="📝 配置文件概述"></a>📝 配置文件概述</h2><p>Prometheus 的配置基于 YAML 格式，定义了其所有核心行为：</p>
-<ul>
-<li>全局默认参数</li>
-<li>规则文件加载</li>
-<li>告警管理集成</li>
-<li>指标采集任务</li>
-<li>远程存储配置</li>
-</ul>
-<h2 id="1️⃣-全局配置（global）"><a href="#1️⃣-全局配置（global）" class="headerlink" title="1️⃣ 全局配置（global）"></a>1️⃣ 全局配置（global）</h2><p><code>global</code> 块定义了适用于所有配置的默认参数：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="comment"># 默认抓取间隔</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span>    <span class="comment"># 每 15 秒采集一次指标</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 抓取超时时间</span></span><br><span class="line">  <span class="attr">scrape_timeout:</span> <span class="string">10s</span>     <span class="comment"># 等待目标响应的最长时间</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 规则评估间隔</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span> <span class="comment"># 每 15 秒评估一次规则</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 外部标签（用于区分不同 Prometheus 实例）</span></span><br><span class="line">  <span class="attr">external_labels:</span></span><br><span class="line">    <span class="attr">monitor:</span> <span class="string">&#x27;prom-prod-01&#x27;</span>  <span class="comment"># 生产环境实例标识</span></span><br><span class="line">    <span class="attr">region:</span> <span class="string">&#x27;us-east-1&#x27;</span>      <span class="comment"># 区域标识</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>💡 <strong>提示</strong>：外部标签仅附加在时间序列数据发送到外部系统（如 Alertmanager）时。</p>
-</blockquote>
-<h2 id="2️⃣-规则文件配置（rule-files）"><a href="#2️⃣-规则文件配置（rule-files）" class="headerlink" title="2️⃣ 规则文件配置（rule_files）"></a>2️⃣ 规则文件配置（rule_files）</h2><p>指定需要加载的规则文件路径：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="comment"># 使用 glob 模式加载规则文件</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;/etc/prometheus/rules/*.yml&quot;</span></span><br><span class="line">  <span class="comment"># 也可以指定具体文件</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;/etc/prometheus/recording.rules&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;/etc/prometheus/alerting.rules&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="3️⃣-告警配置（alerting）"><a href="#3️⃣-告警配置（alerting）" class="headerlink" title="3️⃣ 告警配置（alerting）"></a>3️⃣ 告警配置（alerting）</h2><p>配置 Alertmanager 连接信息：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">&#x27;alertmanager:9093&#x27;</span>  <span class="comment"># Alertmanager 服务地址</span></span><br><span class="line">      <span class="attr">scheme:</span> <span class="string">http</span>                 <span class="comment"># 连接协议（http/https）</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">10s</span>                <span class="comment"># 请求超时时间</span></span><br></pre></td></tr></table></figure>
-
-<p>&#x2F;&#x2F; …existing code…</p>
-<h2 id="4️⃣-抓取配置（scrape-configs）"><a href="#4️⃣-抓取配置（scrape-configs）" class="headerlink" title="4️⃣ 抓取配置（scrape_configs）"></a>4️⃣ 抓取配置（scrape_configs）</h2><p>定义指标采集任务：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="comment"># Prometheus 自身监控</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 节点导出器监控</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;node-exporter:9100&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Kubernetes 服务发现示例</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;kubernetes-pods&#x27;</span></span><br><span class="line">    <span class="attr">kubernetes_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">role:</span> <span class="string">pod</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_pod_annotation_prometheus_io_scrape</span>]</span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="🔍-标签重写（relabel-configs）"><a href="#🔍-标签重写（relabel-configs）" class="headerlink" title="🔍 标签重写（relabel_configs）"></a>🔍 标签重写（relabel_configs）</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">relabel_configs:</span></span><br><span class="line">  <span class="comment"># 保留特定标签的目标</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_pod_label_app</span>]</span><br><span class="line">    <span class="attr">regex:</span> <span class="string">my-app</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 替换标签值</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_namespace</span>]</span><br><span class="line">    <span class="attr">target_label:</span> <span class="string">namespace</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 删除特定标签</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">&#x27;__meta_kubernetes_.*&#x27;</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">labeldrop</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="5️⃣-远程存储配置（remote-write-remote-read）"><a href="#5️⃣-远程存储配置（remote-write-remote-read）" class="headerlink" title="5️⃣ 远程存储配置（remote_write&#x2F;remote_read）"></a>5️⃣ 远程存储配置（remote_write&#x2F;remote_read）</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 远程写入配置</span></span><br><span class="line"><span class="attr">remote_write:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://remote-storage:9201/write&#x27;</span></span><br><span class="line">    <span class="attr">queue_config:</span></span><br><span class="line">      <span class="attr">capacity:</span> <span class="number">10000</span></span><br><span class="line">      <span class="attr">max_samples_per_send:</span> <span class="number">1000</span></span><br><span class="line">      <span class="attr">batch_send_deadline:</span> <span class="string">30s</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程读取配置</span></span><br><span class="line"><span class="attr">remote_read:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://remote-storage:9201/read&#x27;</span></span><br><span class="line">    <span class="attr">read_recent:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="6️⃣-存储配置（storage）"><a href="#6️⃣-存储配置（storage）" class="headerlink" title="6️⃣ 存储配置（storage）"></a>6️⃣ 存储配置（storage）</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">storage:</span></span><br><span class="line">  <span class="attr">tsdb:</span></span><br><span class="line">    <span class="comment"># 数据保留时间</span></span><br><span class="line">    <span class="attr">retention.time:</span> <span class="string">15d</span></span><br><span class="line">    <span class="comment"># 数据目录</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/prometheus</span></span><br><span class="line">    <span class="comment"># 启用压缩</span></span><br><span class="line">    <span class="attr">compression:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="⚙️-完整配置示例"><a href="#⚙️-完整配置示例" class="headerlink" title="⚙️ 完整配置示例"></a>⚙️ 完整配置示例</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span></span><br><span class="line">  <span class="attr">external_labels:</span></span><br><span class="line">    <span class="attr">env:</span> <span class="string">&#x27;production&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;/etc/prometheus/rules/*.yml&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;alertmanager:9093&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node-exporter&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;node-exporter:9100&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;kubernetes-pods&#x27;</span></span><br><span class="line">    <span class="attr">kubernetes_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">role:</span> <span class="string">pod</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_pod_annotation_prometheus_io_scrape</span>]</span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="attr">remote_write:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://thanos-receive:9090/api/v1/receive&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">storage:</span></span><br><span class="line">  <span class="attr">tsdb:</span></span><br><span class="line">    <span class="attr">retention.time:</span> <span class="string">15d</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/prometheus</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="📋-配置验证"><a href="#📋-配置验证" class="headerlink" title="📋 配置验证"></a>📋 配置验证</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 检查配置文件语法</span></span><br><span class="line">promtool check config /etc/prometheus/prometheus.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证规则文件</span></span><br><span class="line">promtool check rules /etc/prometheus/rules/*.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单元测试规则</span></span><br><span class="line">promtool <span class="built_in">test</span> rules test.yml</span><br></pre></td></tr></table></figure>
-
-<h2 id="⚠️-最佳实践"><a href="#⚠️-最佳实践" class="headerlink" title="⚠️ 最佳实践"></a>⚠️ 最佳实践</h2><ol>
-<li>合理设置采集间隔，避免过于频繁</li>
-<li>使用服务发现替代静态配置</li>
-<li>配置适当的数据保留期限</li>
-<li>定期备份配置文件</li>
-<li>使用版本控制管理配置</li>
-</ol>
-<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
-<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/">Prometheus 配置文档</a></li>
-<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">服务发现配置</a></li>
-<li><a href="https://prometheus.io/docs/prometheus/latest/storage/">存储配置说明</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>监控</category>
-        <category>Prometheus</category>
-      </categories>
-      <tags>
-        <tag>Prometheus</tag>
-        <tag>YAML</tag>
-        <tag>配置文件</tag>
-        <tag>监控系统</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Tailscale 私有 DERP (中继) 部署指南</title>
     <url>/2025/10/18/Tailscale%20Derp%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<p class="post-excerpt">
@@ -473,6 +326,371 @@
         <tag>组网</tag>
         <tag>VPS</tag>
         <tag>中继节点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Prometheus 配置文件 (prometheus.yml) 完整解析</title>
+    <url>/2025/10/28/Prometheus%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6yml%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本文详细解析了 Prometheus 配置文件 (prometheus.yml) 的所有关键部分，包括全局设置、规则加载、告警配置、指标采集和远程存储等核心功能的配置方法。
+</p>
+
+<h1 id="Prometheus-配置文件完整解析"><a href="#Prometheus-配置文件完整解析" class="headerlink" title="Prometheus 配置文件完整解析"></a>Prometheus 配置文件完整解析</h1><h2 id="📝-配置文件概述"><a href="#📝-配置文件概述" class="headerlink" title="📝 配置文件概述"></a>📝 配置文件概述</h2><p>Prometheus 的配置基于 YAML 格式，定义了其所有核心行为：</p>
+<ul>
+<li>全局默认参数</li>
+<li>规则文件加载</li>
+<li>告警管理集成</li>
+<li>指标采集任务</li>
+<li>远程存储配置</li>
+</ul>
+<h2 id="1️⃣-全局配置（global）"><a href="#1️⃣-全局配置（global）" class="headerlink" title="1️⃣ 全局配置（global）"></a>1️⃣ 全局配置（global）</h2><p><code>global</code> 块定义了适用于所有配置的默认参数：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="comment"># 默认抓取间隔</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span>    <span class="comment"># 每 15 秒采集一次指标</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 抓取超时时间</span></span><br><span class="line">  <span class="attr">scrape_timeout:</span> <span class="string">10s</span>     <span class="comment"># 等待目标响应的最长时间</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 规则评估间隔</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span> <span class="comment"># 每 15 秒评估一次规则</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 外部标签（用于区分不同 Prometheus 实例）</span></span><br><span class="line">  <span class="attr">external_labels:</span></span><br><span class="line">    <span class="attr">monitor:</span> <span class="string">&#x27;prom-prod-01&#x27;</span>  <span class="comment"># 生产环境实例标识</span></span><br><span class="line">    <span class="attr">region:</span> <span class="string">&#x27;us-east-1&#x27;</span>      <span class="comment"># 区域标识</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 <strong>提示</strong>：外部标签仅附加在时间序列数据发送到外部系统（如 Alertmanager）时。</p>
+</blockquote>
+<h2 id="2️⃣-规则文件配置（rule-files）"><a href="#2️⃣-规则文件配置（rule-files）" class="headerlink" title="2️⃣ 规则文件配置（rule_files）"></a>2️⃣ 规则文件配置（rule_files）</h2><p>指定需要加载的规则文件路径：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="comment"># 使用 glob 模式加载规则文件</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;/etc/prometheus/rules/*.yml&quot;</span></span><br><span class="line">  <span class="comment"># 也可以指定具体文件</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;/etc/prometheus/recording.rules&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;/etc/prometheus/alerting.rules&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3️⃣-告警配置（alerting）"><a href="#3️⃣-告警配置（alerting）" class="headerlink" title="3️⃣ 告警配置（alerting）"></a>3️⃣ 告警配置（alerting）</h2><p>配置 Alertmanager 连接信息：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">&#x27;alertmanager:9093&#x27;</span>  <span class="comment"># Alertmanager 服务地址</span></span><br><span class="line">      <span class="attr">scheme:</span> <span class="string">http</span>                 <span class="comment"># 连接协议（http/https）</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">10s</span>                <span class="comment"># 请求超时时间</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="4️⃣-抓取配置（scrape-configs）"><a href="#4️⃣-抓取配置（scrape-configs）" class="headerlink" title="4️⃣ 抓取配置（scrape_configs）"></a>4️⃣ 抓取配置（scrape_configs）</h2><p>定义指标采集任务：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="comment"># Prometheus 自身监控</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 节点导出器监控</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;node-exporter:9100&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Kubernetes 服务发现示例</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;kubernetes-pods&#x27;</span></span><br><span class="line">    <span class="attr">kubernetes_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">role:</span> <span class="string">pod</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_pod_annotation_prometheus_io_scrape</span>]</span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="🔍-标签重写（relabel-configs）"><a href="#🔍-标签重写（relabel-configs）" class="headerlink" title="🔍 标签重写（relabel_configs）"></a>🔍 标签重写（relabel_configs）</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">relabel_configs:</span></span><br><span class="line">  <span class="comment"># 保留特定标签的目标</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_pod_label_app</span>]</span><br><span class="line">    <span class="attr">regex:</span> <span class="string">my-app</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 替换标签值</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_namespace</span>]</span><br><span class="line">    <span class="attr">target_label:</span> <span class="string">namespace</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 删除特定标签</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">&#x27;__meta_kubernetes_.*&#x27;</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">labeldrop</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="5️⃣-远程存储配置（remote-write-remote-read）"><a href="#5️⃣-远程存储配置（remote-write-remote-read）" class="headerlink" title="5️⃣ 远程存储配置（remote_write&#x2F;remote_read）"></a>5️⃣ 远程存储配置（remote_write&#x2F;remote_read）</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 远程写入配置</span></span><br><span class="line"><span class="attr">remote_write:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://remote-storage:9201/write&#x27;</span></span><br><span class="line">    <span class="attr">queue_config:</span></span><br><span class="line">      <span class="attr">capacity:</span> <span class="number">10000</span></span><br><span class="line">      <span class="attr">max_samples_per_send:</span> <span class="number">1000</span></span><br><span class="line">      <span class="attr">batch_send_deadline:</span> <span class="string">30s</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程读取配置</span></span><br><span class="line"><span class="attr">remote_read:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://remote-storage:9201/read&#x27;</span></span><br><span class="line">    <span class="attr">read_recent:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="6️⃣-存储配置（storage）"><a href="#6️⃣-存储配置（storage）" class="headerlink" title="6️⃣ 存储配置（storage）"></a>6️⃣ 存储配置（storage）</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">storage:</span></span><br><span class="line">  <span class="attr">tsdb:</span></span><br><span class="line">    <span class="comment"># 数据保留时间</span></span><br><span class="line">    <span class="attr">retention.time:</span> <span class="string">15d</span></span><br><span class="line">    <span class="comment"># 数据目录</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/prometheus</span></span><br><span class="line">    <span class="comment"># 启用压缩</span></span><br><span class="line">    <span class="attr">compression:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="⚙️-完整配置示例"><a href="#⚙️-完整配置示例" class="headerlink" title="⚙️ 完整配置示例"></a>⚙️ 完整配置示例</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span></span><br><span class="line">  <span class="attr">external_labels:</span></span><br><span class="line">    <span class="attr">env:</span> <span class="string">&#x27;production&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;/etc/prometheus/rules/*.yml&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;alertmanager:9093&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node-exporter&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;node-exporter:9100&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;kubernetes-pods&#x27;</span></span><br><span class="line">    <span class="attr">kubernetes_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">role:</span> <span class="string">pod</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__meta_kubernetes_pod_annotation_prometheus_io_scrape</span>]</span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="attr">remote_write:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://thanos-receive:9090/api/v1/receive&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">storage:</span></span><br><span class="line">  <span class="attr">tsdb:</span></span><br><span class="line">    <span class="attr">retention.time:</span> <span class="string">15d</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/prometheus</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="📋-配置验证"><a href="#📋-配置验证" class="headerlink" title="📋 配置验证"></a>📋 配置验证</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 检查配置文件语法</span></span><br><span class="line">promtool check config /etc/prometheus/prometheus.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证规则文件</span></span><br><span class="line">promtool check rules /etc/prometheus/rules/*.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单元测试规则</span></span><br><span class="line">promtool <span class="built_in">test</span> rules test.yml</span><br></pre></td></tr></table></figure>
+
+<h2 id="⚠️-最佳实践"><a href="#⚠️-最佳实践" class="headerlink" title="⚠️ 最佳实践"></a>⚠️ 最佳实践</h2><ol>
+<li>合理设置采集间隔，避免过于频繁</li>
+<li>使用服务发现替代静态配置</li>
+<li>配置适当的数据保留期限</li>
+<li>定期备份配置文件</li>
+<li>使用版本控制管理配置</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/">Prometheus 配置文档</a></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">服务发现配置</a></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/storage/">存储配置说明</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>监控</category>
+        <category>Prometheus</category>
+      </categories>
+      <tags>
+        <tag>Prometheus</tag>
+        <tag>YAML</tag>
+        <tag>配置文件</tag>
+        <tag>监控系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux 磁盘分区自动挂载配置指南</title>
+    <url>/2025/10/18/Linux%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BD/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍了如何在 Linux 系统中配置磁盘分区的自动挂载，包括查看磁盘信息、创建挂载点、配置 fstab 文件以及处理 NTFS 分区等常见场景。
+</p>
+
+<h1 id="Linux-磁盘分区自动挂载配置指南"><a href="#Linux-磁盘分区自动挂载配置指南" class="headerlink" title="Linux 磁盘分区自动挂载配置指南"></a>Linux 磁盘分区自动挂载配置指南</h1><h2 id="🔍-前期准备"><a href="#🔍-前期准备" class="headerlink" title="🔍 前期准备"></a>🔍 前期准备</h2><p>在开始配置自动挂载之前，请确保：</p>
+<ul>
+<li>具有 root 或 sudo 权限</li>
+<li>了解目标磁盘的文件系统类型</li>
+<li>备份重要数据（如修改 fstab）</li>
+</ul>
+<h2 id="📋-详细步骤"><a href="#📋-详细步骤" class="headerlink" title="📋 详细步骤"></a>📋 详细步骤</h2><h3 id="🧩-步骤-1：查看磁盘信息"><a href="#🧩-步骤-1：查看磁盘信息" class="headerlink" title="🧩 步骤 1：查看磁盘信息"></a>🧩 步骤 1：查看磁盘信息</h3><p>首先需要获取磁盘的 UUID 和文件系统类型：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 显示所有磁盘的详细信息，包括 UUID 和文件系统类型</span></span><br><span class="line"><span class="built_in">sudo</span> lsblk -f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或使用 blkid 命令（需要 root 权限）</span></span><br><span class="line"><span class="built_in">sudo</span> blkid</span><br></pre></td></tr></table></figure>
+
+<p>示例输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NAME   FSTYPE LABEL UUID                                 MOUNTPOINT</span><br><span class="line">sda                                                      </span><br><span class="line">├─sda1 ext4         a1b2c3d4-e5f6-1234-5678-abcdef123456  /</span><br><span class="line">sdb                                                      </span><br><span class="line">└─sdb1 ext4         9988aabb-ccdd-eeff-0011-223344556677  </span><br></pre></td></tr></table></figure>
+
+<h3 id="📁-步骤-2：创建挂载目录"><a href="#📁-步骤-2：创建挂载目录" class="headerlink" title="📁 步骤 2：创建挂载目录"></a>📁 步骤 2：创建挂载目录</h3><p>为磁盘分区创建挂载点：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建挂载目录</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /mnt/data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置适当的权限（可选）</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chmod</span> 755 /mnt/data</span><br></pre></td></tr></table></figure>
+
+<h3 id="📝-步骤-3：配置-fstab"><a href="#📝-步骤-3：配置-fstab" class="headerlink" title="📝 步骤 3：配置 fstab"></a>📝 步骤 3：配置 fstab</h3><p>编辑 <code>/etc/fstab</code> 文件添加自动挂载配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用你喜欢的编辑器打开 fstab</span></span><br><span class="line"><span class="built_in">sudo</span> nano /etc/fstab</span><br></pre></td></tr></table></figure>
+
+<p>添加配置行（基本格式）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># &lt;file system&gt;  &lt;mount point&gt;  &lt;type&gt;  &lt;options&gt;  &lt;dump&gt;  &lt;pass&gt;</span><br><span class="line">UUID=9988aabb-ccdd-eeff-0011-223344556677  /mnt/data  ext4  defaults  0  2</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 <strong>参数说明</strong></p>
+<ul>
+<li><code>UUID=xxx</code>：分区的唯一标识符</li>
+<li><code>/mnt/data</code>：挂载点路径</li>
+<li><code>ext4</code>：文件系统类型</li>
+<li><code>defaults</code>：默认挂载选项</li>
+<li><code>0</code>：dump 备份选项（0 表示不备份）</li>
+<li><code>2</code>：fsck 检查顺序（0 不检查，1 根分区，2 其他分区）</li>
+</ul>
+</blockquote>
+<h3 id="🧪-步骤-4：测试配置"><a href="#🧪-步骤-4：测试配置" class="headerlink" title="🧪 步骤 4：测试配置"></a>🧪 步骤 4：测试配置</h3><p>在重启之前，先测试配置是否正确：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试 fstab 中的所有挂载点</span></span><br><span class="line"><span class="built_in">sudo</span> mount -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查挂载结果</span></span><br><span class="line"><span class="built_in">df</span> -h | grep /mnt/data</span><br></pre></td></tr></table></figure>
+
+<h2 id="🪟-NTFS-分区挂载示例"><a href="#🪟-NTFS-分区挂载示例" class="headerlink" title="🪟 NTFS 分区挂载示例"></a>🪟 NTFS 分区挂载示例</h2><p>如果需要挂载 Windows NTFS 分区，请先安装必要的驱动：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 NTFS 支持</span></span><br><span class="line"><span class="built_in">sudo</span> apt install ntfs-3g</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>/etc/fstab</code> 中添加 NTFS 配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Windows NTFS 分区示例</span><br><span class="line">UUID=XXXX-XXXX  /mnt/windows  ntfs-3g  defaults,uid=1000,gid=1000,umask=022  0  0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔔 <strong>NTFS 挂载选项说明</strong></p>
+<ul>
+<li><code>uid=1000,gid=1000</code>：指定所有者和组（使用 <code>id</code> 命令查看）</li>
+<li><code>umask=022</code>：设置默认权限</li>
+<li><code>defaults</code>：包含 <code>rw,suid,dev,exec,auto,nouser,async</code></li>
+</ul>
+</blockquote>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li><p>修改 fstab 前务必备份：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">cp</span> /etc/fstab /etc/fstab.backup</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确保挂载点目录存在且权限正确</p>
+</li>
+<li><p>UUID 比设备名（如 &#x2F;dev&#x2F;sdb1）更可靠</p>
+</li>
+<li><p>使用 <code>mount -a</code> 测试新配置</p>
+</li>
+<li><p>如遇问题，可用备份恢复：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">cp</span> /etc/fstab.backup /etc/fstab</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><p>如果遇到挂载问题：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看挂载错误</span></span><br><span class="line">dmesg | <span class="built_in">tail</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查文件系统</span></span><br><span class="line"><span class="built_in">sudo</span> fsck /dev/sdb1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看详细挂载信息</span></span><br><span class="line">mount | grep /mnt/data</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统管理</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>磁盘管理</tag>
+        <tag>fstab</tag>
+        <tag>自动挂载</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SSH 远程端口转发完整配置指南</title>
+    <url>/2025/10/28/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E5%81%9A%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍如何通过 Systemd 配置持久化的 SSH 远程端口转发服务，包含完整的配置文件、自启动设置和故障排查方法。
+</p>
+
+<h1 id="SSH-远程端口转发服务配置指南"><a href="#SSH-远程端口转发服务配置指南" class="headerlink" title="SSH 远程端口转发服务配置指南"></a>SSH 远程端口转发服务配置指南</h1><h2 id="🔧-配置步骤"><a href="#🔧-配置步骤" class="headerlink" title="🔧 配置步骤"></a>🔧 配置步骤</h2><h3 id="1-创建-Systemd-服务文件"><a href="#1-创建-Systemd-服务文件" class="headerlink" title="1. 创建 Systemd 服务文件"></a>1. 创建 Systemd 服务文件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nano /etc/systemd/system/ssh-tunnel.service</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-服务文件配置"><a href="#2-服务文件配置" class="headerlink" title="2. 服务文件配置"></a>2. 服务文件配置</h3><figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=SSH Remote Port Forward Service</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="comment"># 本地运行服务的用户</span></span><br><span class="line"><span class="attr">User</span>=your_local_user</span><br><span class="line"></span><br><span class="line"><span class="comment"># SSH 命令配置</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/bin/ssh -N -R <span class="number">22300</span>:<span class="number">192.168</span>.<span class="number">1.201</span>:<span class="number">22300</span> username@<span class="number">8.154</span>.<span class="number">81.6</span> \</span><br><span class="line">    -o &quot;<span class="attr">ExitOnForwardFailure</span>=<span class="literal">yes</span><span class="string">&quot; \</span></span><br><span class="line"><span class="string">    -o &quot;</span>ServerAliveInterval=<span class="number">60</span><span class="string">&quot; \</span></span><br><span class="line"><span class="string">    -o &quot;</span>ServerAliveCountMax=<span class="number">3</span><span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 服务运行参数</span></span><br><span class="line"><span class="string">Restart=always</span></span><br><span class="line"><span class="string">RestartSec=10</span></span><br><span class="line"><span class="string">StandardOutput=journal</span></span><br><span class="line"><span class="string">StandardError=journal</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[Install]</span></span><br><span class="line"><span class="string">WantedBy=multi-user.target</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>📝 <strong>参数说明</strong></p>
+<ul>
+<li><code>-N</code>: 仅建立端口转发，不执行远程命令</li>
+<li><code>-R</code>: 设置远程端口转发</li>
+<li><code>ExitOnForwardFailure</code>: 端口转发失败时立即退出</li>
+<li><code>ServerAliveInterval</code>: 保活检测间隔（秒）</li>
+<li><code>ServerAliveCountMax</code>: 最大重试次数</li>
+</ul>
+</blockquote>
+<h3 id="3-服务管理命令"><a href="#3-服务管理命令" class="headerlink" title="3. 服务管理命令"></a>3. 服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 重新加载配置</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl start ssh-tunnel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置开机自启</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> ssh-tunnel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看服务状态</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl status ssh-tunnel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实时查看日志</span></span><br><span class="line">journalctl -u ssh-tunnel -f</span><br></pre></td></tr></table></figure>
+
+<h2 id="📋-前置检查清单"><a href="#📋-前置检查清单" class="headerlink" title="📋 前置检查清单"></a>📋 前置检查清单</h2><ol>
+<li><p><strong>SSH 密钥配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 生成 SSH 密钥（如果没有）</span></span><br><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;your_email@example.com&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="复制公钥到远程服务器"><a href="#复制公钥到远程服务器" class="headerlink" title="复制公钥到远程服务器"></a>复制公钥到远程服务器</h1><p>ssh-copy-id <a href="mailto:&#117;&#115;&#x65;&#x72;&#110;&#97;&#x6d;&#101;&#64;&#x38;&#x2e;&#49;&#x35;&#52;&#x2e;&#x38;&#49;&#x2e;&#54;">&#117;&#115;&#x65;&#x72;&#110;&#97;&#x6d;&#101;&#64;&#x38;&#x2e;&#49;&#x35;&#52;&#x2e;&#x38;&#49;&#x2e;&#54;</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2. **防火墙设置**</span><br><span class="line">```bash</span><br><span class="line"># 在远程服务器上检查端口</span><br><span class="line">sudo netstat -tlnp | grep 22300</span><br><span class="line"></span><br><span class="line"># 配置 UFW（如果使用）</span><br><span class="line">sudo ufw allow 22300/tcp</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><h3 id="常见问题检查"><a href="#常见问题检查" class="headerlink" title="常见问题检查"></a>常见问题检查</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>检查命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>服务状态</td>
+<td><code>systemctl status ssh-tunnel</code></td>
+</tr>
+<tr>
+<td>详细日志</td>
+<td><code>journalctl -u ssh-tunnel -n 50</code></td>
+</tr>
+<tr>
+<td>端口占用</td>
+<td><code>netstat -tlnp | grep 22300</code></td>
+</tr>
+<tr>
+<td>SSH 连接</td>
+<td><code>ssh -v username@8.154.81.6</code></td>
+</tr>
+</tbody></table>
+<h3 id="连接测试"><a href="#连接测试" class="headerlink" title="连接测试"></a>连接测试</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本地测试</span></span><br><span class="line">curl http://localhost:22300</span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程测试</span></span><br><span class="line">curl http://8.154.81.6:22300</span><br></pre></td></tr></table></figure>
+
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li>确保 SSH 密钥已正确配置</li>
+<li>检查远程服务器防火墙设置</li>
+<li>验证本地服务用户权限</li>
+<li>定期检查日志确保服务正常</li>
+<li>建议配置备用端口或故障转移方案</li>
+</ol>
+<h2 id="🔒-安全建议"><a href="#🔒-安全建议" class="headerlink" title="🔒 安全建议"></a>🔒 安全建议</h2><ol>
+<li>使用强密钥加密（ED25519&#x2F;RSA 4096）</li>
+<li>限制远程服务器上的端口访问范围</li>
+<li>配置 SSH 密钥使用限制</li>
+<li>定期更新系统和 SSH 服务</li>
+<li>监控异常连接尝试</li>
+</ol>
+<hr>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
+<li><a href="https://www.openssh.com/manual.html">SSH 官方文档</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">Systemd 服务配置指南</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>网络配置</category>
+      </categories>
+      <tags>
+        <tag>SSH</tag>
+        <tag>端口转发</tag>
+        <tag>Systemd</tag>
+        <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在飞牛 OS 上使用 Docker 部署 Tailscale</title>
+    <url>/2025/10/28/%E9%A3%9E%E7%89%9BOS%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2tailscale/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍如何在飞牛 OS NAS 系统上使用 Docker 部署 Tailscale，实现安全可靠的远程访问方案，包含完整的配置步骤和移动端设置指南。
+</p>
+
+<h1 id="在飞牛-OS-上部署-Tailscale"><a href="#在飞牛-OS-上部署-Tailscale" class="headerlink" title="在飞牛 OS 上部署 Tailscale"></a>在飞牛 OS 上部署 Tailscale</h1><h2 id="💡-背景说明"><a href="#💡-背景说明" class="headerlink" title="💡 背景说明"></a>💡 背景说明</h2><p>飞牛 OS 是一款国产免费的 NAS 系统，提供个人私有云盘功能。虽然系统自带免费的内网穿透服务，但为了更稳定的远程访问体验，我们可以使用 Tailscale 作为替代方案。</p>
+<h2 id="🔑-获取-Tailscale-授权码"><a href="#🔑-获取-Tailscale-授权码" class="headerlink" title="🔑 获取 Tailscale 授权码"></a>🔑 获取 Tailscale 授权码</h2><ol>
+<li>访问 <a href="https://login.tailscale.com/">Tailscale 登录页面</a></li>
+<li>进入 <a href="https://login.tailscale.com/admin/settings/keys">密钥设置页面</a></li>
+<li>创建授权密钥，注意启用以下权限：<ul>
+<li>开启 VPN 访问权限</li>
+<li>允许子网路由</li>
+</ul>
+</li>
+</ol>
+<p><img src="/assets/images/tailscale/auth-key-settings.jpg" alt="Tailscale 密钥设置界面"></p>
+<h2 id="🐳-Docker-部署配置"><a href="#🐳-Docker-部署配置" class="headerlink" title="🐳 Docker 部署配置"></a>🐳 Docker 部署配置</h2><h3 id="方法一：使用-Docker-命令行"><a href="#方法一：使用-Docker-命令行" class="headerlink" title="方法一：使用 Docker 命令行"></a>方法一：使用 Docker 命令行</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name=tailscaled \</span><br><span class="line">  --network=host \</span><br><span class="line">  --cap-add=NET_ADMIN \</span><br><span class="line">  --cap-add=NET_RAW \</span><br><span class="line">  -v /var/lib:/var/lib \</span><br><span class="line">  -v /dev/net/tun:/dev/net/tun \</span><br><span class="line">  -v /var/lib/tailscale:/var/lib/tailscale \</span><br><span class="line">  -e TS_AUTHKEY=tskey-auth-xxxxx \</span><br><span class="line">  -e TS_ROUTES=192.168.1.0/24 \</span><br><span class="line">  tailscale/tailscale</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：将 <code>tskey-auth-xxxxx</code> 替换为你的授权码，<code>192.168.1.0/24</code> 替换为你的内网网段</p>
+</blockquote>
+<h3 id="方法二：通过飞牛-OS-界面配置"><a href="#方法二：通过飞牛-OS-界面配置" class="headerlink" title="方法二：通过飞牛 OS 界面配置"></a>方法二：通过飞牛 OS 界面配置</h3><ol>
+<li><p><strong>安装 Docker 镜像</strong></p>
+<ul>
+<li>在 Docker 商店搜索 <code>tailscale</code></li>
+<li>下载官方镜像</li>
+</ul>
+</li>
+<li><p><strong>创建容器并配置参数</strong></p>
+<p>基础设置：</p>
+<ul>
+<li>容器名：tailscale</li>
+<li>镜像：tailscale&#x2F;tailscale:latest</li>
+</ul>
+</li>
+<li><p><strong>存储配置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/var/lib -&gt; /var/lib</span><br><span class="line">/dev/net/tun -&gt; /dev/net/tun</span><br><span class="line">TS_STATE_DIR -&gt; /var/lib/tailscale</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>环境变量设置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TS_AUTHKEY=你的授权码</span><br><span class="line">TS_ROUTES=192.168.1.0/24</span><br><span class="line">TS_STATE_DIR=/var/lib/tailscale</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>网络设置</strong></p>
+<ul>
+<li>选择 <code>host</code> 网络模式</li>
+</ul>
+</li>
+</ol>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="📱-移动端配置"><a href="#📱-移动端配置" class="headerlink" title="📱 移动端配置"></a>📱 移动端配置</h2><h3 id="iOS-Android-客户端设置"><a href="#iOS-Android-客户端设置" class="headerlink" title="iOS&#x2F;Android 客户端设置"></a>iOS&#x2F;Android 客户端设置</h3><ol>
+<li>从应用商店安装 Tailscale 客户端</li>
+<li>使用相同账号登录</li>
+<li>允许 VPN 配置权限</li>
+<li>在设备列表中应该能看到 NAS</li>
+</ol>
+<p><img src="/assets/images/tailscale/mobile-connection.jpg" alt="移动端连接界面"></p>
+<h2 id="🌐-子网路由配置"><a href="#🌐-子网路由配置" class="headerlink" title="🌐 子网路由配置"></a>🌐 子网路由配置</h2><h3 id="开启子网路由"><a href="#开启子网路由" class="headerlink" title="开启子网路由"></a>开启子网路由</h3><ol>
+<li>访问 Tailscale 管理后台</li>
+<li>进入 <code>Machines</code> 页面</li>
+<li>找到 NAS 设备</li>
+<li>开启 <code>Subnet routes</code> 选项</li>
+<li>确认要分享的子网范围</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Subnet: 192.168.1.0/24</span><br><span class="line">Routes via: your-nas-name</span><br></pre></td></tr></table></figure>
+
+<h3 id="ACL-策略配置"><a href="#ACL-策略配置" class="headerlink" title="ACL 策略配置"></a>ACL 策略配置</h3><figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;acls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;action&quot;</span><span class="punctuation">:</span> <span class="string">&quot;accept&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;users&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;*&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ports&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;*:*&quot;</span><span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;tagOwners&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;tag:nas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;your-email@domain.com&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;nodes&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;your-nas-name&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;tag:nas&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="⚙️-验证配置"><a href="#⚙️-验证配置" class="headerlink" title="⚙️ 验证配置"></a>⚙️ 验证配置</h2><h3 id="检查连接状态"><a href="#检查连接状态" class="headerlink" title="检查连接状态"></a>检查连接状态</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在 Docker 容器内执行</span></span><br><span class="line">docker <span class="built_in">exec</span> -it tailscaled tailscale status</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查路由表</span></span><br><span class="line">docker <span class="built_in">exec</span> -it tailscaled ip route</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><ol>
+<li>从移动设备 ping NAS 内网 IP</li>
+<li>尝试访问 NAS Web 界面</li>
+<li>验证文件共享访问</li>
+</ol>
+<h2 id="🔧-故障排查"><a href="#🔧-故障排查" class="headerlink" title="🔧 故障排查"></a>🔧 故障排查</h2><h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
+<li><strong>容器无法启动</strong><ul>
+<li>检查 Docker 权限</li>
+<li>确认 tun 设备存在</li>
+<li>查看容器日志</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker logs tailscaled</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p><strong>无法访问内网设备</strong></p>
+<ul>
+<li>验证子网路由配置</li>
+<li>检查 ACL 策略</li>
+<li>确认防火墙设置</li>
+</ul>
+</li>
+<li><p><strong>连接不稳定</strong></p>
+<ul>
+<li>检查网络质量</li>
+<li>验证 DERP 服务器连接</li>
+<li>尝试更换节点</li>
+</ul>
+</li>
+</ol>
+<h2 id="📝-运维建议"><a href="#📝-运维建议" class="headerlink" title="📝 运维建议"></a>📝 运维建议</h2><ol>
+<li>定期检查连接状态</li>
+<li>备份 Tailscale 配置</li>
+<li>监控容器资源使用</li>
+<li>及时更新 Docker 镜像</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a href="https://tailscale.com/kb/">Tailscale 官方文档</a></li>
+<li><a href="https://hub.docker.com/r/tailscale/tailscale">Docker Hub - Tailscale</a></li>
+<li><a href="https://www.phoenixos.com/forum/">飞牛 OS 官方论坛</a></li>
+</ul>
+<h2 id="🏷️-安全提示"><a href="#🏷️-安全提示" class="headerlink" title="🏷️ 安全提示"></a>🏷️ 安全提示</h2><ol>
+<li>定期轮换授权密钥</li>
+<li>限制访问设备范围</li>
+<li>使用最小权限原则</li>
+<li>开启双因素认证</li>
+<li>监控异常访问行为</li>
+</ol>
+]]></content>
+      <categories>
+        <category>NAS</category>
+        <category>网络工具</category>
+      </categories>
+      <tags>
+        <tag>飞牛OS</tag>
+        <tag>Docker</tag>
+        <tag>Tailscale</tag>
+        <tag>内网穿透</tag>
       </tags>
   </entry>
   <entry>
@@ -586,93 +804,6 @@
         <tag>Grafana</tag>
         <tag>监控</tag>
         <tag>Helm</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SSH 远程端口转发完整配置指南</title>
-    <url>/2025/10/28/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E5%81%9A%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/</url>
-    <content><![CDATA[<p class="post-excerpt">
-本教程详细介绍如何通过 Systemd 配置持久化的 SSH 远程端口转发服务，包含完整的配置文件、自启动设置和故障排查方法。
-</p>
-
-<h1 id="SSH-远程端口转发服务配置指南"><a href="#SSH-远程端口转发服务配置指南" class="headerlink" title="SSH 远程端口转发服务配置指南"></a>SSH 远程端口转发服务配置指南</h1><h2 id="🔧-配置步骤"><a href="#🔧-配置步骤" class="headerlink" title="🔧 配置步骤"></a>🔧 配置步骤</h2><h3 id="1-创建-Systemd-服务文件"><a href="#1-创建-Systemd-服务文件" class="headerlink" title="1. 创建 Systemd 服务文件"></a>1. 创建 Systemd 服务文件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nano /etc/systemd/system/ssh-tunnel.service</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-服务文件配置"><a href="#2-服务文件配置" class="headerlink" title="2. 服务文件配置"></a>2. 服务文件配置</h3><figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=SSH Remote Port Forward Service</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="comment"># 本地运行服务的用户</span></span><br><span class="line"><span class="attr">User</span>=your_local_user</span><br><span class="line"></span><br><span class="line"><span class="comment"># SSH 命令配置</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/bin/ssh -N -R <span class="number">22300</span>:<span class="number">192.168</span>.<span class="number">1.201</span>:<span class="number">22300</span> username@<span class="number">8.154</span>.<span class="number">81.6</span> \</span><br><span class="line">    -o &quot;<span class="attr">ExitOnForwardFailure</span>=<span class="literal">yes</span><span class="string">&quot; \</span></span><br><span class="line"><span class="string">    -o &quot;</span>ServerAliveInterval=<span class="number">60</span><span class="string">&quot; \</span></span><br><span class="line"><span class="string">    -o &quot;</span>ServerAliveCountMax=<span class="number">3</span><span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 服务运行参数</span></span><br><span class="line"><span class="string">Restart=always</span></span><br><span class="line"><span class="string">RestartSec=10</span></span><br><span class="line"><span class="string">StandardOutput=journal</span></span><br><span class="line"><span class="string">StandardError=journal</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[Install]</span></span><br><span class="line"><span class="string">WantedBy=multi-user.target</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>📝 <strong>参数说明</strong></p>
-<ul>
-<li><code>-N</code>: 仅建立端口转发，不执行远程命令</li>
-<li><code>-R</code>: 设置远程端口转发</li>
-<li><code>ExitOnForwardFailure</code>: 端口转发失败时立即退出</li>
-<li><code>ServerAliveInterval</code>: 保活检测间隔（秒）</li>
-<li><code>ServerAliveCountMax</code>: 最大重试次数</li>
-</ul>
-</blockquote>
-<h3 id="3-服务管理命令"><a href="#3-服务管理命令" class="headerlink" title="3. 服务管理命令"></a>3. 服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 重新加载配置</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl start ssh-tunnel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置开机自启</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> ssh-tunnel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看服务状态</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl status ssh-tunnel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实时查看日志</span></span><br><span class="line">journalctl -u ssh-tunnel -f</span><br></pre></td></tr></table></figure>
-
-<h2 id="📋-前置检查清单"><a href="#📋-前置检查清单" class="headerlink" title="📋 前置检查清单"></a>📋 前置检查清单</h2><ol>
-<li><p><strong>SSH 密钥配置</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 生成 SSH 密钥（如果没有）</span></span><br><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;your_email@example.com&quot;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<h1 id="复制公钥到远程服务器"><a href="#复制公钥到远程服务器" class="headerlink" title="复制公钥到远程服务器"></a>复制公钥到远程服务器</h1><p>ssh-copy-id <a href="mailto:&#117;&#x73;&#x65;&#x72;&#110;&#97;&#x6d;&#x65;&#x40;&#56;&#x2e;&#49;&#x35;&#x34;&#46;&#x38;&#49;&#46;&#54;">&#117;&#x73;&#x65;&#x72;&#110;&#97;&#x6d;&#x65;&#x40;&#56;&#x2e;&#49;&#x35;&#x34;&#46;&#x38;&#49;&#46;&#54;</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2. **防火墙设置**</span><br><span class="line">```bash</span><br><span class="line"># 在远程服务器上检查端口</span><br><span class="line">sudo netstat -tlnp | grep 22300</span><br><span class="line"></span><br><span class="line"># 配置 UFW（如果使用）</span><br><span class="line">sudo ufw allow 22300/tcp</span><br></pre></td></tr></table></figure>
-
-<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><h3 id="常见问题检查"><a href="#常见问题检查" class="headerlink" title="常见问题检查"></a>常见问题检查</h3><table>
-<thead>
-<tr>
-<th>问题</th>
-<th>检查命令</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>服务状态</td>
-<td><code>systemctl status ssh-tunnel</code></td>
-</tr>
-<tr>
-<td>详细日志</td>
-<td><code>journalctl -u ssh-tunnel -n 50</code></td>
-</tr>
-<tr>
-<td>端口占用</td>
-<td><code>netstat -tlnp | grep 22300</code></td>
-</tr>
-<tr>
-<td>SSH 连接</td>
-<td><code>ssh -v username@8.154.81.6</code></td>
-</tr>
-</tbody></table>
-<h3 id="连接测试"><a href="#连接测试" class="headerlink" title="连接测试"></a>连接测试</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本地测试</span></span><br><span class="line">curl http://localhost:22300</span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程测试</span></span><br><span class="line">curl http://8.154.81.6:22300</span><br></pre></td></tr></table></figure>
-
-<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
-<li>确保 SSH 密钥已正确配置</li>
-<li>检查远程服务器防火墙设置</li>
-<li>验证本地服务用户权限</li>
-<li>定期检查日志确保服务正常</li>
-<li>建议配置备用端口或故障转移方案</li>
-</ol>
-<h2 id="🔒-安全建议"><a href="#🔒-安全建议" class="headerlink" title="🔒 安全建议"></a>🔒 安全建议</h2><ol>
-<li>使用强密钥加密（ED25519&#x2F;RSA 4096）</li>
-<li>限制远程服务器上的端口访问范围</li>
-<li>配置 SSH 密钥使用限制</li>
-<li>定期更新系统和 SSH 服务</li>
-<li>监控异常连接尝试</li>
-</ol>
-<hr>
-<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
-<li><a href="https://www.openssh.com/manual.html">SSH 官方文档</a></li>
-<li><a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">Systemd 服务配置指南</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>网络配置</category>
-      </categories>
-      <tags>
-        <tag>SSH</tag>
-        <tag>端口转发</tag>
-        <tag>Systemd</tag>
-        <tag>运维</tag>
       </tags>
   </entry>
   <entry>
@@ -836,137 +967,6 @@
         <tag>Systemd</tag>
         <tag>内存管理</tag>
         <tag>自动化运维</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>在飞牛 OS 上使用 Docker 部署 Tailscale</title>
-    <url>/2025/10/28/%E9%A3%9E%E7%89%9BOS%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2tailscale/</url>
-    <content><![CDATA[<p class="post-excerpt">
-本教程详细介绍如何在飞牛 OS NAS 系统上使用 Docker 部署 Tailscale，实现安全可靠的远程访问方案，包含完整的配置步骤和移动端设置指南。
-</p>
-
-<h1 id="在飞牛-OS-上部署-Tailscale"><a href="#在飞牛-OS-上部署-Tailscale" class="headerlink" title="在飞牛 OS 上部署 Tailscale"></a>在飞牛 OS 上部署 Tailscale</h1><h2 id="💡-背景说明"><a href="#💡-背景说明" class="headerlink" title="💡 背景说明"></a>💡 背景说明</h2><p>飞牛 OS 是一款国产免费的 NAS 系统，提供个人私有云盘功能。虽然系统自带免费的内网穿透服务，但为了更稳定的远程访问体验，我们可以使用 Tailscale 作为替代方案。</p>
-<h2 id="🔑-获取-Tailscale-授权码"><a href="#🔑-获取-Tailscale-授权码" class="headerlink" title="🔑 获取 Tailscale 授权码"></a>🔑 获取 Tailscale 授权码</h2><ol>
-<li>访问 <a href="https://login.tailscale.com/">Tailscale 登录页面</a></li>
-<li>进入 <a href="https://login.tailscale.com/admin/settings/keys">密钥设置页面</a></li>
-<li>创建授权密钥，注意启用以下权限：<ul>
-<li>开启 VPN 访问权限</li>
-<li>允许子网路由</li>
-</ul>
-</li>
-</ol>
-<p><img src="/assets/images/tailscale/auth-key-settings.jpg" alt="Tailscale 密钥设置界面"></p>
-<h2 id="🐳-Docker-部署配置"><a href="#🐳-Docker-部署配置" class="headerlink" title="🐳 Docker 部署配置"></a>🐳 Docker 部署配置</h2><h3 id="方法一：使用-Docker-命令行"><a href="#方法一：使用-Docker-命令行" class="headerlink" title="方法一：使用 Docker 命令行"></a>方法一：使用 Docker 命令行</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name=tailscaled \</span><br><span class="line">  --network=host \</span><br><span class="line">  --cap-add=NET_ADMIN \</span><br><span class="line">  --cap-add=NET_RAW \</span><br><span class="line">  -v /var/lib:/var/lib \</span><br><span class="line">  -v /dev/net/tun:/dev/net/tun \</span><br><span class="line">  -v /var/lib/tailscale:/var/lib/tailscale \</span><br><span class="line">  -e TS_AUTHKEY=tskey-auth-xxxxx \</span><br><span class="line">  -e TS_ROUTES=192.168.1.0/24 \</span><br><span class="line">  tailscale/tailscale</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意：将 <code>tskey-auth-xxxxx</code> 替换为你的授权码，<code>192.168.1.0/24</code> 替换为你的内网网段</p>
-</blockquote>
-<h3 id="方法二：通过飞牛-OS-界面配置"><a href="#方法二：通过飞牛-OS-界面配置" class="headerlink" title="方法二：通过飞牛 OS 界面配置"></a>方法二：通过飞牛 OS 界面配置</h3><ol>
-<li><p><strong>安装 Docker 镜像</strong></p>
-<ul>
-<li>在 Docker 商店搜索 <code>tailscale</code></li>
-<li>下载官方镜像</li>
-</ul>
-</li>
-<li><p><strong>创建容器并配置参数</strong></p>
-<p>基础设置：</p>
-<ul>
-<li>容器名：tailscale</li>
-<li>镜像：tailscale&#x2F;tailscale:latest</li>
-</ul>
-</li>
-<li><p><strong>存储配置</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/var/lib -&gt; /var/lib</span><br><span class="line">/dev/net/tun -&gt; /dev/net/tun</span><br><span class="line">TS_STATE_DIR -&gt; /var/lib/tailscale</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>环境变量设置</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TS_AUTHKEY=你的授权码</span><br><span class="line">TS_ROUTES=192.168.1.0/24</span><br><span class="line">TS_STATE_DIR=/var/lib/tailscale</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>网络设置</strong></p>
-<ul>
-<li>选择 <code>host</code> 网络模式</li>
-</ul>
-</li>
-</ol>
-<p>&#x2F;&#x2F; …existing code…</p>
-<h2 id="📱-移动端配置"><a href="#📱-移动端配置" class="headerlink" title="📱 移动端配置"></a>📱 移动端配置</h2><h3 id="iOS-Android-客户端设置"><a href="#iOS-Android-客户端设置" class="headerlink" title="iOS&#x2F;Android 客户端设置"></a>iOS&#x2F;Android 客户端设置</h3><ol>
-<li>从应用商店安装 Tailscale 客户端</li>
-<li>使用相同账号登录</li>
-<li>允许 VPN 配置权限</li>
-<li>在设备列表中应该能看到 NAS</li>
-</ol>
-<p><img src="/assets/images/tailscale/mobile-connection.jpg" alt="移动端连接界面"></p>
-<h2 id="🌐-子网路由配置"><a href="#🌐-子网路由配置" class="headerlink" title="🌐 子网路由配置"></a>🌐 子网路由配置</h2><h3 id="开启子网路由"><a href="#开启子网路由" class="headerlink" title="开启子网路由"></a>开启子网路由</h3><ol>
-<li>访问 Tailscale 管理后台</li>
-<li>进入 <code>Machines</code> 页面</li>
-<li>找到 NAS 设备</li>
-<li>开启 <code>Subnet routes</code> 选项</li>
-<li>确认要分享的子网范围</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Subnet: 192.168.1.0/24</span><br><span class="line">Routes via: your-nas-name</span><br></pre></td></tr></table></figure>
-
-<h3 id="ACL-策略配置"><a href="#ACL-策略配置" class="headerlink" title="ACL 策略配置"></a>ACL 策略配置</h3><figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;acls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;action&quot;</span><span class="punctuation">:</span> <span class="string">&quot;accept&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;users&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;*&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ports&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;*:*&quot;</span><span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;tagOwners&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;tag:nas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;your-email@domain.com&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;nodes&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;your-nas-name&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;tag:nas&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="⚙️-验证配置"><a href="#⚙️-验证配置" class="headerlink" title="⚙️ 验证配置"></a>⚙️ 验证配置</h2><h3 id="检查连接状态"><a href="#检查连接状态" class="headerlink" title="检查连接状态"></a>检查连接状态</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在 Docker 容器内执行</span></span><br><span class="line">docker <span class="built_in">exec</span> -it tailscaled tailscale status</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查路由表</span></span><br><span class="line">docker <span class="built_in">exec</span> -it tailscaled ip route</span><br></pre></td></tr></table></figure>
-
-<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><ol>
-<li>从移动设备 ping NAS 内网 IP</li>
-<li>尝试访问 NAS Web 界面</li>
-<li>验证文件共享访问</li>
-</ol>
-<h2 id="🔧-故障排查"><a href="#🔧-故障排查" class="headerlink" title="🔧 故障排查"></a>🔧 故障排查</h2><h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
-<li><strong>容器无法启动</strong><ul>
-<li>检查 Docker 权限</li>
-<li>确认 tun 设备存在</li>
-<li>查看容器日志</li>
-</ul>
-</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker logs tailscaled</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><p><strong>无法访问内网设备</strong></p>
-<ul>
-<li>验证子网路由配置</li>
-<li>检查 ACL 策略</li>
-<li>确认防火墙设置</li>
-</ul>
-</li>
-<li><p><strong>连接不稳定</strong></p>
-<ul>
-<li>检查网络质量</li>
-<li>验证 DERP 服务器连接</li>
-<li>尝试更换节点</li>
-</ul>
-</li>
-</ol>
-<h2 id="📝-运维建议"><a href="#📝-运维建议" class="headerlink" title="📝 运维建议"></a>📝 运维建议</h2><ol>
-<li>定期检查连接状态</li>
-<li>备份 Tailscale 配置</li>
-<li>监控容器资源使用</li>
-<li>及时更新 Docker 镜像</li>
-</ol>
-<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
-<li><a href="https://tailscale.com/kb/">Tailscale 官方文档</a></li>
-<li><a href="https://hub.docker.com/r/tailscale/tailscale">Docker Hub - Tailscale</a></li>
-<li><a href="https://www.phoenixos.com/forum/">飞牛 OS 官方论坛</a></li>
-</ul>
-<h2 id="🏷️-安全提示"><a href="#🏷️-安全提示" class="headerlink" title="🏷️ 安全提示"></a>🏷️ 安全提示</h2><ol>
-<li>定期轮换授权密钥</li>
-<li>限制访问设备范围</li>
-<li>使用最小权限原则</li>
-<li>开启双因素认证</li>
-<li>监控异常访问行为</li>
-</ol>
-]]></content>
-      <categories>
-        <category>NAS</category>
-        <category>网络工具</category>
-      </categories>
-      <tags>
-        <tag>飞牛OS</tag>
-        <tag>Docker</tag>
-        <tag>Tailscale</tag>
-        <tag>内网穿透</tag>
       </tags>
   </entry>
   <entry>
