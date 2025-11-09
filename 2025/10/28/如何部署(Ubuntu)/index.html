@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.echospace.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="详细介绍在 Ubuntu 系统上部署 Kubernetes 集群的完整步骤，包含初始化配置、containerd 安装、集群部署及常用命令参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes 集群完整部署指南 (Ubuntu)">
+<meta property="og:url" content="https://blog.echospace.top/2025/10/28/%E5%A6%82%E4%BD%95%E9%83%A8%E7%BD%B2(Ubuntu)/index.html">
+<meta property="og:site_name" content="EchoSpace">
+<meta property="og:description" content="详细介绍在 Ubuntu 系统上部署 Kubernetes 集群的完整步骤，包含初始化配置、containerd 安装、集群部署及常用命令参考。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-09T02:29:17.459Z">
+<meta property="article:author" content="Echo Wang">
+<meta property="article:tag" content="K8s">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="containerd">
+<meta property="article:tag" content="集群部署">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://blog.echospace.top/2025/10/28/%E5%A6%82%E4%BD%95%E9%83%A8%E7%BD%B2(Ubuntu)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Kubernetes 集群完整部署指南 (Ubuntu) | EchoSpace</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EchoSpace</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">多多是只猫</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.echospace.top/2025/10/28/%E5%A6%82%E4%BD%95%E9%83%A8%E7%BD%B2(Ubuntu)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Echo Wang">
+      <meta itemprop="description" content="失业的网络流民">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EchoSpace">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kubernetes 集群完整部署指南 (Ubuntu)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-28 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-28T00:00:00+08:00">2025-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-11-09 10:29:17" itemprop="dateModified" datetime="2025-11-09T10:29:17+08:00">2025-11-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/%E8%BF%90%E7%BB%B4%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index"><span itemprop="name">运维部署</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">详细介绍在 Ubuntu 系统上部署 Kubernetes 集群的完整步骤，包含初始化配置、containerd 安装、集群部署及常用命令参考。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p class="post-excerpt">
+本教程提供了在 Ubuntu 系统上部署 Kubernetes 集群的详细步骤，包括环境准备、containerd 配置、集群初始化以及网络插件部署，并附带完整的命令参考。
+</p>
+
+<h1 id="Kubernetes-集群部署指南-Ubuntu"><a href="#Kubernetes-集群部署指南-Ubuntu" class="headerlink" title="Kubernetes 集群部署指南 (Ubuntu)"></a>Kubernetes 集群部署指南 (Ubuntu)</h1><h2 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h2><ul>
+<li>Ubuntu 20.04 或更高版本</li>
+<li>最少 2 CPU、2GB 内存</li>
+<li>所有节点网络互通</li>
+<li>每个节点唯一的 MAC&#x2F;产品 UUID</li>
+</ul>
+<h2 id="1️⃣-所有节点初始化"><a href="#1️⃣-所有节点初始化" class="headerlink" title="1️⃣ 所有节点初始化"></a>1️⃣ 所有节点初始化</h2><h3 id="系统更新"><a href="#系统更新" class="headerlink" title="系统更新"></a>系统更新</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新系统包</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt upgrade -y</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭-swap"><a href="#关闭-swap" class="headerlink" title="关闭 swap"></a>关闭 swap</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 临时关闭</span></span><br><span class="line"><span class="built_in">sudo</span> swapoff -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 永久关闭（编辑 /etc/fstab）</span></span><br><span class="line"><span class="built_in">sudo</span> sed -i <span class="string">&#x27;/ swap / s/^/#/&#x27;</span> /etc/fstab</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置内核模块"><a href="#配置内核模块" class="headerlink" title="配置内核模块"></a>配置内核模块</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 加载必要模块</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | sudo tee /etc/modules-load.d/k8s.conf</span></span><br><span class="line"><span class="string">overlay</span></span><br><span class="line"><span class="string">br_netfilter</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 立即加载</span></span><br><span class="line"><span class="built_in">sudo</span> modprobe overlay</span><br><span class="line"><span class="built_in">sudo</span> modprobe br_netfilter</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置内核参数"><a href="#设置内核参数" class="headerlink" title="设置内核参数"></a>设置内核参数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置 sysctl</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | sudo tee /etc/sysctl.d/k8s.conf</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-iptables  = 1</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-ip6tables = 1</span></span><br><span class="line"><span class="string">net.ipv4.ip_forward                 = 1</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 应用配置</span></span><br><span class="line"><span class="built_in">sudo</span> sysctl --system</span><br></pre></td></tr></table></figure>
+
+<h2 id="2️⃣-安装容器运行时"><a href="#2️⃣-安装容器运行时" class="headerlink" title="2️⃣ 安装容器运行时"></a>2️⃣ 安装容器运行时</h2><h3 id="安装-containerd"><a href="#安装-containerd" class="headerlink" title="安装 containerd"></a>安装 containerd</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 containerd</span></span><br><span class="line"><span class="built_in">sudo</span> apt install -y containerd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建默认配置</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /etc/containerd</span><br><span class="line">containerd config default | <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/containerd/config.toml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用 SystemdCgroup</span></span><br><span class="line"><span class="built_in">sudo</span> sed -i <span class="string">&#x27;s/SystemdCgroup = false/SystemdCgroup = true/&#x27;</span> /etc/containerd/config.toml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl restart containerd</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> containerd</span><br></pre></td></tr></table></figure>
+
+<h2 id="3️⃣-安装-Kubernetes-组件"><a href="#3️⃣-安装-Kubernetes-组件" class="headerlink" title="3️⃣ 安装 Kubernetes 组件"></a>3️⃣ 安装 Kubernetes 组件</h2><h3 id="添加-apt-源"><a href="#添加-apt-源" class="headerlink" title="添加 apt 源"></a>添加 apt 源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line"><span class="built_in">sudo</span> apt install -y apt-transport-https ca-certificates curl gpg</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加 K8s 源密钥</span></span><br><span class="line"><span class="built_in">sudo</span> curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | \</span><br><span class="line">  <span class="built_in">sudo</span> gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加 apt 源</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \</span></span><br><span class="line"><span class="string">https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /&quot;</span> | \</span><br><span class="line">  <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/kubernetes.list</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装必要组件"><a href="#安装必要组件" class="headerlink" title="安装必要组件"></a>安装必要组件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 kubeadm、kubelet、kubectl</span></span><br><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install -y kubelet kubeadm kubectl</span><br><span class="line"><span class="built_in">sudo</span> apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="4️⃣-初始化主节点"><a href="#4️⃣-初始化主节点" class="headerlink" title="4️⃣ 初始化主节点"></a>4️⃣ 初始化主节点</h2><h3 id="准备初始化配置"><a href="#准备初始化配置" class="headerlink" title="准备初始化配置"></a>准备初始化配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建 kubeadm 配置文件</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF &gt; kubeadm-config.yaml</span></span><br><span class="line"><span class="string">apiVersion: kubeadm.k8s.io/v1beta3</span></span><br><span class="line"><span class="string">kind: InitConfiguration</span></span><br><span class="line"><span class="string">nodeRegistration:</span></span><br><span class="line"><span class="string">  criSocket: &quot;unix:///var/run/containerd/containerd.sock&quot;</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: kubeadm.k8s.io/v1beta3</span></span><br><span class="line"><span class="string">kind: ClusterConfiguration</span></span><br><span class="line"><span class="string">networking:</span></span><br><span class="line"><span class="string">  podSubnet: &quot;10.244.0.0/16&quot;  # Flannel 默认网段</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="执行初始化"><a href="#执行初始化" class="headerlink" title="执行初始化"></a>执行初始化</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化集群</span></span><br><span class="line"><span class="built_in">sudo</span> kubeadm init --config kubeadm-config.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 kubectl（对于当前用户）</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$HOME</span>/.kube</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chown</span> $(<span class="built_in">id</span> -u):$(<span class="built_in">id</span> -g) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure>
+
+<h2 id="5️⃣-部署网络插件"><a href="#5️⃣-部署网络插件" class="headerlink" title="5️⃣ 部署网络插件"></a>5️⃣ 部署网络插件</h2><h3 id="安装-Flannel"><a href="#安装-Flannel" class="headerlink" title="安装 Flannel"></a>安装 Flannel</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载并应用 Flannel 配置</span></span><br><span class="line">kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等待 Flannel pods 就绪</span></span><br><span class="line">kubectl <span class="built_in">wait</span> --namespace kube-system \</span><br><span class="line">  --<span class="keyword">for</span>=condition=ready pod \</span><br><span class="line">  --selector=app=flannel \</span><br><span class="line">  --<span class="built_in">timeout</span>=90s</span><br></pre></td></tr></table></figure>
+
+<h2 id="6️⃣-添加工作节点"><a href="#6️⃣-添加工作节点" class="headerlink" title="6️⃣ 添加工作节点"></a>6️⃣ 添加工作节点</h2><p>在其他节点执行 <code>kubeadm join</code> 命令（从主节点初始化输出中获取）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 示例（请使用实际的 token 和 hash）</span></span><br><span class="line"><span class="built_in">sudo</span> kubeadm <span class="built_in">join</span> 192.168.1.10:6443 \</span><br><span class="line">  --token abcdef.0123456789abcdef \</span><br><span class="line">  --discovery-token-ca-cert-hash \</span><br><span class="line">  sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔍-验证集群状态"><a href="#🔍-验证集群状态" class="headerlink" title="🔍 验证集群状态"></a>🔍 验证集群状态</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看节点状态</span></span><br><span class="line">kubectl get nodes -o wide</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查系统组件</span></span><br><span class="line">kubectl get pods -n kube-system</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证 DNS</span></span><br><span class="line">kubectl run test-nginx --image=nginx</span><br><span class="line">kubectl get pods -o wide</span><br></pre></td></tr></table></figure>
+
+<h2 id="📝-常见问题处理"><a href="#📝-常见问题处理" class="headerlink" title="📝 常见问题处理"></a>📝 常见问题处理</h2><h3 id="1-重置集群"><a href="#1-重置集群" class="headerlink" title="1. 重置集群"></a>1. 重置集群</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在所有节点执行</span></span><br><span class="line"><span class="built_in">sudo</span> kubeadm reset</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">rm</span> -rf <span class="variable">$HOME</span>/.kube</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">rm</span> -rf /etc/kubernetes /var/lib/kubelet /var/lib/etcd</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-重新生成-join-令牌"><a href="#2-重新生成-join-令牌" class="headerlink" title="2. 重新生成 join 令牌"></a>2. 重新生成 join 令牌</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在主节点执行</span></span><br><span class="line">kubeadm token create --print-join-command</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Pod-网络故障排查"><a href="#3-Pod-网络故障排查" class="headerlink" title="3. Pod 网络故障排查"></a>3. Pod 网络故障排查</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查 CNI 配置</span></span><br><span class="line"><span class="built_in">ls</span> /etc/cni/net.d/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Flannel 日志</span></span><br><span class="line">kubectl logs -n kube-system -l app=flannel</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔧-实用命令参考"><a href="#🔧-实用命令参考" class="headerlink" title="🔧 实用命令参考"></a>🔧 实用命令参考</h2><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看节点详情</td>
+<td><code>kubectl describe node &lt;node-name&gt;</code></td>
+</tr>
+<tr>
+<td>驱逐节点上的 Pod</td>
+<td><code>kubectl drain &lt;node-name&gt; --ignore-daemonsets</code></td>
+</tr>
+<tr>
+<td>设置节点不可调度</td>
+<td><code>kubectl cordon &lt;node-name&gt;</code></td>
+</tr>
+<tr>
+<td>恢复节点可调度</td>
+<td><code>kubectl uncordon &lt;node-name&gt;</code></td>
+</tr>
+</tbody></table>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li>确保所有节点时间同步</li>
+<li>检查防火墙是否允许必要端口<ul>
+<li>6443: API Server</li>
+<li>2379-2380: etcd</li>
+<li>10250: Kubelet</li>
+<li>8472: Flannel VXLAN</li>
+</ul>
+</li>
+<li>生产环境建议使用高可用配置</li>
+<li>定期备份 etcd 数据</li>
+</ol>
+<hr>
+<p>更多资源：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/">Kubernetes 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://containerd.io/">containerd 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/flannel-io/flannel">Flannel GitHub</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/K8s/" rel="tag"># K8s</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/containerd/" rel="tag"># containerd</a>
+              <a href="/tags/%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" rel="tag"># 集群部署</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/10/28/%E9%A3%9E%E7%89%9BOS%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2tailscale/" rel="prev" title="在飞牛 OS 上使用 Docker 部署 Tailscale">
+      <i class="fa fa-chevron-left"></i> 在飞牛 OS 上使用 Docker 部署 Tailscale
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/10/28/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E5%81%9A%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/" rel="next" title="SSH 远程端口转发完整配置指南">
+      SSH 远程端口转发完整配置指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kubernetes-%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97-Ubuntu"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes 集群部署指南 (Ubuntu)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82"><span class="nav-number">1.1.</span> <span class="nav-text">环境要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%EF%B8%8F%E2%83%A3-%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">1️⃣ 所有节点初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">系统更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD-swap"><span class="nav-number">1.2.2.</span> <span class="nav-text">关闭 swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.3.</span> <span class="nav-text">配置内核模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.4.</span> <span class="nav-text">设置内核参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%EF%B8%8F%E2%83%A3-%E5%AE%89%E8%A3%85%E5%AE%B9%E5%99%A8%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-number">1.3.</span> <span class="nav-text">2️⃣ 安装容器运行时</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-containerd"><span class="nav-number">1.3.1.</span> <span class="nav-text">安装 containerd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%EF%B8%8F%E2%83%A3-%E5%AE%89%E8%A3%85-Kubernetes-%E7%BB%84%E4%BB%B6"><span class="nav-number">1.4.</span> <span class="nav-text">3️⃣ 安装 Kubernetes 组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-apt-%E6%BA%90"><span class="nav-number">1.4.1.</span> <span class="nav-text">添加 apt 源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E7%BB%84%E4%BB%B6"><span class="nav-number">1.4.2.</span> <span class="nav-text">安装必要组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%EF%B8%8F%E2%83%A3-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="nav-number">1.5.</span> <span class="nav-text">4️⃣ 初始化主节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%88%9D%E5%A7%8B%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="nav-number">1.5.1.</span> <span class="nav-text">准备初始化配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.5.2.</span> <span class="nav-text">执行初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%EF%B8%8F%E2%83%A3-%E9%83%A8%E7%BD%B2%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6"><span class="nav-number">1.6.</span> <span class="nav-text">5️⃣ 部署网络插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Flannel"><span class="nav-number">1.6.1.</span> <span class="nav-text">安装 Flannel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%EF%B8%8F%E2%83%A3-%E6%B7%BB%E5%8A%A0%E5%B7%A5%E4%BD%9C%E8%8A%82%E7%82%B9"><span class="nav-number">1.7.</span> <span class="nav-text">6️⃣ 添加工作节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%8D-%E9%AA%8C%E8%AF%81%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81"><span class="nav-number">1.8.</span> <span class="nav-text">🔍 验证集群状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%9D-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="nav-number">1.9.</span> <span class="nav-text">📝 常见问题处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%87%8D%E7%BD%AE%E9%9B%86%E7%BE%A4"><span class="nav-number">1.9.1.</span> <span class="nav-text">1. 重置集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90-join-%E4%BB%A4%E7%89%8C"><span class="nav-number">1.9.2.</span> <span class="nav-text">2. 重新生成 join 令牌</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Pod-%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5"><span class="nav-number">1.9.3.</span> <span class="nav-text">3. Pod 网络故障排查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%A7-%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4%E5%8F%82%E8%80%83"><span class="nav-number">1.10.</span> <span class="nav-text">🔧 实用命令参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9A%A0%EF%B8%8F-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.11.</span> <span class="nav-text">⚠️ 注意事项</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Echo Wang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Echo Wang</p>
+  <div class="site-description" itemprop="description">失业的网络流民</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EchoWang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
