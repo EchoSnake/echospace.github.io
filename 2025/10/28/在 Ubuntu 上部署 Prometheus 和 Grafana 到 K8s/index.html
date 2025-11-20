@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.echospace.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="详细指导如何在 Kubernetes 集群中部署和配置 Prometheus 与 Grafana 监控系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 K8s 上部署 Prometheus 和 Grafana (Ubuntu)">
+<meta property="og:url" content="https://blog.echospace.top/2025/10/28/%E5%9C%A8%20Ubuntu%20%E4%B8%8A%E9%83%A8%E7%BD%B2%20Prometheus%20%E5%92%8C%20Grafana%20%E5%88%B0%20K8s/index.html">
+<meta property="og:site_name" content="EchoSpace">
+<meta property="og:description" content="详细指导如何在 Kubernetes 集群中部署和配置 Prometheus 与 Grafana 监控系统">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-20T04:54:33.730Z">
+<meta property="article:author" content="Echo Wang">
+<meta property="article:tag" content="K8s">
+<meta property="article:tag" content="Prometheus">
+<meta property="article:tag" content="Grafana">
+<meta property="article:tag" content="监控">
+<meta property="article:tag" content="Helm">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://blog.echospace.top/2025/10/28/%E5%9C%A8%20Ubuntu%20%E4%B8%8A%E9%83%A8%E7%BD%B2%20Prometheus%20%E5%92%8C%20Grafana%20%E5%88%B0%20K8s/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在 K8s 上部署 Prometheus 和 Grafana (Ubuntu) | EchoSpace</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EchoSpace</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">多多是只猫</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.echospace.top/2025/10/28/%E5%9C%A8%20Ubuntu%20%E4%B8%8A%E9%83%A8%E7%BD%B2%20Prometheus%20%E5%92%8C%20Grafana%20%E5%88%B0%20K8s/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Echo Wang">
+      <meta itemprop="description" content="失业的网络流民">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EchoSpace">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在 K8s 上部署 Prometheus 和 Grafana (Ubuntu)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-28 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-28T00:00:00+08:00">2025-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-11-20 12:54:33" itemprop="dateModified" datetime="2025-11-20T12:54:33+08:00">2025-11-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/%E7%9B%91%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">监控</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">详细指导如何在 Kubernetes 集群中部署和配置 Prometheus 与 Grafana 监控系统</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p class="post-excerpt">
+本教程详细介绍如何在 Kubernetes 集群中使用 Helm 部署 Prometheus 和 Grafana，包含完整的安装配置步骤、持久化存储设置、以及 UI 自定义方案。
+</p>
+
+<h1 id="在-K8s-上部署-Prometheus-和-Grafana"><a href="#在-K8s-上部署-Prometheus-和-Grafana" class="headerlink" title="在 K8s 上部署 Prometheus 和 Grafana"></a>在 K8s 上部署 Prometheus 和 Grafana</h1><h2 id="🔧-准备工作"><a href="#🔧-准备工作" class="headerlink" title="🔧 准备工作"></a>🔧 准备工作</h2><h3 id="1-环境要求"><a href="#1-环境要求" class="headerlink" title="1. 环境要求"></a>1. 环境要求</h3><ul>
+<li><strong>操作系统</strong>: Ubuntu 20.04+</li>
+<li><strong>Kubernetes</strong>: 正常运行的集群</li>
+<li><strong>Helm</strong>: 3.x 版本</li>
+<li><strong>kubectl</strong>: 已配置且可用</li>
+</ul>
+<h3 id="2-安装必要工具"><a href="#2-安装必要工具" class="headerlink" title="2. 安装必要工具"></a>2. 安装必要工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 Helm 3</span></span><br><span class="line">curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 kubectl（如未安装）</span></span><br><span class="line"><span class="built_in">sudo</span> snap install kubectl --classic</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证安装</span></span><br><span class="line">helm version</span><br><span class="line">kubectl cluster-info</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-创建监控命名空间"><a href="#3-创建监控命名空间" class="headerlink" title="3. 创建监控命名空间"></a>3. 创建监控命名空间</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create namespace monitoring</span><br></pre></td></tr></table></figure>
+
+<h2 id="📦-部署-Prometheus"><a href="#📦-部署-Prometheus" class="headerlink" title="📦 部署 Prometheus"></a>📦 部署 Prometheus</h2><h3 id="1-添加-Helm-仓库"><a href="#1-添加-Helm-仓库" class="headerlink" title="1. 添加 Helm 仓库"></a>1. 添加 Helm 仓库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts</span><br><span class="line">helm repo update</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-安装-Prometheus-Stack"><a href="#2-安装-Prometheus-Stack" class="headerlink" title="2. 安装 Prometheus Stack"></a>2. 安装 Prometheus Stack</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">helm install prometheus prometheus-community/kube-prometheus-stack \</span><br><span class="line">  --namespace monitoring \</span><br><span class="line">  --<span class="built_in">set</span> prometheus.service.type=NodePort \</span><br><span class="line">  --<span class="built_in">set</span> prometheus.service.nodePort=30090</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-自定义配置（可选）"><a href="#3-自定义配置（可选）" class="headerlink" title="3. 自定义配置（可选）"></a>3. 自定义配置（可选）</h3><p>创建 <code>values.yaml</code>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">prometheus:</span></span><br><span class="line">  <span class="attr">prometheusSpec:</span></span><br><span class="line">    <span class="attr">retention:</span> <span class="string">15d</span></span><br><span class="line">    <span class="attr">resources:</span></span><br><span class="line">      <span class="attr">requests:</span></span><br><span class="line">        <span class="attr">memory:</span> <span class="string">&quot;512Mi&quot;</span></span><br><span class="line">        <span class="attr">cpu:</span> <span class="string">&quot;500m&quot;</span></span><br><span class="line">    <span class="attr">storageSpec:</span></span><br><span class="line">      <span class="attr">volumeClaimTemplate:</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">          <span class="attr">accessModes:</span> [<span class="string">&quot;ReadWriteOnce&quot;</span>]</span><br><span class="line">          <span class="attr">resources:</span></span><br><span class="line">            <span class="attr">requests:</span></span><br><span class="line">              <span class="attr">storage:</span> <span class="string">10Gi</span></span><br></pre></td></tr></table></figure>
+
+<p>应用配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">helm upgrade prometheus prometheus-community/kube-prometheus-stack \</span><br><span class="line">  --namespace monitoring \</span><br><span class="line">  -f values.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="🎨-配置-Grafana"><a href="#🎨-配置-Grafana" class="headerlink" title="🎨 配置 Grafana"></a>🎨 配置 Grafana</h2><h3 id="1-暴露-Grafana-服务"><a href="#1-暴露-Grafana-服务" class="headerlink" title="1. 暴露 Grafana 服务"></a>1. 暴露 Grafana 服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">helm upgrade prometheus prometheus-community/kube-prometheus-stack \</span><br><span class="line">  --namespace monitoring \</span><br><span class="line">  --<span class="built_in">set</span> grafana.service.type=NodePort \</span><br><span class="line">  --<span class="built_in">set</span> grafana.service.nodePort=30000</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-获取访问凭证"><a href="#2-获取访问凭证" class="headerlink" title="2. 获取访问凭证"></a>2. 获取访问凭证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取管理员密码</span></span><br><span class="line">kubectl get secret -n monitoring prometheus-grafana \</span><br><span class="line">  -o jsonpath=<span class="string">&#x27;&#123;.data.admin-password&#125;&#x27;</span> | <span class="built_in">base64</span> --decode</span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="🔄-持久化存储配置"><a href="#🔄-持久化存储配置" class="headerlink" title="🔄 持久化存储配置"></a>🔄 持久化存储配置</h2><h3 id="1-创建持久卷声明（PVC）"><a href="#1-创建持久卷声明（PVC）" class="headerlink" title="1. 创建持久卷声明（PVC）"></a>1. 创建持久卷声明（PVC）</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolumeClaim</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">grafana-pvc</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">monitoring</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">accessModes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ReadWriteOnce</span></span><br><span class="line">  <span class="attr">resources:</span></span><br><span class="line">    <span class="attr">requests:</span></span><br><span class="line">      <span class="attr">storage:</span> <span class="string">10Gi</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-更新-Grafana-配置"><a href="#2-更新-Grafana-配置" class="headerlink" title="2. 更新 Grafana 配置"></a>2. 更新 Grafana 配置</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">grafana:</span></span><br><span class="line">  <span class="attr">persistence:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">existingClaim:</span> <span class="string">grafana-pvc</span></span><br><span class="line">    <span class="attr">size:</span> <span class="string">10Gi</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🌐-配置-Ingress-访问"><a href="#🌐-配置-Ingress-访问" class="headerlink" title="🌐 配置 Ingress 访问"></a>🌐 配置 Ingress 访问</h2><h3 id="1-创建-Ingress-规则"><a href="#1-创建-Ingress-规则" class="headerlink" title="1. 创建 Ingress 规则"></a>1. 创建 Ingress 规则</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Ingress</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">monitoring-ingress</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">monitoring</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">nginx.ingress.kubernetes.io/rewrite-target:</span> <span class="string">/</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">grafana.example.com</span></span><br><span class="line">    <span class="attr">http:</span></span><br><span class="line">      <span class="attr">paths:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/</span></span><br><span class="line">        <span class="attr">pathType:</span> <span class="string">Prefix</span></span><br><span class="line">        <span class="attr">backend:</span></span><br><span class="line">          <span class="attr">service:</span></span><br><span class="line">            <span class="attr">name:</span> <span class="string">prometheus-grafana</span></span><br><span class="line">            <span class="attr">port:</span></span><br><span class="line">              <span class="attr">number:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-应用-Ingress-配置"><a href="#2-应用-Ingress-配置" class="headerlink" title="2. 应用 Ingress 配置"></a>2. 应用 Ingress 配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ingress.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="📊-导入-Dashboard"><a href="#📊-导入-Dashboard" class="headerlink" title="📊 导入 Dashboard"></a>📊 导入 Dashboard</h2><h3 id="1-常用-Dashboard-ID"><a href="#1-常用-Dashboard-ID" class="headerlink" title="1. 常用 Dashboard ID"></a>1. 常用 Dashboard ID</h3><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>Dashboard ID</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>节点监控</td>
+<td>1860</td>
+<td>Node Exporter 全量指标</td>
+</tr>
+<tr>
+<td>集群概览</td>
+<td>13105</td>
+<td>Kubernetes 集群监控</td>
+</tr>
+<tr>
+<td>资源使用</td>
+<td>8685</td>
+<td>Pod 资源使用详情</td>
+</tr>
+<tr>
+<td>网络监控</td>
+<td>12175</td>
+<td>网络流量分析</td>
+</tr>
+</tbody></table>
+<h3 id="2-导入步骤"><a href="#2-导入步骤" class="headerlink" title="2. 导入步骤"></a>2. 导入步骤</h3><ol>
+<li>访问 Grafana UI</li>
+<li>点击 <code>+</code> &gt; <code>Import</code></li>
+<li>输入 Dashboard ID</li>
+<li>选择数据源（默认 <code>Prometheus</code>）</li>
+<li>点击 <code>Import</code></li>
+</ol>
+<h2 id="🔍-监控验证"><a href="#🔍-监控验证" class="headerlink" title="🔍 监控验证"></a>🔍 监控验证</h2><h3 id="1-检查组件状态"><a href="#1-检查组件状态" class="headerlink" title="1. 检查组件状态"></a>1. 检查组件状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查 Pod 状态</span></span><br><span class="line">kubectl get pods -n monitoring</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查服务状态</span></span><br><span class="line">kubectl get svc -n monitoring</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看资源使用</span></span><br><span class="line">kubectl top nodes</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-验证数据采集"><a href="#2-验证数据采集" class="headerlink" title="2. 验证数据采集"></a>2. 验证数据采集</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看目标状态</span></span><br><span class="line">curl -s http://&lt;节点IP&gt;:30090/targets | grep <span class="string">&quot;UP&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查告警规则</span></span><br><span class="line">kubectl get prometheusrules -n monitoring</span><br></pre></td></tr></table></figure>
+
+<h2 id="⚠️-常见问题排查"><a href="#⚠️-常见问题排查" class="headerlink" title="⚠️ 常见问题排查"></a>⚠️ 常见问题排查</h2><ol>
+<li><p><strong>Pod 无法启动</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看详细错误</span></span><br><span class="line">kubectl describe pod &lt;pod-name&gt; -n monitoring</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="查看容器日志"><a href="#查看容器日志" class="headerlink" title="查看容器日志"></a>查看容器日志</h1><p>kubectl logs <pod-name> -n monitoring</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">2. **数据采集异常**</span><br><span class="line">- 检查 ServiceMonitor 配置</span><br><span class="line">- 验证标签选择器</span><br><span class="line">- 确认端口暴露正确</span><br><span class="line"></span><br><span class="line">3. **Grafana 访问问题**</span><br><span class="line">- 确认服务暴露方式</span><br><span class="line">- 检查 Ingress 配置</span><br><span class="line">- 验证网络策略</span><br><span class="line"></span><br><span class="line">## 📝 运维建议</span><br><span class="line"></span><br><span class="line">1. 定期备份 Grafana 配置</span><br><span class="line">```bash</span><br><span class="line">kubectl cp monitoring/prometheus-grafana-xxx:/var/lib/grafana ./grafana-backup</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>监控资源使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置资源告警</span></span><br><span class="line">kubectl apply -f prometheus-rules.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>日志轮转配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">prometheus:</span></span><br><span class="line"><span class="attr">prometheusSpec:</span></span><br><span class="line"> <span class="attr">retention:</span> <span class="string">15d</span></span><br><span class="line"> <span class="attr">retentionSize:</span> <span class="string">&quot;10GB&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://prometheus-operator.dev/">Prometheus Operator 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://grafana.com/docs/">Grafana 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack</a></li>
+<li><a target="_blank" rel="noopener" href="https://prometheus.io/docs/practices/naming/">Prometheus 最佳实践</a></li>
+</ul>
+<hr>
+<blockquote>
+<p>作者：EchoWang</p>
+</blockquote>
+<blockquote>
+<p>小红书：汪多多是只猫</p>
+</blockquote>
+<blockquote>
+<p>B站：汪多多是只猫</p>
+</blockquote>
+<blockquote>
+<p>公众号：汪多多是只猫</p>
+</blockquote>
+<blockquote>
+<p>博客：blog.echospace.top</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/K8s/" rel="tag"># K8s</a>
+              <a href="/tags/Prometheus/" rel="tag"># Prometheus</a>
+              <a href="/tags/Grafana/" rel="tag"># Grafana</a>
+              <a href="/tags/%E7%9B%91%E6%8E%A7/" rel="tag"># 监控</a>
+              <a href="/tags/Helm/" rel="tag"># Helm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/10/28/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E5%81%9A%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/" rel="prev" title="SSH 远程端口转发完整配置指南">
+      <i class="fa fa-chevron-left"></i> SSH 远程端口转发完整配置指南
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/10/28/Prometheus%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6yml%E8%A7%A3%E6%9E%90/" rel="next" title="Prometheus 配置文件 (prometheus.yml) 完整解析">
+      Prometheus 配置文件 (prometheus.yml) 完整解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8-K8s-%E4%B8%8A%E9%83%A8%E7%BD%B2-Prometheus-%E5%92%8C-Grafana"><span class="nav-number">1.</span> <span class="nav-text">在 K8s 上部署 Prometheus 和 Grafana</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%A7-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">🔧 准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 环境要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E5%B7%A5%E5%85%B7"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 安装必要工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%9B%E5%BB%BA%E7%9B%91%E6%8E%A7%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 创建监控命名空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%A6-%E9%83%A8%E7%BD%B2-Prometheus"><span class="nav-number">1.2.</span> <span class="nav-text">📦 部署 Prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B7%BB%E5%8A%A0-Helm-%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 添加 Helm 仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85-Prometheus-Stack"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 安装 Prometheus Stack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 自定义配置（可选）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8E%A8-%E9%85%8D%E7%BD%AE-Grafana"><span class="nav-number">1.3.</span> <span class="nav-text">🎨 配置 Grafana</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9A%B4%E9%9C%B2-Grafana-%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. 暴露 Grafana 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%8E%B7%E5%8F%96%E8%AE%BF%E9%97%AE%E5%87%AD%E8%AF%81"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. 获取访问凭证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%84-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text">🔄 持久化存储配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA%E6%8C%81%E4%B9%85%E5%8D%B7%E5%A3%B0%E6%98%8E%EF%BC%88PVC%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 创建持久卷声明（PVC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9B%B4%E6%96%B0-Grafana-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 更新 Grafana 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8C%90-%E9%85%8D%E7%BD%AE-Ingress-%E8%AE%BF%E9%97%AE"><span class="nav-number">1.5.</span> <span class="nav-text">🌐 配置 Ingress 访问</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA-Ingress-%E8%A7%84%E5%88%99"><span class="nav-number">1.5.1.</span> <span class="nav-text">1. 创建 Ingress 规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%BA%94%E7%94%A8-Ingress-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.5.2.</span> <span class="nav-text">2. 应用 Ingress 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%8A-%E5%AF%BC%E5%85%A5-Dashboard"><span class="nav-number">1.6.</span> <span class="nav-text">📊 导入 Dashboard</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B8%B8%E7%94%A8-Dashboard-ID"><span class="nav-number">1.6.1.</span> <span class="nav-text">1. 常用 Dashboard ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%BC%E5%85%A5%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.6.2.</span> <span class="nav-text">2. 导入步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%8D-%E7%9B%91%E6%8E%A7%E9%AA%8C%E8%AF%81"><span class="nav-number">1.7.</span> <span class="nav-text">🔍 监控验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A3%80%E6%9F%A5%E7%BB%84%E4%BB%B6%E7%8A%B6%E6%80%81"><span class="nav-number">1.7.1.</span> <span class="nav-text">1. 检查组件状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%AA%8C%E8%AF%81%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86"><span class="nav-number">1.7.2.</span> <span class="nav-text">2. 验证数据采集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9A%A0%EF%B8%8F-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="nav-number">1.8.</span> <span class="nav-text">⚠️ 常见问题排查</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97"><span class="nav-number">2.</span> <span class="nav-text">查看容器日志</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%97-%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">2.1.</span> <span class="nav-text">🔗 参考资源</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Echo Wang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Echo Wang</p>
+  <div class="site-description" itemprop="description">失业的网络流民</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EchoWang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

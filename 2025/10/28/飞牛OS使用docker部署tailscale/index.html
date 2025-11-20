@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.echospace.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="详细介绍如何在飞牛 OS NAS 系统上通过 Docker 部署 Tailscale 实现远程访问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在飞牛 OS 上使用 Docker 部署 Tailscale">
+<meta property="og:url" content="https://blog.echospace.top/2025/10/28/%E9%A3%9E%E7%89%9BOS%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2tailscale/index.html">
+<meta property="og:site_name" content="EchoSpace">
+<meta property="og:description" content="详细介绍如何在飞牛 OS NAS 系统上通过 Docker 部署 Tailscale 实现远程访问">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.echospace.top/assets/images/tailscale/auth-key-settings.jpg">
+<meta property="og:image" content="https://blog.echospace.top/assets/images/tailscale/mobile-connection.jpg">
+<meta property="article:published_time" content="2025-10-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-20T04:53:20.288Z">
+<meta property="article:author" content="Echo Wang">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="飞牛OS">
+<meta property="article:tag" content="Tailscale">
+<meta property="article:tag" content="内网穿透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.echospace.top/assets/images/tailscale/auth-key-settings.jpg">
+
+<link rel="canonical" href="https://blog.echospace.top/2025/10/28/%E9%A3%9E%E7%89%9BOS%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2tailscale/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在飞牛 OS 上使用 Docker 部署 Tailscale | EchoSpace</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EchoSpace</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">多多是只猫</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.echospace.top/2025/10/28/%E9%A3%9E%E7%89%9BOS%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2tailscale/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Echo Wang">
+      <meta itemprop="description" content="失业的网络流民">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EchoSpace">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在飞牛 OS 上使用 Docker 部署 Tailscale
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-28 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-28T00:00:00+08:00">2025-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-11-20 12:53:20" itemprop="dateModified" datetime="2025-11-20T12:53:20+08:00">2025-11-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NAS/" itemprop="url" rel="index"><span itemprop="name">NAS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NAS/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">网络工具</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">详细介绍如何在飞牛 OS NAS 系统上通过 Docker 部署 Tailscale 实现远程访问</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p class="post-excerpt">
+本教程详细介绍如何在飞牛 OS NAS 系统上使用 Docker 部署 Tailscale，实现安全可靠的远程访问方案，包含完整的配置步骤和移动端设置指南。
+</p>
+
+<h1 id="在飞牛-OS-上部署-Tailscale"><a href="#在飞牛-OS-上部署-Tailscale" class="headerlink" title="在飞牛 OS 上部署 Tailscale"></a>在飞牛 OS 上部署 Tailscale</h1><h2 id="💡-背景说明"><a href="#💡-背景说明" class="headerlink" title="💡 背景说明"></a>💡 背景说明</h2><p>飞牛 OS 是一款国产免费的 NAS 系统，提供个人私有云盘功能。虽然系统自带免费的内网穿透服务，但为了更稳定的远程访问体验，我们可以使用 Tailscale 作为替代方案。</p>
+<h2 id="🔑-获取-Tailscale-授权码"><a href="#🔑-获取-Tailscale-授权码" class="headerlink" title="🔑 获取 Tailscale 授权码"></a>🔑 获取 Tailscale 授权码</h2><ol>
+<li>访问 <a target="_blank" rel="noopener" href="https://login.tailscale.com/">Tailscale 登录页面</a></li>
+<li>进入 <a target="_blank" rel="noopener" href="https://login.tailscale.com/admin/settings/keys">密钥设置页面</a></li>
+<li>创建授权密钥，注意启用以下权限：<ul>
+<li>开启 VPN 访问权限</li>
+<li>允许子网路由</li>
+</ul>
+</li>
+</ol>
+<p><img src="/assets/images/tailscale/auth-key-settings.jpg" alt="Tailscale 密钥设置界面"></p>
+<h2 id="🐳-Docker-部署配置"><a href="#🐳-Docker-部署配置" class="headerlink" title="🐳 Docker 部署配置"></a>🐳 Docker 部署配置</h2><h3 id="方法一：使用-Docker-命令行"><a href="#方法一：使用-Docker-命令行" class="headerlink" title="方法一：使用 Docker 命令行"></a>方法一：使用 Docker 命令行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name=tailscaled \</span><br><span class="line">  --network=host \</span><br><span class="line">  --cap-add=NET_ADMIN \</span><br><span class="line">  --cap-add=NET_RAW \</span><br><span class="line">  -v /var/lib:/var/lib \</span><br><span class="line">  -v /dev/net/tun:/dev/net/tun \</span><br><span class="line">  -v /var/lib/tailscale:/var/lib/tailscale \</span><br><span class="line">  -e TS_AUTHKEY=tskey-auth-xxxxx \</span><br><span class="line">  -e TS_ROUTES=192.168.1.0/24 \</span><br><span class="line">  tailscale/tailscale</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：将 <code>tskey-auth-xxxxx</code> 替换为你的授权码，<code>192.168.1.0/24</code> 替换为你的内网网段</p>
+</blockquote>
+<h3 id="方法二：通过飞牛-OS-界面配置"><a href="#方法二：通过飞牛-OS-界面配置" class="headerlink" title="方法二：通过飞牛 OS 界面配置"></a>方法二：通过飞牛 OS 界面配置</h3><ol>
+<li><p><strong>安装 Docker 镜像</strong></p>
+<ul>
+<li>在 Docker 商店搜索 <code>tailscale</code></li>
+<li>下载官方镜像</li>
+</ul>
+</li>
+<li><p><strong>创建容器并配置参数</strong></p>
+<p>基础设置：</p>
+<ul>
+<li>容器名：tailscale</li>
+<li>镜像：tailscale&#x2F;tailscale:latest</li>
+</ul>
+</li>
+<li><p><strong>存储配置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/var/lib -&gt; /var/lib</span><br><span class="line">/dev/net/tun -&gt; /dev/net/tun</span><br><span class="line">TS_STATE_DIR -&gt; /var/lib/tailscale</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>环境变量设置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TS_AUTHKEY=你的授权码</span><br><span class="line">TS_ROUTES=192.168.1.0/24</span><br><span class="line">TS_STATE_DIR=/var/lib/tailscale</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>网络设置</strong></p>
+<ul>
+<li>选择 <code>host</code> 网络模式</li>
+</ul>
+</li>
+</ol>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="📱-移动端配置"><a href="#📱-移动端配置" class="headerlink" title="📱 移动端配置"></a>📱 移动端配置</h2><h3 id="iOS-Android-客户端设置"><a href="#iOS-Android-客户端设置" class="headerlink" title="iOS&#x2F;Android 客户端设置"></a>iOS&#x2F;Android 客户端设置</h3><ol>
+<li>从应用商店安装 Tailscale 客户端</li>
+<li>使用相同账号登录</li>
+<li>允许 VPN 配置权限</li>
+<li>在设备列表中应该能看到 NAS</li>
+</ol>
+<p><img src="/assets/images/tailscale/mobile-connection.jpg" alt="移动端连接界面"></p>
+<h2 id="🌐-子网路由配置"><a href="#🌐-子网路由配置" class="headerlink" title="🌐 子网路由配置"></a>🌐 子网路由配置</h2><h3 id="开启子网路由"><a href="#开启子网路由" class="headerlink" title="开启子网路由"></a>开启子网路由</h3><ol>
+<li>访问 Tailscale 管理后台</li>
+<li>进入 <code>Machines</code> 页面</li>
+<li>找到 NAS 设备</li>
+<li>开启 <code>Subnet routes</code> 选项</li>
+<li>确认要分享的子网范围</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Subnet: 192.168.1.0/24</span><br><span class="line">Routes via: your-nas-name</span><br></pre></td></tr></table></figure>
+
+<h3 id="ACL-策略配置"><a href="#ACL-策略配置" class="headerlink" title="ACL 策略配置"></a>ACL 策略配置</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;acls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;action&quot;</span><span class="punctuation">:</span> <span class="string">&quot;accept&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;users&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;*&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ports&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;*:*&quot;</span><span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;tagOwners&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;tag:nas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;your-email@domain.com&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;nodes&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;your-nas-name&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;tag:nas&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="⚙️-验证配置"><a href="#⚙️-验证配置" class="headerlink" title="⚙️ 验证配置"></a>⚙️ 验证配置</h2><h3 id="检查连接状态"><a href="#检查连接状态" class="headerlink" title="检查连接状态"></a>检查连接状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 Docker 容器内执行</span></span><br><span class="line">docker <span class="built_in">exec</span> -it tailscaled tailscale status</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查路由表</span></span><br><span class="line">docker <span class="built_in">exec</span> -it tailscaled ip route</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><ol>
+<li>从移动设备 ping NAS 内网 IP</li>
+<li>尝试访问 NAS Web 界面</li>
+<li>验证文件共享访问</li>
+</ol>
+<h2 id="🔧-故障排查"><a href="#🔧-故障排查" class="headerlink" title="🔧 故障排查"></a>🔧 故障排查</h2><h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
+<li><strong>容器无法启动</strong><ul>
+<li>检查 Docker 权限</li>
+<li>确认 tun 设备存在</li>
+<li>查看容器日志</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs tailscaled</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p><strong>无法访问内网设备</strong></p>
+<ul>
+<li>验证子网路由配置</li>
+<li>检查 ACL 策略</li>
+<li>确认防火墙设置</li>
+</ul>
+</li>
+<li><p><strong>连接不稳定</strong></p>
+<ul>
+<li>检查网络质量</li>
+<li>验证 DERP 服务器连接</li>
+<li>尝试更换节点</li>
+</ul>
+</li>
+</ol>
+<h2 id="📝-运维建议"><a href="#📝-运维建议" class="headerlink" title="📝 运维建议"></a>📝 运维建议</h2><ol>
+<li>定期检查连接状态</li>
+<li>备份 Tailscale 配置</li>
+<li>监控容器资源使用</li>
+<li>及时更新 Docker 镜像</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tailscale.com/kb/">Tailscale 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/r/tailscale/tailscale">Docker Hub - Tailscale</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.phoenixos.com/forum/">飞牛 OS 官方论坛</a></li>
+</ul>
+<h2 id="🏷️-安全提示"><a href="#🏷️-安全提示" class="headerlink" title="🏷️ 安全提示"></a>🏷️ 安全提示</h2><ol>
+<li>定期轮换授权密钥</li>
+<li>限制访问设备范围</li>
+<li>使用最小权限原则</li>
+<li>开启双因素认证</li>
+<li>监控异常访问行为</li>
+</ol>
+<hr>
+<blockquote>
+<p>作者：EchoWang</p>
+</blockquote>
+<blockquote>
+<p>小红书：汪多多是只猫</p>
+</blockquote>
+<blockquote>
+<p>B站：汪多多是只猫</p>
+</blockquote>
+<blockquote>
+<p>公众号：汪多多是只猫</p>
+</blockquote>
+<blockquote>
+<p>博客：blog.echospace.top</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/%E9%A3%9E%E7%89%9BOS/" rel="tag"># 飞牛OS</a>
+              <a href="/tags/Tailscale/" rel="tag"># Tailscale</a>
+              <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag"># 内网穿透</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/10/28/%E9%A5%A5%E8%8D%92%E5%BC%80%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="prev" title="饥荒联机版 (DST) 专用服务器搭建指南">
+      <i class="fa fa-chevron-left"></i> 饥荒联机版 (DST) 专用服务器搭建指南
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/10/28/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E5%81%9A%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/" rel="next" title="SSH 远程端口转发完整配置指南">
+      SSH 远程端口转发完整配置指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8%E9%A3%9E%E7%89%9B-OS-%E4%B8%8A%E9%83%A8%E7%BD%B2-Tailscale"><span class="nav-number">1.</span> <span class="nav-text">在飞牛 OS 上部署 Tailscale</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%92%A1-%E8%83%8C%E6%99%AF%E8%AF%B4%E6%98%8E"><span class="nav-number">1.1.</span> <span class="nav-text">💡 背景说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%91-%E8%8E%B7%E5%8F%96-Tailscale-%E6%8E%88%E6%9D%83%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">🔑 获取 Tailscale 授权码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%90%B3-Docker-%E9%83%A8%E7%BD%B2%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">🐳 Docker 部署配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8-Docker-%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">1.3.1.</span> <span class="nav-text">方法一：使用 Docker 命令行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E9%80%9A%E8%BF%87%E9%A3%9E%E7%89%9B-OS-%E7%95%8C%E9%9D%A2%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.2.</span> <span class="nav-text">方法二：通过飞牛 OS 界面配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%B1-%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text">📱 移动端配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-Android-%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.4.1.</span> <span class="nav-text">iOS&#x2F;Android 客户端设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8C%90-%E5%AD%90%E7%BD%91%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">1.5.</span> <span class="nav-text">🌐 子网路由配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E5%AD%90%E7%BD%91%E8%B7%AF%E7%94%B1"><span class="nav-number">1.5.1.</span> <span class="nav-text">开启子网路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACL-%E7%AD%96%E7%95%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">1.5.2.</span> <span class="nav-text">ACL 策略配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9A%99%EF%B8%8F-%E9%AA%8C%E8%AF%81%E9%85%8D%E7%BD%AE"><span class="nav-number">1.6.</span> <span class="nav-text">⚙️ 验证配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E8%BF%9E%E6%8E%A5%E7%8A%B6%E6%80%81"><span class="nav-number">1.6.1.</span> <span class="nav-text">检查连接状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.6.2.</span> <span class="nav-text">测试连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%A7-%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5"><span class="nav-number">1.7.</span> <span class="nav-text">🔧 故障排查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">1.7.1.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%9D-%E8%BF%90%E7%BB%B4%E5%BB%BA%E8%AE%AE"><span class="nav-number">1.8.</span> <span class="nav-text">📝 运维建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%97-%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">1.9.</span> <span class="nav-text">🔗 参考资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8F%B7%EF%B8%8F-%E5%AE%89%E5%85%A8%E6%8F%90%E7%A4%BA"><span class="nav-number">1.10.</span> <span class="nav-text">🏷️ 安全提示</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Echo Wang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Echo Wang</p>
+  <div class="site-description" itemprop="description">失业的网络流民</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EchoWang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
