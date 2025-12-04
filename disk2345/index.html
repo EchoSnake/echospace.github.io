@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Linux磁盘分区自动挂载配置</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//Linux磁盘分区自动挂载配置">Linux磁盘分区自动挂载配置</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/10/18
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/Linux">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                Linux
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Linux" style=color:#879cff>
+                    Linux
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/磁盘管理" style=color:#879cff>
+                    磁盘管理
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/fstab" style=color:#00bcd4>
+                    fstab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/自动挂载" style=color:#1bccbc>
+                    自动挂载
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <p class="post-excerpt">
+本教程详细介绍了如何在 Linux 系统中配置磁盘分区的自动挂载，包括查看磁盘信息、创建挂载点、配置 fstab 文件以及处理 NTFS 分区等常见场景。
+</p>
+
+<h1 id="Linux-磁盘分区自动挂载配置指南"><a href="#Linux-磁盘分区自动挂载配置指南" class="headerlink" title="Linux 磁盘分区自动挂载配置指南"></a>Linux 磁盘分区自动挂载配置指南</h1><h2 id="🔍-前期准备"><a href="#🔍-前期准备" class="headerlink" title="🔍 前期准备"></a>🔍 前期准备</h2><p>在开始配置自动挂载之前，请确保：</p>
+<ul>
+<li>具有 root 或 sudo 权限</li>
+<li>了解目标磁盘的文件系统类型</li>
+<li>备份重要数据（如修改 fstab）</li>
+</ul>
+<h2 id="📋-详细步骤"><a href="#📋-详细步骤" class="headerlink" title="📋 详细步骤"></a>📋 详细步骤</h2><h3 id="🧩-步骤-1：查看磁盘信息"><a href="#🧩-步骤-1：查看磁盘信息" class="headerlink" title="🧩 步骤 1：查看磁盘信息"></a>🧩 步骤 1：查看磁盘信息</h3><p>首先需要获取磁盘的 UUID 和文件系统类型：</p>
+<pre><code class="bash"># 显示所有磁盘的详细信息，包括 UUID 和文件系统类型
+sudo lsblk -f
+
+# 或使用 blkid 命令（需要 root 权限）
+sudo blkid
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="plaintext">NAME   FSTYPE LABEL UUID                                 MOUNTPOINT
+sda                                                      
+├─sda1 ext4         a1b2c3d4-e5f6-1234-5678-abcdef123456  /
+sdb                                                      
+└─sdb1 ext4         9988aabb-ccdd-eeff-0011-223344556677  
+</code></pre>
+<h3 id="📁-步骤-2：创建挂载目录"><a href="#📁-步骤-2：创建挂载目录" class="headerlink" title="📁 步骤 2：创建挂载目录"></a>📁 步骤 2：创建挂载目录</h3><p>为磁盘分区创建挂载点：</p>
+<pre><code class="bash"># 创建挂载目录
+sudo mkdir -p /mnt/data
+
+# 设置适当的权限（可选）
+sudo chmod 755 /mnt/data
+</code></pre>
+<h3 id="📝-步骤-3：配置-fstab"><a href="#📝-步骤-3：配置-fstab" class="headerlink" title="📝 步骤 3：配置 fstab"></a>📝 步骤 3：配置 fstab</h3><p>编辑 <code>/etc/fstab</code> 文件添加自动挂载配置：</p>
+<pre><code class="bash"># 使用你喜欢的编辑器打开 fstab
+sudo nano /etc/fstab
+</code></pre>
+<p>添加配置行（基本格式）：</p>
+<pre><code class="plaintext"># &lt;file system&gt;  &lt;mount point&gt;  &lt;type&gt;  &lt;options&gt;  &lt;dump&gt;  &lt;pass&gt;
+UUID=9988aabb-ccdd-eeff-0011-223344556677  /mnt/data  ext4  defaults  0  2
+</code></pre>
+<blockquote>
+<p>💡 <strong>参数说明</strong></p>
+<ul>
+<li><code>UUID=xxx</code>：分区的唯一标识符</li>
+<li><code>/mnt/data</code>：挂载点路径</li>
+<li><code>ext4</code>：文件系统类型</li>
+<li><code>defaults</code>：默认挂载选项</li>
+<li><code>0</code>：dump 备份选项（0 表示不备份）</li>
+<li><code>2</code>：fsck 检查顺序（0 不检查，1 根分区，2 其他分区）</li>
+</ul>
+</blockquote>
+<h3 id="🧪-步骤-4：测试配置"><a href="#🧪-步骤-4：测试配置" class="headerlink" title="🧪 步骤 4：测试配置"></a>🧪 步骤 4：测试配置</h3><p>在重启之前，先测试配置是否正确：</p>
+<pre><code class="bash"># 测试 fstab 中的所有挂载点
+sudo mount -a
+
+# 检查挂载结果
+df -h | grep /mnt/data
+</code></pre>
+<h2 id="🪟-NTFS-分区挂载示例"><a href="#🪟-NTFS-分区挂载示例" class="headerlink" title="🪟 NTFS 分区挂载示例"></a>🪟 NTFS 分区挂载示例</h2><p>如果需要挂载 Windows NTFS 分区，请先安装必要的驱动：</p>
+<pre><code class="bash"># 安装 NTFS 支持
+sudo apt install ntfs-3g
+</code></pre>
+<p>在 <code>/etc/fstab</code> 中添加 NTFS 配置：</p>
+<pre><code class="plaintext"># Windows NTFS 分区示例
+UUID=XXXX-XXXX  /mnt/windows  ntfs-3g  defaults,uid=1000,gid=1000,umask=022  0  0
+</code></pre>
+<blockquote>
+<p>🔔 <strong>NTFS 挂载选项说明</strong></p>
+<ul>
+<li><code>uid=1000,gid=1000</code>：指定所有者和组（使用 <code>id</code> 命令查看）</li>
+<li><code>umask=022</code>：设置默认权限</li>
+<li><code>defaults</code>：包含 <code>rw,suid,dev,exec,auto,nouser,async</code></li>
+</ul>
+</blockquote>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li><p>修改 fstab 前务必备份：</p>
+<pre><code class="bash">sudo cp /etc/fstab /etc/fstab.backup
+</code></pre>
+</li>
+<li><p>确保挂载点目录存在且权限正确</p>
+</li>
+<li><p>UUID 比设备名（如 &#x2F;dev&#x2F;sdb1）更可靠</p>
+</li>
+<li><p>使用 <code>mount -a</code> 测试新配置</p>
+</li>
+<li><p>如遇问题，可用备份恢复：</p>
+<pre><code class="bash">sudo cp /etc/fstab.backup /etc/fstab
+</code></pre>
+</li>
+</ol>
+<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><p>如果遇到挂载问题：</p>
+<pre><code class="bash"># 查看挂载错误
+dmesg | tail
+
+# 检查文件系统
+sudo fsck /dev/sdb1
+
+# 查看详细挂载信息
+mount | grep /mnt/data
+</code></pre>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

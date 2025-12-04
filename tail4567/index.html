@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Tailscale私有DERP中继部署</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//Tailscale私有DERP中继部署">Tailscale私有DERP中继部署</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/10/18
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/组网">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                组网
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Linux" style=color:#1bccbc>
+                    Linux
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/网络" style=color:#ff7d73>
+                    网络
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/组网" style=color:#1bccbc>
+                    组网
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/VPS" style=color:#00bcd4>
+                    VPS
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/中继节点" style=color:#879cff>
+                    中继节点
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <p class="post-excerpt">
+本教程指导您在 VPS 上自建 Tailscale DERP 中继服务，包含 Go 环境安装、derper 编译/安装、自签名证书生成、derpMap 配置及 systemd 服务化示例，帮助提升无法 P2P 直连设备的连接稳定性。
+</p>
+
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>通过部署专属 DERP，您可以显著降低延迟、提升连接速度，并为无法 P2P 直连的设备提供稳定可靠的备用通道。本文涵盖环境准备、安装、证书配置、Tailscale 控制台设置与 systemd 服务化。</p>
+<h2 id="1-安装-Tailscale（可选，用于测试）"><a href="#1-安装-Tailscale（可选，用于测试）" class="headerlink" title="1. 安装 Tailscale（可选，用于测试）"></a>1. 安装 Tailscale（可选，用于测试）</h2><pre><code class="bash">curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+</code></pre>
+<hr>
+<h2 id="2-安装-Golang"><a href="#2-安装-Golang" class="headerlink" title="2. 安装 Golang"></a>2. 安装 Golang</h2><ol>
+<li>从 <a target="_blank" rel="noopener" href="https://go.dev/dl/">https://go.dev/dl/</a> 下载适合的 Go 安装包（例如 <code>go1.22.4.linux-amd64.tar.gz</code>）。</li>
+<li>解压到 <code>/usr/local</code>：</li>
+</ol>
+<pre><code class="bash">sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.22.4.linux-amd64.tar.gz
+</code></pre>
+<ol start="3">
+<li>配置环境变量（在 <code>~/.bashrc</code> 或 <code>~/.profile</code> 中）：</li>
+</ol>
+<pre><code class="bash">export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+</code></pre>
+<ol start="4">
+<li>使配置生效：</li>
+</ol>
+<pre><code class="bash">source ~/.bashrc
+</code></pre>
+<hr>
+<h2 id="3-安装-derper-可执行文件"><a href="#3-安装-derper-可执行文件" class="headerlink" title="3. 安装 derper 可执行文件"></a>3. 安装 derper 可执行文件</h2><pre><code class="bash">go install tailscale.com/cmd/derper@latest
+# 安装完成后（示例），将可执行文件移动到系统路径
+cp &quot;$HOME/go/bin/derper&quot; /usr/bin/
+</code></pre>
+<hr>
+<h2 id="4-生成自签名-SSL-证书（使用-IP-时）"><a href="#4-生成自签名-SSL-证书（使用-IP-时）" class="headerlink" title="4. 生成自签名 SSL 证书（使用 IP 时）"></a>4. 生成自签名 SSL 证书（使用 IP 时）</h2><pre><code class="bash">mkdir -p /home/user/derp
+cd /home/user/derp
+
+DERP_IP=&quot;154.222.24.65&quot;  # 替换为你的 VPS 公网 IP
+
+openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+  -keyout &quot;$&#123;DERP_IP&#125;.key&quot; -out &quot;$&#123;DERP_IP&#125;.crt&quot; \
+  -subj &quot;/CN=$&#123;DERP_IP&#125;&quot; \
+  -addext &quot;subjectAltName=IP:$&#123;DERP_IP&#125;&quot;
+</code></pre>
+<blockquote>
+<p>提示：如果使用域名，建议改用 Let’s Encrypt（<code>certmode letsencrypt</code>），无需手动生成证书。</p>
+</blockquote>
+<hr>
+<h2 id="5-启动-derper-服务（示例）"><a href="#5-启动-derper-服务（示例）" class="headerlink" title="5. 启动 derper 服务（示例）"></a>5. 启动 derper 服务（示例）</h2><p>假设 HTTPS（DERP）端口为 <code>10001</code>，STUN 端口 <code>10002</code>，可用如下命令启动：</p>
+<pre><code class="bash">derper -a :10001 \
+  -http-port -1 \
+  -stun \
+  -stun-port 10002 \
+  -hostname 154.222.24.65 \
+  -certmode manual \
+  -certdir /home/user/derp \
+  -verify-client
+</code></pre>
+<p>常用参数说明（节选）：</p>
+<ul>
+<li><code>-a :PORT</code>：监听地址与端口。</li>
+<li><code>-http-port -1</code>：禁用 HTTP，仅启用 HTTPS。</li>
+<li><code>-stun</code> &#x2F; <code>-stun-port</code>：启用 STUN 服务与端口。</li>
+<li><code>-hostname</code>：证书中的主机名或 IP。</li>
+<li><code>-certmode manual|letsencrypt</code>：证书获取模式。</li>
+<li><code>-verify-clients</code>：通过本地 tailscaled 验证客户端（推荐）。</li>
+</ul>
+<hr>
+<h2 id="6-在-Tailscale-控制台添加-DERP-配置（derpMap）"><a href="#6-在-Tailscale-控制台添加-DERP-配置（derpMap）" class="headerlink" title="6. 在 Tailscale 控制台添加 DERP 配置（derpMap）"></a>6. 在 Tailscale 控制台添加 DERP 配置（derpMap）</h2><p>编辑 Tailscale 控制台中的 ACL JSON，向 <code>derpMap</code> 添加自定义区域。例如：</p>
+<pre><code class="json">&quot;randomizeClientPort&quot;: true,
+&quot;derpMap&quot;: &#123;
+  &quot;OmitDefaultRegions&quot;: false,
+  &quot;Regions&quot;: &#123;
+    &quot;900&quot;: &#123;
+      &quot;RegionID&quot;: 900,
+      &quot;RegionCode&quot;: &quot;MY-VPS&quot;,
+      &quot;RegionName&quot;: &quot;My Custom VPS DERP&quot;,
+      &quot;Nodes&quot;: [
+        &#123;
+          &quot;Name&quot;: &quot;vps-node-01&quot;,
+          &quot;RegionID&quot;: 900,
+          &quot;HostName&quot;: &quot;154.222.24.65&quot;,
+          &quot;DERPPort&quot;: 10001,
+          &quot;IPv4&quot;: &quot;154.222.24.65&quot;,
+          &quot;InsecureForTests&quot;: true,
+          &quot;STUNPort&quot;: 10002
+        &#125;
+      ]
+    &#125;
+  &#125;
+&#125;
+</code></pre>
+<blockquote>
+<p>注意：若使用 IP 或自签名证书，<code>InsecureForTests</code> 需设为 <code>true</code>，但这会降低安全性，仅在测试或受控环境使用。</p>
+</blockquote>
+<p>保存后，可在任一客户端运行：</p>
+<pre><code class="bash">tailscale netcheck
+</code></pre>
+<p>确认输出中包含自定义 DERP 区域。</p>
+<hr>
+<h2 id="7-systemd-服务化（示例）"><a href="#7-systemd-服务化（示例）" class="headerlink" title="7. systemd 服务化（示例）"></a>7. systemd 服务化（示例）</h2><p>创建 systemd 服务文件 <code>/etc/systemd/system/derp.service</code>：</p>
+<pre><code class="ini">[Unit]
+Description=Tailscale Private DERP Relay
+After=network.target
+
+[Service]
+User=root
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+ExecStart=/usr/bin/derper -a :10001 -http-port -1 -stun -stun-port 10002 -hostname 154.222.24.65 -certmode manual -certdir /home/user/derp -verify-client
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>启用并启动服务：</p>
+<pre><code class="bash">sudo systemctl daemon-reload
+sudo systemctl enable --now derp.service
+sudo systemctl status derp.service
+sudo journalctl -u derp.service -f
+</code></pre>
+<hr>
+<h2 id="验证与故障排查"><a href="#验证与故障排查" class="headerlink" title="验证与故障排查"></a>验证与故障排查</h2><ul>
+<li>检查端口是否开放（服务器防火墙&#x2F;云主机安全组）。</li>
+<li>使用 <code>tailscale netcheck</code> 验证客户端连接。</li>
+<li>若使用自签名证书，确保客户端或控制台配置允许该证书（或在测试时使用 <code>InsecureForTests</code>）。</li>
+<li>查看 systemd 日志：<code>journalctl -u derp.service -n 200</code></li>
+</ul>
+<hr>
+<h2 id="参考与延伸"><a href="#参考与延伸" class="headerlink" title="参考与延伸"></a>参考与延伸</h2><ul>
+<li>Tailscale 官方文档与 derper 源码：<code>https://tailscale.com</code></li>
+<li>若需要使用 Let’s Encrypt，请把 <code>-certmode</code> 改为 <code>letsencrypt</code> 并配置域名与 DNS 解析。</li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

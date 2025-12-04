@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Kubernetes集群部署指南</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//Kubernetes集群部署指南">Kubernetes集群部署指南</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/10/28
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/Kubernetes">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                Kubernetes
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/K8s" style=color:#879cff>
+                    K8s
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Ubuntu" style=color:#00bcd4>
+                    Ubuntu
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/containerd" style=color:#1bccbc>
+                    containerd
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/集群部署" style=color:#879cff>
+                    集群部署
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <p class="post-excerpt">
+本教程提供了在 Ubuntu 系统上部署 Kubernetes 集群的详细步骤，包括环境准备、containerd 配置、集群初始化以及网络插件部署，并附带完整的命令参考。
+</p>
+
+<h1 id="Kubernetes-集群部署指南-Ubuntu"><a href="#Kubernetes-集群部署指南-Ubuntu" class="headerlink" title="Kubernetes 集群部署指南 (Ubuntu)"></a>Kubernetes 集群部署指南 (Ubuntu)</h1><h2 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h2><ul>
+<li>Ubuntu 20.04 或更高版本</li>
+<li>最少 2 CPU、2GB 内存</li>
+<li>所有节点网络互通</li>
+<li>每个节点唯一的 MAC&#x2F;产品 UUID</li>
+</ul>
+<h2 id="1️⃣-所有节点初始化"><a href="#1️⃣-所有节点初始化" class="headerlink" title="1️⃣ 所有节点初始化"></a>1️⃣ 所有节点初始化</h2><h3 id="系统更新"><a href="#系统更新" class="headerlink" title="系统更新"></a>系统更新</h3><pre><code class="bash"># 更新系统包
+sudo apt update &amp;&amp; sudo apt upgrade -y
+</code></pre>
+<h3 id="关闭-swap"><a href="#关闭-swap" class="headerlink" title="关闭 swap"></a>关闭 swap</h3><pre><code class="bash"># 临时关闭
+sudo swapoff -a
+
+# 永久关闭（编辑 /etc/fstab）
+sudo sed -i &#39;/ swap / s/^/#/&#39; /etc/fstab
+</code></pre>
+<h3 id="配置内核模块"><a href="#配置内核模块" class="headerlink" title="配置内核模块"></a>配置内核模块</h3><pre><code class="bash"># 加载必要模块
+cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+# 立即加载
+sudo modprobe overlay
+sudo modprobe br_netfilter
+</code></pre>
+<h3 id="设置内核参数"><a href="#设置内核参数" class="headerlink" title="设置内核参数"></a>设置内核参数</h3><pre><code class="bash"># 配置 sysctl
+cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+# 应用配置
+sudo sysctl --system
+</code></pre>
+<h2 id="2️⃣-安装容器运行时"><a href="#2️⃣-安装容器运行时" class="headerlink" title="2️⃣ 安装容器运行时"></a>2️⃣ 安装容器运行时</h2><h3 id="安装-containerd"><a href="#安装-containerd" class="headerlink" title="安装 containerd"></a>安装 containerd</h3><pre><code class="bash"># 安装 containerd
+sudo apt install -y containerd
+
+# 创建默认配置
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+# 启用 SystemdCgroup
+sudo sed -i &#39;s/SystemdCgroup = false/SystemdCgroup = true/&#39; /etc/containerd/config.toml
+
+# 重启服务
+sudo systemctl restart containerd
+sudo systemctl enable containerd
+</code></pre>
+<h2 id="3️⃣-安装-Kubernetes-组件"><a href="#3️⃣-安装-Kubernetes-组件" class="headerlink" title="3️⃣ 安装 Kubernetes 组件"></a>3️⃣ 安装 Kubernetes 组件</h2><h3 id="添加-apt-源"><a href="#添加-apt-源" class="headerlink" title="添加 apt 源"></a>添加 apt 源</h3><pre><code class="bash"># 安装依赖
+sudo apt install -y apt-transport-https ca-certificates curl gpg
+
+# 添加 K8s 源密钥
+sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# 添加 apt 源
+echo &quot;deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /&quot; | \
+  sudo tee /etc/apt/sources.list.d/kubernetes.list
+</code></pre>
+<h3 id="安装必要组件"><a href="#安装必要组件" class="headerlink" title="安装必要组件"></a>安装必要组件</h3><pre><code class="bash"># 安装 kubeadm、kubelet、kubectl
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+</code></pre>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="4️⃣-初始化主节点"><a href="#4️⃣-初始化主节点" class="headerlink" title="4️⃣ 初始化主节点"></a>4️⃣ 初始化主节点</h2><h3 id="准备初始化配置"><a href="#准备初始化配置" class="headerlink" title="准备初始化配置"></a>准备初始化配置</h3><pre><code class="bash"># 创建 kubeadm 配置文件
+cat &lt;&lt;EOF &gt; kubeadm-config.yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+nodeRegistration:
+  criSocket: &quot;unix:///var/run/containerd/containerd.sock&quot;
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+networking:
+  podSubnet: &quot;10.244.0.0/16&quot;  # Flannel 默认网段
+EOF
+</code></pre>
+<h3 id="执行初始化"><a href="#执行初始化" class="headerlink" title="执行初始化"></a>执行初始化</h3><pre><code class="bash"># 初始化集群
+sudo kubeadm init --config kubeadm-config.yaml
+
+# 配置 kubectl（对于当前用户）
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<h2 id="5️⃣-部署网络插件"><a href="#5️⃣-部署网络插件" class="headerlink" title="5️⃣ 部署网络插件"></a>5️⃣ 部署网络插件</h2><h3 id="安装-Flannel"><a href="#安装-Flannel" class="headerlink" title="安装 Flannel"></a>安装 Flannel</h3><pre><code class="bash"># 下载并应用 Flannel 配置
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+
+# 等待 Flannel pods 就绪
+kubectl wait --namespace kube-system \
+  --for=condition=ready pod \
+  --selector=app=flannel \
+  --timeout=90s
+</code></pre>
+<h2 id="6️⃣-添加工作节点"><a href="#6️⃣-添加工作节点" class="headerlink" title="6️⃣ 添加工作节点"></a>6️⃣ 添加工作节点</h2><p>在其他节点执行 <code>kubeadm join</code> 命令（从主节点初始化输出中获取）：</p>
+<pre><code class="bash"># 示例（请使用实际的 token 和 hash）
+sudo kubeadm join 192.168.1.10:6443 \
+  --token abcdef.0123456789abcdef \
+  --discovery-token-ca-cert-hash \
+  sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+</code></pre>
+<h2 id="🔍-验证集群状态"><a href="#🔍-验证集群状态" class="headerlink" title="🔍 验证集群状态"></a>🔍 验证集群状态</h2><pre><code class="bash"># 查看节点状态
+kubectl get nodes -o wide
+
+# 检查系统组件
+kubectl get pods -n kube-system
+
+# 验证 DNS
+kubectl run test-nginx --image=nginx
+kubectl get pods -o wide
+</code></pre>
+<h2 id="📝-常见问题处理"><a href="#📝-常见问题处理" class="headerlink" title="📝 常见问题处理"></a>📝 常见问题处理</h2><h3 id="1-重置集群"><a href="#1-重置集群" class="headerlink" title="1. 重置集群"></a>1. 重置集群</h3><pre><code class="bash"># 在所有节点执行
+sudo kubeadm reset
+sudo rm -rf $HOME/.kube
+sudo rm -rf /etc/kubernetes /var/lib/kubelet /var/lib/etcd
+</code></pre>
+<h3 id="2-重新生成-join-令牌"><a href="#2-重新生成-join-令牌" class="headerlink" title="2. 重新生成 join 令牌"></a>2. 重新生成 join 令牌</h3><pre><code class="bash"># 在主节点执行
+kubeadm token create --print-join-command
+</code></pre>
+<h3 id="3-Pod-网络故障排查"><a href="#3-Pod-网络故障排查" class="headerlink" title="3. Pod 网络故障排查"></a>3. Pod 网络故障排查</h3><pre><code class="bash"># 检查 CNI 配置
+ls /etc/cni/net.d/
+
+# 查看 Flannel 日志
+kubectl logs -n kube-system -l app=flannel
+</code></pre>
+<h2 id="🔧-实用命令参考"><a href="#🔧-实用命令参考" class="headerlink" title="🔧 实用命令参考"></a>🔧 实用命令参考</h2><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看节点详情</td>
+<td><code>kubectl describe node &lt;node-name&gt;</code></td>
+</tr>
+<tr>
+<td>驱逐节点上的 Pod</td>
+<td><code>kubectl drain &lt;node-name&gt; --ignore-daemonsets</code></td>
+</tr>
+<tr>
+<td>设置节点不可调度</td>
+<td><code>kubectl cordon &lt;node-name&gt;</code></td>
+</tr>
+<tr>
+<td>恢复节点可调度</td>
+<td><code>kubectl uncordon &lt;node-name&gt;</code></td>
+</tr>
+</tbody></table>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li>确保所有节点时间同步</li>
+<li>检查防火墙是否允许必要端口<ul>
+<li>6443: API Server</li>
+<li>2379-2380: etcd</li>
+<li>10250: Kubelet</li>
+<li>8472: Flannel VXLAN</li>
+</ul>
+</li>
+<li>生产环境建议使用高可用配置</li>
+<li>定期备份 etcd 数据</li>
+</ol>
+<hr>
+<p>更多资源：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/">Kubernetes 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://containerd.io/">containerd 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/flannel-io/flannel">Flannel GitHub</a></li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

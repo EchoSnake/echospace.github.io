@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Ubuntu老电脑焕发新生活</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//Ubuntu老电脑焕发新生活">Ubuntu老电脑焕发新生活</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/11/20
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/Linux">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                Linux
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Linux" style=color:#00bcd4>
+                    Linux
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Ubuntu" style=color:#ff7d73>
+                    Ubuntu
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/博客" style=color:#879cff>
+                    博客
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/AI" style=color:#00bcd4>
+                    AI
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/服务器" style=color:#ff7d73>
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/操作系统" style=color:#00bcd4>
+                    操作系统
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Docker" style=color:#ffa2c4>
+                    Docker
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/废物利用" style=color:#1bccbc>
+                    废物利用
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/老电脑" style=color:#1bccbc>
+                    老电脑
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>这是一台戴尔灵越5488，2018年9月发布，搭载4核8线程的Intel i7-8565U处理器，配备8GB内存。在2025年的今天，虽然硬件规格不算顶尖，但通过安装Ubuntu系统，完全可以焕发它的第二春，重新获得流畅体验，适合办公、学习甚至轻度服务器使用。</p>
+<hr>
+<h2 id="资源分享"><a href="#资源分享" class="headerlink" title="资源分享"></a>资源分享</h2><p>我把所有资源都放在我的<a href="https://blog.echospace.top/">博客</a>里，方便大家集中下载：</p>
+<ul>
+<li><p><strong><a target="_blank" rel="noopener" href="https://mirrors.hit.edu.cn/ubuntu-releases/24.04.3/ubuntu-24.04.3-desktop-amd64.iso">Ubuntu 24.04系统镜像</a></strong></p>
+</li>
+<li><p><strong><a target="_blank" rel="noopener" href="https://github.com/balena-io/etcher/releases/download/v2.1.4/balenaEtcher-2.1.4.Setup.exe">Balena Etcher烧录工具</a></strong></p>
+</li>
+</ul>
+<p>部分常用应用包下载链接：</p>
+<ul>
+<li><p><strong><a target="_blank" rel="noopener" href="https://gitee.com/spark-store-project/spark-store/releases/download/4.8.2/spark-store_4.8.2_amd64.deb">星火商店</a></strong></p>
+</li>
+<li><p><strong><a target="_blank" rel="noopener" href="https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.21_251114_amd64_01.deb">QQ for Linux</a></strong></p>
+</li>
+<li><p><strong><a target="_blank" rel="noopener" href="https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb">微信 for Linux</a></strong></p>
+</li>
+<li><p><strong><a target="_blank" rel="noopener" href="https://github.com/ONLYOFFICE/DesktopEditors/releases/latest/download/onlyoffice-desktopeditors_amd64.deb">OnlyOffice办公套件</a></strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="开始安装Ubuntu"><a href="#开始安装Ubuntu" class="headerlink" title="开始安装Ubuntu"></a>开始安装Ubuntu</h2><ol>
+<li><p><strong>制作启动U盘</strong><br> 将下载的Ubuntu 24.04镜像使用Balena Etcher烧录到U盘，作为启动盘。</p>
+</li>
+<li><p><strong>进入BIOS设置</strong><br> 重启电脑，进入BIOS或启动菜单（一般按F11或F12），选择U盘启动。</p>
+</li>
+<li><p><strong>安装系统</strong><br> 进入Ubuntu安装界面后，按提示操作：</p>
+</li>
+</ol>
+<ul>
+<li><p>选择语言和键盘布局。</p>
+</li>
+<li><p>建议此处先不联网。</p>
+</li>
+<li><p>磁盘选择：如果没有重要文件，建议格式化整个磁盘安装，若需保留数据务必提前备份。</p>
+</li>
+<li><p>设置用户名和密码。</p>
+</li>
+<li><p>确认安装开始。</p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>安装完成并重启</strong><br> 安装完毕后，立即拔出U盘，系统自动重启进入已安装的Ubuntu。</li>
+</ol>
+<hr>
+<h2 id="系统初步配置"><a href="#系统初步配置" class="headerlink" title="系统初步配置"></a>系统初步配置</h2><ol>
+<li><strong>联网更新系统</strong></li>
+</ol>
+<p>打开终端，执行这条命令进行组件更新和清理冗余：</p>
+<pre><code class="bash">sudo apt update sudo apt upgrade -y sudo apt autoremove -y
+</code></pre>
+<ol start="2">
+<li><strong>安装星火商店</strong></li>
+</ol>
+<p>推荐使用星火商店简化软件管理，方便安装各种应用。下载安装包后，使用这条命令进行安装：</p>
+<pre><code class="bash">sudo apt-get -y install spark-store_4.8.2_amd64.deb
+</code></pre>
+<p>安装完成后，即可在软件中搜索软件进行一键安装使用。</p>
+<ol start="3">
+<li><strong>安装常用软件</strong></li>
+</ol>
+<p>办公套件推荐OnlyOffice。若在星火商店没有找到你需要的对应客户端，大部分的软件都有 Linux 的版本。<br>官网都可以下载到对应 <code>.deb</code> 安装包，结合系统自带的 <code>apt-get</code>  一键安装即可。</p>
+<hr>
+<h2 id="系统优势与扩展应用"><a href="#系统优势与扩展应用" class="headerlink" title="系统优势与扩展应用"></a>系统优势与扩展应用</h2><p>Ubuntu相比Windows更轻量，能显著提升老旧机器的运行流畅度。你还可以将电脑变为家庭服务器：</p>
+<ul>
+<li><p><strong>配置Samba文件服务器</strong>：轻松共享文件和资料。</p>
+</li>
+<li><p><strong>部署Docker容器</strong>：运行多个轻量级服务，提高硬件利用率。</p>
+</li>
+<li><p><strong>远程办公与开发环境搭建</strong>：用Linux工具链带来更高效的生产力。</p>
+</li>
+</ul>
+<hr>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>尽管这台戴尔灵越5488已发行近7年，但通过Ubuntu系统的重新安装和配置，它依然可以作为一台稳定、高效且多功能的电脑继续服役。</p>
+<p>我是多多他爹，一位失业的运维工程师，你的一键三连是我坚持创作的动力，我们下期再见。</p>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

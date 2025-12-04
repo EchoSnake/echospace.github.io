@@ -1,0 +1,1187 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || 多多是只猫</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                    
+<div id="archives">
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/12/3" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/12/3</div>
+                <a href="https://blog.echospace.top//HomeServer-5488/">
+                    <h3>飞牛OS-废物转生-老旧笔记本变身全能服务器</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/技术指南">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            技术指南
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/飞牛OS" style=color:#879cff>
+                                飞牛OS
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/NAS" style=color:#879cff>
+                                NAS
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/旧物改造" style=color:#879cff>
+                                旧物改造
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/家庭服务器" style=color:#1bccbc>
+                                家庭服务器
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/DIY，-技术" style=color:#ffa2c4>
+                                DIY， 技术
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/教程" style=color:#879cff>
+                                教程
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/指南" style=color:#00bcd4>
+                                指南
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/11/23" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/11/23</div>
+                <a href="https://blog.echospace.top//windo1234/">
+                    <h3>Windows系统安装完整指南</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Windows">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Windows
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/博客" style=color:#1bccbc>
+                                博客
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Windows" style=color:#ff7d73>
+                                Windows
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/装机" style=color:#ffa2c4>
+                                装机
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/装系统" style=color:#1bccbc>
+                                装系统
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/自维修" style=color:#1bccbc>
+                                自维修
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Windows10" style=color:#879cff>
+                                Windows10
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Windows11" style=color:#00bcd4>
+                                Windows11
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/11/20" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/11/20</div>
+                <a href="https://blog.echospace.top//ubun4567/">
+                    <h3>Ubuntu老电脑焕发新生活</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Linux">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Linux
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Linux" style=color:#00bcd4>
+                                Linux
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Ubuntu" style=color:#ffa2c4>
+                                Ubuntu
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/博客" style=color:#879cff>
+                                博客
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/AI" style=color:#00bcd4>
+                                AI
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/服务器" style=color:#ffa2c4>
+                                服务器
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/操作系统" style=color:#879cff>
+                                操作系统
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Docker" style=color:#879cff>
+                                Docker
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/废物利用" style=color:#ff7d73>
+                                废物利用
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/老电脑" style=color:#879cff>
+                                老电脑
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/11/9" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/11/9</div>
+                <a href="https://blog.echospace.top//powe6789/">
+                    <h3>Windows系统增强神器PowerToys</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Windows">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Windows
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Windows效率神器" style=color:#00bcd4>
+                                Windows效率神器
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/PowerToys" style=color:#1bccbc>
+                                PowerToys
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/微软官方工具" style=color:#ffa2c4>
+                                微软官方工具
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/免费开源" style=color:#1bccbc>
+                                免费开源
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/电脑技巧" style=color:#ffa2c4>
+                                电脑技巧
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/程序员必备" style=color:#879cff>
+                                程序员必备
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/设计师必备" style=color:#1bccbc>
+                                设计师必备
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/前端必备" style=color:#1bccbc>
+                                前端必备
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/30" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/30</div>
+                <a href="https://blog.echospace.top//hexo9012/">
+                    <h3>Hexo博客完整部署指南</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Blog">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Blog
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Blog" style=color:#1bccbc>
+                                Blog
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Nginx" style=color:#00bcd4>
+                                Nginx
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Git" style=color:#00bcd4>
+                                Git
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Github" style=color:#1bccbc>
+                                Github
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Vscode" style=color:#879cff>
+                                Vscode
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/30" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/30</div>
+                <a href="https://blog.echospace.top//next0123/">
+                    <h3>Hexo Next主题配置指南</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Hexo">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Hexo
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Hexo" style=color:#1bccbc>
+                                Hexo
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/blog" style=color:#1bccbc>
+                                blog
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Next-Themes" style=color:#00bcd4>
+                                Next Themes
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Linux" style=color:#879cff>
+                                Linux
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/28" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/28</div>
+                <a href="https://blog.echospace.top//k8sp7890/">
+                    <h3>K8s部署Prometheus和Grafana</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Kubernetes">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Kubernetes
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/K8s" style=color:#ffa2c4>
+                                K8s
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Prometheus" style=color:#1bccbc>
+                                Prometheus
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Grafana" style=color:#00bcd4>
+                                Grafana
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/监控" style=color:#1bccbc>
+                                监控
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Helm" style=color:#1bccbc>
+                                Helm
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/28" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/28</div>
+                <a href="https://blog.echospace.top//kube1234/">
+                    <h3>Kubernetes集群部署指南</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Kubernetes">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Kubernetes
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/K8s" style=color:#1bccbc>
+                                K8s
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Ubuntu" style=color:#ffa2c4>
+                                Ubuntu
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/containerd" style=color:#1bccbc>
+                                containerd
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/集群部署" style=color:#879cff>
+                                集群部署
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/28" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/28</div>
+                <a href="https://blog.echospace.top//prom3456/">
+                    <h3>Prometheus配置文件完整解析</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/监控">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            监控
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Prometheus" style=color:#ff7d73>
+                                Prometheus
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/YAML" style=color:#879cff>
+                                YAML
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/配置文件" style=color:#ff7d73>
+                                配置文件
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/监控系统" style=color:#879cff>
+                                监控系统
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/28" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/28</div>
+                <a href="https://blog.echospace.top//sshf5678/">
+                    <h3>SSH远程端口转发配置指南</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Linux">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Linux
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Systemd" style=color:#879cff>
+                                Systemd
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/SSH" style=color:#879cff>
+                                SSH
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/端口转发" style=color:#879cff>
+                                端口转发
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/运维" style=color:#879cff>
+                                运维
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/28" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/28</div>
+                <a href="https://blog.echospace.top//feinu2345/">
+                    <h3>飞牛OS Docker部署Tailscale</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/NAS">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            NAS
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Docker" style=color:#1bccbc>
+                                Docker
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/飞牛OS" style=color:#879cff>
+                                飞牛OS
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Tailscale" style=color:#ffa2c4>
+                                Tailscale
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/内网穿透" style=color:#879cff>
+                                内网穿透
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/28" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/28</div>
+                <a href="https://blog.echospace.top//jihua3456/">
+                    <h3>饥荒联机版服务器搭建指南</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/游戏服务器">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            游戏服务器
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/饥荒" style=color:#ffa2c4>
+                                饥荒
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/DST" style=color:#ff7d73>
+                                DST
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Steam" style=color:#ff7d73>
+                                Steam
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/服务器搭建" style=color:#879cff>
+                                服务器搭建
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/18" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/18</div>
+                <a href="https://blog.echospace.top//disk2345/">
+                    <h3>Linux磁盘分区自动挂载配置</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Linux">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Linux
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Linux" style=color:#ff7d73>
+                                Linux
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/磁盘管理" style=color:#ffa2c4>
+                                磁盘管理
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/fstab" style=color:#ffa2c4>
+                                fstab
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/自动挂载" style=color:#ff7d73>
+                                自动挂载
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/18" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/18</div>
+                <a href="https://blog.echospace.top//memo8901/">
+                    <h3>Linux自动内存缓存清理方案</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/Linux">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            Linux
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Linux" style=color:#ff7d73>
+                                Linux
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/内存管理" style=color:#1bccbc>
+                                内存管理
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Systemd" style=color:#1bccbc>
+                                Systemd
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/自动化运维" style=color:#ffa2c4>
+                                自动化运维
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+    <a-timeline>
+        <a-timeline-item timestamp="2025/10/18" placement="top" color="#a5c2f5">
+            <a-card hoverable>
+                <div class="item-time">2025/10/18</div>
+                <a href="https://blog.echospace.top//tail4567/">
+                    <h3>Tailscale私有DERP中继部署</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/组网">
+                            <span class="icon"><a-icon type="book" theme="filled" /></span>
+                            组网
+                        </a>
+                    </span>
+                    
+
+                    
+                    <span class="tags">
+                        <span class="icon">
+                            <a-icon type="tags" />
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/Linux" style=color:#879cff>
+                                Linux
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/网络" style=color:#1bccbc>
+                                网络
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/组网" style=color:#00bcd4>
+                                组网
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/VPS" style=color:#ff7d73>
+                                VPS
+                            </a>
+                        </span>
+                        
+                        <span class="tag">
+                            
+                            <a href="/tags/中继节点" style=color:#00bcd4>
+                                中继节点
+                            </a>
+                        </span>
+                        
+                    </span>
+                    
+                </div>
+            </a-card>
+        </a-timeline-item>
+    </a-timeline>
+    
+</div>
+
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+</body>
+
+</html>

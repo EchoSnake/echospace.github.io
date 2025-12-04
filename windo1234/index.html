@@ -1,0 +1,478 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Windows系统安装完整指南</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//Windows系统安装完整指南">Windows系统安装完整指南</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/11/23
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/Windows">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                Windows
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/博客" style=color:#ffa2c4>
+                    博客
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Windows" style=color:#879cff>
+                    Windows
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/装机" style=color:#ffa2c4>
+                    装机
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/装系统" style=color:#ffa2c4>
+                    装系统
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/自维修" style=color:#ffa2c4>
+                    自维修
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Windows10" style=color:#879cff>
+                    Windows10
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Windows11" style=color:#ffa2c4>
+                    Windows11
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <blockquote>
+<p>所有的内容我都将放在我的博客中,可以在博客中对照着进行操作,所有需要的软件以及工具都可以在我的博客中进行下载.</p>
+</blockquote>
+<p>[微软U盘制作工具](Media Creation Tool)</p>
+<p>各个品牌官方驱动网址<br><a target="_blank" rel="noopener" href="https://www.msi.cn/support">微星</a> <a target="_blank" rel="noopener" href="https://www.asus.com.cn/support/download-center/">华硕</a> <a target="_blank" rel="noopener" href="https://www.gigabyte.cn/Support">技嘉</a> <a target="_blank" rel="noopener" href="https://www.asrockchina.com.cn/">华擎</a> <a target="_blank" rel="noopener" href="https://newsupport.lenovo.com.cn/">联想</a> <a target="_blank" rel="noopener" href="https://www.dell.com/support/home/zh-cn?app=drivers">戴尔</a> <a target="_blank" rel="noopener" href="https://support.hp.com/cn-zh/drivers">惠普</a></p>
+<h2 id="01｜准备工具：只要一个U盘"><a href="#01｜准备工具：只要一个U盘" class="headerlink" title="01｜准备工具：只要一个U盘"></a>01｜准备工具：只要一个U盘</h2><p>要求：</p>
+<ul>
+<li><p><strong>8GB 以上 U 盘</strong>（用于制作系统的引导盘,会进行格式化,有数据做好备份工作）</p>
+</li>
+<li><p><strong>一台能正常上网的电脑</strong>(用于下载系统镜像和制作引导U盘)</p>
+</li>
+<li><p>想安装系统的那台机器（废话但必须说，因为有人真的会问🤣）</p>
+</li>
+<li><p>提前下载好</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://go.microsoft.com/fwlink/?linkid=2156295">微软U盘制作工具</a></li>
+<li>对应的驱动,特别是<strong>网卡</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="02｜制作系统U盘：微软官方工具最稳"><a href="#02｜制作系统U盘：微软官方工具最稳" class="headerlink" title="02｜制作系统U盘：微软官方工具最稳"></a>02｜制作系统U盘：微软官方工具最稳</h2><p>小白不要乱下“XX装机大师”,”XX一键装机”等一系列软件。</p>
+<p>直接用微软官方的：</p>
+<h3 id="下载入口"><a href="#下载入口" class="headerlink" title="下载入口"></a>下载入口</h3><p>打开浏览器,搜索 Windows11<br><img src="/assets/%E7%94%B5%E8%84%91%E6%80%8E%E4%B9%88%E8%A3%85%E7%B3%BB%E7%BB%9F,%E6%89%8B%E6%8A%8A%E6%89%8B%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B/file-20251123133246245.png"></p>
+<p>进入微软官网 → 搜索 “Media Creation Tool”。<br><img src="/assets/%E7%94%B5%E8%84%91%E6%80%8E%E4%B9%88%E8%A3%85%E7%B3%BB%E7%BB%9F,%E6%89%8B%E6%8A%8A%E6%89%8B%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B/file-20251123133908559.png"></p>
+<p>步骤非常顺滑：</p>
+<ol>
+<li><p>打开工具</p>
+</li>
+<li><p>选你要安装的 Windows 版本</p>
+</li>
+<li><p>按提示选择 “U 盘”</p>
+</li>
+<li><p>等待进度条拉满</p>
+</li>
+</ol>
+<p>结束后，你的 U 盘就变成了“系统安装盘”。</p>
+<p>在我的博客中点击对应链接,进入官网,使用对应型号下载网卡驱动,组装机就进入主板品牌中下载网络驱动</p>
+<hr>
+<h2 id="03｜进入-BIOS-设置-U-盘启动"><a href="#03｜进入-BIOS-设置-U-盘启动" class="headerlink" title="03｜进入 BIOS 设置 U 盘启动"></a>03｜进入 BIOS 设置 U 盘启动</h2><p>找到你电脑上的</p>
+<p>常见按键：</p>
+<table>
+<thead>
+<tr>
+<th>品牌</th>
+<th>进入 BIOS</th>
+<th>启动菜单（Boot Menu）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>联想 Lenovo（ThinkPad）</strong></td>
+<td>F1</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>联想 Lenovo（IdeaPad）</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>华硕 ASUS</strong></td>
+<td>F2</td>
+<td>ESC</td>
+</tr>
+<tr>
+<td><strong>惠普 HP</strong></td>
+<td>F10</td>
+<td>ESC 或 F9</td>
+</tr>
+<tr>
+<td><strong>戴尔 Dell</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>宏碁 Acer</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>微星 MSI（笔记本）</strong></td>
+<td>DEL</td>
+<td>F11</td>
+</tr>
+<tr>
+<td><strong>机械革命 MECHREVO</strong></td>
+<td>DEL</td>
+<td>F7</td>
+</tr>
+<tr>
+<td><strong>雷神 ThundeRobot</strong></td>
+<td>F2</td>
+<td>F12 或 F7</td>
+</tr>
+<tr>
+<td><strong>神舟 Hasee</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>小米 &#x2F; RedmiBook</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>华为 MateBook</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>荣耀 MagicBook</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>三星 Samsung</strong></td>
+<td>F2</td>
+<td>F10 或 F12</td>
+</tr>
+<tr>
+<td><strong>Surface（部分机型）</strong></td>
+<td>长按音量+ 开机</td>
+<td>不支持传统 Boot Menu</td>
+</tr>
+<tr>
+<td>直接在 Boot 选项中选择对应的 USB 启动项</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>或者：</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>进入 BIOS 后找到引导选项：</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Boot → 把 USB 放第一位</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>保存退出（Save &amp; Exit）。</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>电脑这时会从 U 盘启动。</p>
+<hr>
+<h2 id="04｜开始安装系统（正式环节）"><a href="#04｜开始安装系统（正式环节）" class="headerlink" title="04｜开始安装系统（正式环节）"></a>04｜开始安装系统（正式环节）</h2><p>启动后会看到蓝色的 Windows 安装界面。</p>
+<p>你确保自己只干两件事：</p>
+<h3 id="①-选择-“自定义安装（高级）”"><a href="#①-选择-“自定义安装（高级）”" class="headerlink" title="① 选择 “自定义安装（高级）”"></a>① 选择 “自定义安装（高级）”</h3><p>让你能看到磁盘分区。</p>
+<h3 id="②-选择要安装系统的盘"><a href="#②-选择要安装系统的盘" class="headerlink" title="② 选择要安装系统的盘"></a>② 选择要安装系统的盘</h3><p>一般是：</p>
+<ul>
+<li><p><strong>C盘</strong></p>
+</li>
+<li><p>或者容量 100GB 左右的系统盘</p>
+</li>
+</ul>
+<p>如果小白懒得分区，直接格式化原系统盘就好，别乱动数据盘。</p>
+<p>然后点 <strong>下一步</strong> —— 然后就是等。</p>
+<p>（期间喝杯水、刷个视频，不要怀疑人生，进度条动得很慢很正常。）</p>
+<hr>
+<h2 id="05｜进入桌面：装驱动，解锁满血性能"><a href="#05｜进入桌面：装驱动，解锁满血性能" class="headerlink" title="05｜进入桌面：装驱动，解锁满血性能"></a>05｜进入桌面：装驱动，解锁满血性能</h2><p>装完系统只是“点亮屏幕”，真正的满血是：</p>
+<h3 id="1-安装显卡驱动"><a href="#1-安装显卡驱动" class="headerlink" title="1.安装显卡驱动"></a>1.安装显卡驱动</h3><h4 id="Nvidia"><a href="#Nvidia" class="headerlink" title="Nvidia:"></a>Nvidia:</h4><p>进入<a target="_blank" rel="noopener" href="https://www.nvidia.cn/drivers/lookup/"> Nvidia 驱动下载</a>页面 —— 选择到自己对应的显卡驱动进行下载，然后安装即可。</p>
+<h4 id="AMD"><a href="#AMD" class="headerlink" title="AMD:"></a>AMD:</h4><p>进入 <a target="_blank" rel="noopener" href="https://www.amd.com/en/support/download/drivers.html">AMD</a> 驱动下载页面，选择自己对应的显卡驱动下载，安装即可。</p>
+<h4 id="INTEL"><a href="#INTEL" class="headerlink" title="INTEL:"></a>INTEL:</h4><p>进入 <a target="_blank" rel="noopener" href="https://www.intel.cn/content/www/cn/zh/download-center/home.html">INTEL</a> 驱动下载，输入自己对应的显卡型号进行下载，安装即可。</p>
+<h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips:"></a>Tips:</h4><p>笔记本的驱动建议都在对应品牌的官网进行下载，以免遇见兼容性或者部分快捷键组件失灵。</p>
+<h3 id="2-主板驱动"><a href="#2-主板驱动" class="headerlink" title="2.主板驱动"></a>2.主板驱动</h3><p>最简单方式：<br><strong>各品牌官网 → 输入你电脑主板型号 → 下载所有的驱动进行安装。</strong></p>
+<h3 id="3-组装机"><a href="#3-组装机" class="headerlink" title="3.组装机"></a>3.组装机</h3><p>如果你是组装机,那就按照你主板的品牌,显卡的品牌,进入官网,找到对应的驱动进行下载安装。</p>
+<hr>
+<h2 id="06-完成安装"><a href="#06-完成安装" class="headerlink" title="06 | 完成安装"></a>06 | 完成安装</h2><p>右击 <em>Win菜单键</em>  点击 <em>设备管理器</em>，当没有感叹号的时候，就代表你的驱动已经完全安装完成可以开始体验了。<br>如果你有部分第三方的硬件或者是类似于加装的摄像头之类的外部配件，请前往对应硬件的品牌官网下载驱动。</p>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || 飞牛OS-废物转生-老旧笔记本变身全能服务器</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//飞牛OS-废物转生-老旧笔记本变身全能服务器">飞牛OS-废物转生-老旧笔记本变身全能服务器</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/12/3
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/技术指南">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                技术指南
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/飞牛OS" style=color:#879cff>
+                    飞牛OS
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/NAS" style=color:#ff7d73>
+                    NAS
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/旧物改造" style=color:#879cff>
+                    旧物改造
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/家庭服务器" style=color:#00bcd4>
+                    家庭服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/DIY，-技术" style=color:#00bcd4>
+                    DIY， 技术
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/教程" style=color:#1bccbc>
+                    教程
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/指南" style=color:#1bccbc>
+                    指南
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <hr>
+<h1 id="飞牛OS-废物转生-老旧笔记本变身全能服务器"><a href="#飞牛OS-废物转生-老旧笔记本变身全能服务器" class="headerlink" title="飞牛OS-废物转生-老旧笔记本变身全能服务器"></a>飞牛OS-废物转生-老旧笔记本变身全能服务器</h1><p>一台2018年的老笔记本，如何让他继续发光发热，不如给它换个赛道，NAS服务器如何。</p>
+<h2 id="为什么会选择飞牛OS"><a href="#为什么会选择飞牛OS" class="headerlink" title="为什么会选择飞牛OS"></a>为什么会选择飞牛OS</h2><ul>
+<li><strong>轻量</strong>：更加适合小型设备使用</li>
+<li><strong>自带WebUI</strong>：简单，上手容易</li>
+<li><strong>访问方便</strong>：提供FN Connect可以更方便的连接到服务</li>
+</ul>
+<h2 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h2><ol>
+<li><p><strong>U盘</strong>：至少8GB容量的U盘</p>
+</li>
+<li><p><strong>系统镜像</strong>：</p>
+</li>
+</ol>
+<ul>
+<li><em><a target="_blank" rel="noopener" href="https://www.fnnas.com/download?key=fnos">从飞牛OS官网下载最新版本镜像 </a></em></li>
+</ul>
+<ol start="3">
+<li><strong>刻录工具</strong>：</li>
+</ol>
+<ul>
+<li><p><em><a target="_blank" rel="noopener" href="https://github.com/pbatard/rufus/releases/download/v4.11/rufus-4.11.exe">Rufus</a></em></p>
+</li>
+<li><p><em><a target="_blank" rel="noopener" href="https://etcher.balena.io/#download-etcher">BalenaEtcher</a></em></p>
+</li>
+</ul>
+<p>以上提到的，都可以在我的博客中下载到。</p>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><h3 id="第一步：制作启动U盘"><a href="#第一步：制作启动U盘" class="headerlink" title="第一步：制作启动U盘"></a>第一步：制作启动U盘</h3><ol>
+<li>插入U盘</li>
+<li>打开balenaEtcher刻录工具</li>
+<li>选择飞牛OS的镜像文件</li>
+<li>选择插入的U盘</li>
+<li><strong>注意</strong>：<strong>制作启动盘</strong>会<strong>清除U盘</strong>中的<strong>所有数据</strong>，自己<em><strong>记得备份</strong></em></li>
+<li>点击”开始”按钮，等待刻录完成</li>
+</ol>
+<h3 id="第二步：BIOS设置"><a href="#第二步：BIOS设置" class="headerlink" title="第二步：BIOS设置"></a>第二步：BIOS设置</h3><ol>
+<li>将制作好的启动U盘插入电脑</li>
+<li>开机进入U盘启动项</li>
+<li>怎么进入自行问AI，每个品牌对应方式不一样</li>
+</ol>
+<h3 id="第三步：安装飞牛OS"><a href="#第三步：安装飞牛OS" class="headerlink" title="第三步：安装飞牛OS"></a>第三步：安装飞牛OS</h3><ol>
+<li>从U盘启动后，进入飞牛OS安装界面</li>
+<li>选择语言：中文（简体）</li>
+<li>选择安装目标：</li>
+</ol>
+<ul>
+<li>我的建议是：<strong>单独拿一整个盘装系统</strong>，或者装在<strong>另一个U盘里</strong>，我这里做测试，就给系统8G。</li>
+<li>swap分区：按照你自己的需求给大小，建议是<strong>内存的两倍</strong>，我这里用作演示不给大小。</li>
+</ul>
+<ol start="4">
+<li>网络我这里用作测试所以选择默认的DHCP，也可以装好后在系统里调整IP，后面我会提到。</li>
+<li>等待安装完成，系统会自动重启</li>
+</ol>
+<h3 id="第四步：初始化配置"><a href="#第四步：初始化配置" class="headerlink" title="第四步：初始化配置"></a>第四步：初始化配置</h3><ol>
+<li>重启时拔掉U盘，自动从硬盘启动飞牛OS</li>
+<li>首次启动会初始化比较慢，等待进入就行</li>
+<li>自己设置一个设备名</li>
+<li>配置一个用户名</li>
+<li>再配置用户密码</li>
+<li>信息录入完成后，继续</li>
+<li>等待进入桌面就安装完成</li>
+</ol>
+<h2 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h2><h3 id="第一步：登录管理界面"><a href="#第一步：登录管理界面" class="headerlink" title="第一步：登录管理界面"></a>第一步：登录管理界面</h3><ol>
+<li>打开另一台设备的浏览器，访问显示的管理地址</li>
+<li>使用安装时设置的用户名和密码登录</li>
+</ol>
+<h3 id="第二步：网络配置"><a href="#第二步：网络配置" class="headerlink" title="第二步：网络配置"></a>第二步：网络配置</h3><ol>
+<li>如果需要使用固定IP，在<strong>系统设置</strong>的<strong>网络设置</strong>面板中配置即可</li>
+<li>我这里暂时使用DHCP</li>
+</ol>
+<h3 id="第三步：存储管理"><a href="#第三步：存储管理" class="headerlink" title="第三步：存储管理"></a>第三步：存储管理</h3><ol>
+<li>在<strong>系统设置</strong>中找到<strong>存储空间管理</strong></li>
+<li>点击<strong>创建存储空间</strong></li>
+<li>个人使用建议选择Btrfs格式</li>
+<li>在下一步中，选择你想要用于创建的磁盘，如果需要阵列，这时也可以选择</li>
+<li>我的笔记本只有一个磁盘，所以我直接下一步。</li>
+<li>创建完成就可以了。</li>
+</ol>
+<h3 id="第四步：用户管理"><a href="#第四步：用户管理" class="headerlink" title="第四步：用户管理"></a>第四步：用户管理</h3><ol>
+<li>在<strong>系统设置</strong>中，找到<strong>用户管理</strong></li>
+<li>可以为家庭的每一个用户都配置不同权限的账户</li>
+<li>免得你珍藏的小电影，哪天出现在别人的软件里</li>
+</ol>
+<h2 id="远程访问配置"><a href="#远程访问配置" class="headerlink" title="远程访问配置"></a>远程访问配置</h2><h2 id="启用FN-Connect"><a href="#启用FN-Connect" class="headerlink" title="启用FN Connect"></a>启用FN Connect</h2><ol>
+<li>在<strong>系统设置</strong>中，找到<strong>远程访问</strong></li>
+<li>启用FN Connect功能</li>
+<li>如果没有飞牛账号，就注册一个进行登录</li>
+<li>而后在外网环境中，就可以使用飞牛App或者Web网页进行访问了</li>
+</ol>
+<h2 id="文件共享"><a href="#文件共享" class="headerlink" title="文件共享"></a>文件共享</h2><ol>
+<li>在<strong>系统设置</strong>中找到<strong>文件共享协议</strong></li>
+<li>选择你想要使用的文件共享方式，我这里选择<strong>samba</strong></li>
+<li>勾选即可</li>
+<li>然后再<strong>高级设置</strong>中选择你要共享的目录，我这里选择整个目录</li>
+<li>而后就可以在局域网中通过IP进行文件访问了</li>
+<li>如果有外网访问的需求，可以去查看我<strong>使用Tailscale部署虚拟局域网</strong>的教程</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>恭喜你！现在你的老旧笔记本已经成功转生为自带PDU的多功能服务器！<br>这台电子垃圾也成为你迈向自部署家庭服务器的第一步！<br>我是多多它爹，一个失业的运维工程师，我们下期再见。</p>
+<hr>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<p>#飞牛OS #NAS #旧物改造 #家庭服务器 #DIY </p>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

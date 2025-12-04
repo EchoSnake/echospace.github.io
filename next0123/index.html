@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Hexo Next主题配置指南</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a href="//Hexo Next主题配置指南">Hexo Next主题配置指南</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/10/30
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/Hexo">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                Hexo
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Hexo" style=color:#1bccbc>
+                    Hexo
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/blog" style=color:#879cff>
+                    blog
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Next-Themes" style=color:#879cff>
+                    Next Themes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Linux" style=color:#00bcd4>
+                    Linux
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <p>这是一个非常详尽的 Hexo Next 主题进阶配置指南。<br>本文记录了对 Hexo + NexT 博客进行定制和美化的进阶技巧。</p>
+<blockquote>
+<p>作者：多多是只猫 (<a href="https://blog.echospace.top/">https://blog.echospace.top</a>)_<br>原作者：木鸟杂记 （<a target="_blank" rel="noopener" href="https://www.qtmuniao.com)/">https://www.qtmuniao.com）</a></p>
+</blockquote>
+<h1 id="🎨-Hexo-NexT-主题进阶定制指南"><a href="#🎨-Hexo-NexT-主题进阶定制指南" class="headerlink" title="🎨 Hexo NexT 主题进阶定制指南"></a>🎨 Hexo NexT 主题进阶定制指南</h1><p><strong>提示：</strong> 每次修改配置后，请在本地运行</p>
+<pre><code class="bash">hexo clean 
+hexo generate 
+hexo deploy
+</code></pre>
+<p>(<code>http://localhost:4000/</code>) 预览效果。NexT 主题的配置修改建议在站点根目录的 <code>_config.next.yml</code> 中进行。</p>
+<h2 id="一、页面与菜单配置"><a href="#一、页面与菜单配置" class="headerlink" title="一、页面与菜单配置"></a>一、页面与菜单配置</h2><h3 id="1-添加-“关于”-页面"><a href="#1-添加-“关于”-页面" class="headerlink" title="1. 添加 “关于” 页面"></a>1. 添加 “关于” 页面</h3><p>通过两步完成“关于”页面的创建和菜单显示。</p>
+<ol>
+<li><p><strong>新建页面：</strong></p>
+<pre><code class="Bash">hexo new page &quot;about&quot;
+</code></pre>
+</li>
+<li><p><strong>菜单显示：</strong> 在主题配置文件（<code>_config.next.yml</code>）中，取消 <code>menu</code> 下 <code>about</code> 的注释。</p>
+<pre><code class="YAML"># _config.next.yml
+menu:
+  home: /
+  archives: /archives || archive
+  tags: /tags || tags
+  about: /about || user # 去掉注释
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="2-强制-HTTPS"><a href="#2-强制-HTTPS" class="headerlink" title="2. 强制 HTTPS"></a>2. 强制 HTTPS</h3><p>如果您的博客托管在 GitHub Pages 上，强制 HTTPS 访问非常简单：</p>
+<ul>
+<li><strong>操作：</strong> 登录 GitHub，进入您的博客仓库的 <strong>Settings</strong>，勾选 <strong>Enforce HTTPS</strong> 即可。</li>
+</ul>
+<h2 id="二、文章管理与布局"><a href="#二、文章管理与布局" class="headerlink" title="二、文章管理与布局"></a>二、文章管理与布局</h2><h3 id="1-草稿布局定制"><a href="#1-草稿布局定制" class="headerlink" title="1. 草稿布局定制"></a>1. 草稿布局定制</h3><p>为避免未完成的文章被发布，使用 <code>draft</code> 布局，并定制其模板以包含日期。</p>
+<ul>
+<li><p><strong>新建草稿：</strong> <code>hexo new draft &quot;blog title&quot;</code></p>
+</li>
+<li><h2 id="修改模板：-找到-scaffolds-draft-md，添加-date-字段。-Markdown"><a href="#修改模板：-找到-scaffolds-draft-md，添加-date-字段。-Markdown" class="headerlink" title="修改模板： 找到 scaffolds/draft.md，添加 date 字段。  &#96;&#96;&#96;Markdown"></a><strong>修改模板：</strong> 找到 <code>scaffolds/draft.md</code>，添加 <code>date</code> 字段。<br><br>  &#96;&#96;&#96;Markdown</h2><h2 id="title-tags-categories-description-date"><a href="#title-tags-categories-description-date" class="headerlink" title="  title:   tags:  categories:  description:  date:  "></a>  title: Hexo Next主题配置指南<br>  tags:<br>  categories:<br>  description:<br>  date: 1761801696000 </h2><pre><code>
+</code></pre>
+</li>
+</ul>
+<h3 id="2-广义布局定制"><a href="#2-广义布局定制" class="headerlink" title="2. 广义布局定制"></a>2. 广义布局定制</h3><p>您可以在 <code>scaffolds</code> 文件夹中定制任意多个布局模板（例如 <code>test.md</code>），用于不同类型的文章。</p>
+<ul>
+<li><p><strong>示例：</strong></p>
+<pre><code class="Bash"># 复制 page 模板并重命名为 test.md
+cp scaffolds/page.md scaffolds/test.md 
+
+# 使用新模板创建文章
+hexo new test &#39;test&#39;
+# 文章会被创建在 source/_posts/ 中，并使用 test 模板
+</code></pre>
+</li>
+</ul>
+<h3 id="3-文章截断设置"><a href="#3-文章截断设置" class="headerlink" title="3. 文章截断设置"></a>3. 文章截断设置</h3><p>控制首页文章显示长度，避免全文显示。</p>
+<ol>
+<li><p><strong>启用截断功能：</strong> 在主题配置文件（<code>_config.next.yml</code>）中设置：</p>
+<pre><code class="YAML">excerpt_description: true
+</code></pre>
+</li>
+<li><p><strong>在文章中插入标记：</strong> 在 Markdown 文件中您希望截断的位置插入 &#96;&#96;。</p>
+<pre><code class="Markdown">这是文章摘要部分。
+这是文章的剩余部分，只在文章页显示。
+</code></pre>
+<p> <em>（或者，您可以在文章的 Front-matter 中直接使用 <code>description</code> 字段作为摘要。）</em></p>
+</li>
+</ol>
+<h2 id="三、文章增强功能"><a href="#三、文章增强功能" class="headerlink" title="三、文章增强功能"></a>三、文章增强功能</h2><h3 id="1-相关文章推荐"><a href="#1-相关文章推荐" class="headerlink" title="1. 相关文章推荐"></a>1. 相关文章推荐</h3><p>通过插件实现文章详情页的相关文章推荐。</p>
+<ol>
+<li><p><strong>安装插件：</strong></p>
+<pre><code class="Bash">npm install hexo-related-popular-posts --save
+</code></pre>
+</li>
+<li><p><strong>配置 NexT 主题：</strong> 在主题配置文件（<code>_config.next.yml</code>）中启用并设置推荐参数：</p>
+<pre><code class="YAML">related_posts:
+  enable: true
+  title: 猜你喜欢 # 自定义标题
+  display_in_home: false # 不在首页显示
+  params:
+    maxCount: 5 # 最多推荐5篇
+    PPMixingRate: 0.4 # 火热文章与相关文章的推荐比率
+</code></pre>
+</li>
+</ol>
+<h3 id="2-博客文章搜索-本地搜索"><a href="#2-博客文章搜索-本地搜索" class="headerlink" title="2. 博客文章搜索 (本地搜索)"></a>2. 博客文章搜索 (本地搜索)</h3><p>安装插件，实现站内文章的本地搜索功能。</p>
+<ol>
+<li><p><strong>安装插件：</strong></p>
+<pre><code class="Bash">npm install hexo-generator-searchdb --save
+</code></pre>
+</li>
+<li><p><strong>配置站点文件 (<code>_config.yml</code>)：</strong> 在博客根目录的 <code>_config.yml</code> 中添加搜索配置：</p>
+<pre><code class="YAML">search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+</code></pre>
+</li>
+<li><p><strong>配置主题文件 (<code>_config.next.yml</code>)：</strong> 启用本地搜索功能：</p>
+<pre><code class="YAML">local_search:
+  enable: true
+  trigger: manual # 或 auto
+  top_n_per_article: 1
+  # ...其他配置...
+</code></pre>
+</li>
+</ol>
+<h3 id="3-专题系列组织"><a href="#3-专题系列组织" class="headerlink" title="3. 专题系列组织"></a>3. 专题系列组织</h3><p>通过创建自定义标签页，并手动组织站内文章链接，实现专题系列。</p>
+<ol>
+<li><p><strong>新建专题页：</strong></p>
+<pre><code class="Bash">hexo new page series
+</code></pre>
+</li>
+<li><p><strong>配置菜单：</strong> 在主题配置 (<code>_config.next.yml</code>) 和语言文件 (<code>themes/next/languages/zh-CN.yml</code>) 中添加 <code>series: /series/ || reorder</code> 和 <code>series: 专题</code>。</p>
+</li>
+<li><p><strong>编辑专题内容：</strong> 编辑 <code>source/series/index.md</code>，使用 Hexo 语法引用站内文章：</p>
+<pre><code class="Markdown">## 专题系列目录
+&#123;% post_link post-name 链接标题 %&#125;
+</code></pre>
+</li>
+</ol>
+<h2 id="四、网站优化与美化"><a href="#四、网站优化与美化" class="headerlink" title="四、网站优化与美化"></a>四、网站优化与美化</h2><h3 id="1-站内访客量统计-不蒜子"><a href="#1-站内访客量统计-不蒜子" class="headerlink" title="1. 站内访客量统计 (不蒜子)"></a>1. 站内访客量统计 (不蒜子)</h3><p>在页脚添加简单的访客数和访问量统计。</p>
+<ul>
+<li><p><strong>添加代码：</strong> 找到主题的页脚模板文件（通常是 <code>themes/next/layout/_partials/footer.swig</code> 或类似的模板），添加以下代码：</p>
+<pre><code class="HTML">&lt;div class=&quot;powered-by&quot;&gt;
+  &lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;
+  &lt;i class=&quot;fa fa-user-md&quot;&gt;&lt;/i&gt;
+  &lt;span id=&quot;busuanzi_container_site_uv&quot;&gt;
+    本站访客数:&lt;span id=&quot;busuanzi_value_site_uv&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;post-meta-divider&quot;&gt;|&lt;/span&gt;
+  &lt;span id=&quot;busuanzi_container_site_pv&quot;&gt;
+    本站访问量&lt;span id=&quot;busuanzi_value_site_pv&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+</li>
+</ul>
+<h3 id="2-显示浏览进度条"><a href="#2-显示浏览进度条" class="headerlink" title="2. 显示浏览进度条"></a>2. 显示浏览进度条</h3><p>在页面顶部或底部显示阅读进度条。</p>
+<ul>
+<li><p><strong>配置主题文件 (<code>_config.next.yml</code>)：</strong></p>
+<pre><code class="YAML">reading_progress:
+  enable: true
+  position: top # 或 bottom
+  color: &quot;#37c6c0&quot;
+  height: 2px
+</code></pre>
+</li>
+</ul>
+<h3 id="3-站点地图-SEO-优化"><a href="#3-站点地图-SEO-优化" class="headerlink" title="3. 站点地图 (SEO 优化)"></a>3. 站点地图 (SEO 优化)</h3><p>为搜索引擎提供网站结构图，利于 SEO。</p>
+<ol>
+<li><p><strong>安装插件：</strong></p>
+<pre><code class="Bash">npm install hexo-generator-sitemap --save
+</code></pre>
+</li>
+<li><p><strong>Hexo 配置 (<code>_config.yml</code>)：</strong> 在站点配置文件中添加插件：</p>
+<pre><code class="YAML"># Extensions
+plugins: hexo-generator-sitemap
+</code></pre>
+</li>
+<li><p><strong>NexT 配置 (<code>_config.next.yml</code>)：</strong> 在菜单中添加站点地图链接：</p>
+<pre><code class="YAML">menu: 
+  # ...其他菜单项
+  sitemap: /sitemap.xml || sitemap
+</code></pre>
+<p> <em>（生成后，您可以通过 <code>www.yoursite.com/sitemap.xml</code> 访问，并提交给 Google Search Console。）</em></p>
+</li>
+</ol>
+<h3 id="4-相册页面"><a href="#4-相册页面" class="headerlink" title="4. 相册页面"></a>4. 相册页面</h3><p>利用 NexT 的 Tag Plugin 创建相册展示页面。</p>
+<ol>
+<li><p><strong>新建相册页：</strong></p>
+<pre><code class="Bash">hexo new page photos
+</code></pre>
+<p> 并在语言文件 (<code>zh-CN.yml</code>) 中配置菜单中文名称 <code>photos: 相册</code>。</p>
+</li>
+<li><p><strong>编辑图片：</strong> 在 <code>source/photos/index.md</code> 中使用 <code>group picture</code> 标签组织图片：</p>
+<pre><code class="Markdown">## 某某地方玩
+&#123;% gp 6-3 %&#125;
+      ![](/images/pic1.png)
+      ![](/images/pic2.png)
+      ...
+    &#123;% endgp %&#125;
+</code></pre>
+<p> <em>（<code>6-3</code> 表示该组有 6 张图片，每行最多排 3 张。）</em></p>
+</li>
+</ol>
+<h3 id="5-Google-AdSense-广告"><a href="#5-Google-AdSense-广告" class="headerlink" title="5. Google AdSense 广告"></a>5. Google AdSense 广告</h3><p>如果您已通过 Google AdSense 审核：</p>
+<ol>
+<li><p><strong>限制尺寸和位置：</strong> 建议只选择<strong>展示广告</strong>，并限制尺寸（如 280px * 100px），将其放在侧边栏底部。</p>
+</li>
+<li><p><strong>自定义样式：</strong></p>
+<ul>
+<li><p>在 <code>themes/next/source/css/_my/</code> 目录下新建 <code>mycss.styl</code>。</p>
+</li>
+<li><p>在 <code>themes/next/source/css/main.styl</code> 中引用：<code>@import &quot;_my/mycss&quot;;</code></p>
+</li>
+<li><p>在 <code>mycss.styl</code> 中添加广告的 CSS 样式，例如：</p>
+<pre><code class="CSS">.sidebar-ads &#123;
+  border-top: 1px dotted #ccc;
+  width: 100%;
+  height: 100px;
+  padding-top: 15px;
+  margin-bottom: 5px;
+&#125;
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>（多多是只猫：<a href="https://blog.echospace.top/">https://blog.echospace.top</a>）。</p>
+</blockquote>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>
