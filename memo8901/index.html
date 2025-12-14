@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || Linux自动内存缓存清理方案</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="../loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a target="_blank" rel="noopener" href="//Linux自动内存缓存清理方案">Linux自动内存缓存清理方案</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/10/18
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/Linux">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                Linux
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Linux" style=color:#00bcd4>
+                    Linux
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/内存管理" style=color:#ff7d73>
+                    内存管理
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Systemd" style=color:#1bccbc>
+                    Systemd
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/自动化运维" style=color:#879cff>
+                    自动化运维
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <p class="post-excerpt">
+本教程提供了基于 Systemd 的 Linux 内存缓存自动清理方案。通过 Shell 脚本和 Systemd Timer 实现定时、安全的缓存清理，并包含可用内存阈值检查和完整的日志监控配置。
+</p>
+
+<h1 id="🛡️-Linux-自动内存缓存清理方案-Systemd-版本"><a href="#🛡️-Linux-自动内存缓存清理方案-Systemd-版本" class="headerlink" title="🛡️ Linux 自动内存缓存清理方案 (Systemd 版本)"></a>🛡️ Linux 自动内存缓存清理方案 (Systemd 版本)</h1><h2 id="📂-1-创建缓存清理脚本"><a href="#📂-1-创建缓存清理脚本" class="headerlink" title="📂 1. 创建缓存清理脚本"></a>📂 1. 创建缓存清理脚本</h2><p>创建脚本文件：</p>
+<pre><code class="bash">sudo vim /usr/local/bin/cache_cleaner.sh
+</code></pre>
+<h3 id="脚本内容"><a href="#脚本内容" class="headerlink" title="脚本内容"></a>脚本内容</h3><pre><code class="bash">#!/bin/bash
+# 内存缓存清理脚本 v1.2
+# 安全模式：当可用内存 &gt;20% 时不执行清理
+
+MIN_FREE_PERCENT=20  # 触发清理的阈值
+
+echo &quot;[$(date +&#39;%F %T&#39;)] 检查内存状态...&quot;
+
+# 获取内存信息（total, used）
+read -r total used _ &lt;&lt;&lt; $(free -m | awk &#39;/Mem:/&#123;print $2,$3&#125;&#39;)
+# 计算当前&quot;可用率&quot;（使用 available 字段更准确）
+free_percent=$(( (total - used) * 100 / total ))
+
+if [ &quot;$free_percent&quot; -lt &quot;$MIN_FREE_PERCENT&quot; ]; then
+    echo &quot;内存可用率 $&#123;free_percent&#125;% &lt; $&#123;MIN_FREE_PERCENT&#125;%，执行清理...&quot;
+
+    # 安全清理步骤
+    sync
+    echo 1 &gt; /proc/sys/vm/drop_caches
+    sleep 1
+    echo 2 &gt; /proc/sys/vm/drop_caches
+    sleep 1
+    echo 3 &gt; /proc/sys/vm/drop_caches
+
+    # 使用 available 字段计算最新可用百分比（更准确）
+    new_free=$(free -m | awk &#39;/Mem:/&#123;printf &quot;%.1f&quot;, $7/$2*100&#125;&#39;)
+    echo &quot;清理完成 → 当前可用: $&#123;new_free&#125;%&quot;
+else
+    echo &quot;内存充足 ($&#123;free_percent&#125;%)，跳过清理&quot;
+fi
+</code></pre>
+<h3 id="设置脚本权限"><a href="#设置脚本权限" class="headerlink" title="设置脚本权限"></a>设置脚本权限</h3><pre><code class="bash">sudo chmod 755 /usr/local/bin/cache_cleaner.sh
+sudo chown root:root /usr/local/bin/cache_cleaner.sh
+</code></pre>
+<h2 id="⚙️-2-配置-Systemd-服务单元"><a href="#⚙️-2-配置-Systemd-服务单元" class="headerlink" title="⚙️ 2. 配置 Systemd 服务单元"></a>⚙️ 2. 配置 Systemd 服务单元</h2><p>创建服务文件：</p>
+<pre><code class="bash">sudo vim /etc/systemd/system/cache_cleaner.service
+</code></pre>
+<h3 id="服务配置内容"><a href="#服务配置内容" class="headerlink" title="服务配置内容"></a>服务配置内容</h3><pre><code class="ini">[Unit]
+Description=Memory Cache Cleaner
+After=syslog.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/cache_cleaner.sh
+User=root
+ProtectSystem=full
+</code></pre>
+<h2 id="🕒-3-创建-Systemd-定时器"><a href="#🕒-3-创建-Systemd-定时器" class="headerlink" title="🕒 3. 创建 Systemd 定时器"></a>🕒 3. 创建 Systemd 定时器</h2><p>创建定时器文件：</p>
+<pre><code class="bash">sudo vim /etc/systemd/system/cache_cleaner.timer
+</code></pre>
+<h3 id="定时器配置内容"><a href="#定时器配置内容" class="headerlink" title="定时器配置内容"></a>定时器配置内容</h3><pre><code class="ini">[Unit]
+Description=Run memory cleaner every 3 hours
+
+[Timer]
+OnCalendar=*-*-* 0/3:00:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+</code></pre>
+<h2 id="🔧-4-启用并测试服务"><a href="#🔧-4-启用并测试服务" class="headerlink" title="🔧 4. 启用并测试服务"></a>🔧 4. 启用并测试服务</h2><pre><code class="bash"># 重载 systemd 配置
+sudo systemctl daemon-reload
+
+# 测试脚本
+sudo /usr/local/bin/cache_cleaner.sh
+
+# 启用定时器
+sudo systemctl enable --now cache_cleaner.timer
+
+# 验证状态
+systemctl list-timers | grep cache_cleaner
+journalctl -u cache_cleaner.service -f
+</code></pre>
+<h2 id="📊-5-监控与日志管理"><a href="#📊-5-监控与日志管理" class="headerlink" title="📊 5. 监控与日志管理"></a>📊 5. 监控与日志管理</h2><table>
+<thead>
+<tr>
+<th>命令目的</th>
+<th>具体命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看最近记录</td>
+<td><code>journalctl -u cache_cleaner.service -n 10</code></td>
+</tr>
+<tr>
+<td>跟踪实时日志</td>
+<td><code>journalctl -u cache_cleaner.service -f</code></td>
+</tr>
+</tbody></table>
+<h3 id="配置每日日志导出（可选）"><a href="#配置每日日志导出（可选）" class="headerlink" title="配置每日日志导出（可选）"></a>配置每日日志导出（可选）</h3><pre><code class="bash"># 编辑 root 的 crontab
+sudo crontab -e
+
+# 添加以下内容：
+0 0 * * * journalctl -u cache_cleaner.service --since &quot;1 day ago&quot; &gt; /var/log/memclean_daily.log
+</code></pre>
+<h2 id="📝-注意事项"><a href="#📝-注意事项" class="headerlink" title="📝 注意事项"></a>📝 注意事项</h2><ol>
+<li>脚本会在可用内存低于 20% 时触发清理</li>
+<li>使用 sync 确保数据安全</li>
+<li>通过 sleep 间隔确保清理操作平滑执行</li>
+<li>可以根据实际需求调整定时器间隔</li>
+<li>建议定期检查日志确保服务正常运行</li>
+</ol>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>

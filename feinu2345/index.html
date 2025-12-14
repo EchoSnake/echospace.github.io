@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSpace || 飞牛OS Docker部署Tailscale</title>
+    <meta name="author" content="Echo Wang">
+    <meta name="description" content="失业的网络流民 ">
+    <meta name="keywords" content=" ">
+    <link rel="icon" href="/AvatarIcon.png">
+    <link rel="stylesheet" href="/css/antd.min.css">
+    
+    <link rel="stylesheet" href="/css/maiden-theme.css">
+    
+    <script src="/js/vue.js"></script>
+    <script src="/js/antd.min.js"></script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+    <div id="loading"
+        style="height: 100vh; width: 100%; position: fixed;display: flex;z-index: 200; justify-content: space-between;">
+        <div id="loadleft" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div id="loadright" style="width: 50%;background-color: #ffffff;transition: width 0.6s ease-out;"></div>
+        <div
+            style="position: fixed; height: 100vh; width: 100%;display: flex;justify-content: center;align-items: center;">
+            <div id="loadcontent"
+                style="width:400px;height:400px;padding:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:solid 10px#a3ddfb; text-align:center;opacity:1;transition:opacity 0.3s ease-out;">
+                <div>
+                    <h2>LOADING...</h2>
+                    <p>加载中请稍等...</p>
+                    <div>
+                        <img src="../loadingpicture.gif" alt="loading" height="300px" width="300px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="layout">
+        <transition name="into">
+            <div v-show="show_page" style="display: none;">
+                <div id="menu_show">
+                     
+<nav id="menu">
+    <div class="desktop-menu">
+        <a href="/">
+            <span class="title">EchoSpace</span>
+        </a>
+        
+        <a href="/">
+            <span>
+                <a-icon type="home" theme="filled" />
+            </span>
+            <span>主页</span>
+        </a>
+        
+        <a href="/archives">
+            <span>
+                <a-icon type="folder" theme="filled" />
+            </span>
+            <span>目录</span>
+        </a>
+        
+        <a href="/about">
+            <span>
+                <a-icon type="idcard" theme="filled" />
+            </span>
+            <span>关于我</span>
+        </a>
+        
+    </div>
+
+    <div :class="'phone-menu ' + menu_show" id="phone-menu">
+        <div :class="'title'" @click="menu_show=!menu_show">
+            <span style="margin-right: 10px;">
+                <a-icon type="appstore" theme="filled" />
+            </span>
+            <span>EchoSpace</span>
+        </div>
+        <div class="items" v-show="menu_show">
+            
+            <a href="/">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="home" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">主页</div>
+                </div>
+            </a>
+            
+            <a href="/archives">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="folder" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">目录</div>
+                </div>
+            </a>
+            
+            <a href="/about">
+                <div class="item">
+                    <div style="min-width:20px; max-width:50px; width: 10%">
+                        <a-icon type="idcard" theme="filled" />
+                    </div>
+                    <div style="min-width:100px;max-width: 150%;width: 20%;">关于我</div>
+                </div>
+            </a>
+            
+        </div>
+        <div class="curtain" v-show="menu_show"></div>
+    </div>
+
+</nav>
+                </div>
+
+                <div id="main">
+                     
+<link rel="stylesheet" href="/css/post-body.css">
+<div class="article">
+    <div>
+        <h1>
+            <a href="//飞牛OS Docker部署Tailscale">飞牛OS Docker部署Tailscale</a>
+        </h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <a-icon type="calendar" theme="filled" />
+            </span>
+            2025/10/28
+        </span>
+
+        
+        <span class="category">
+            <a href="/categories/NAS">
+                <span class="icon">
+                    <a-icon type="book" theme="filled" />
+                </span>
+                NAS
+            </a>
+        </span>
+        
+
+        
+
+        <span class="tags">
+            <span class="icon">
+                <a-icon type="tags" theme="filled" />
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Docker" style=color:#ffa2c4>
+                    Docker
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/飞牛OS" style=color:#00bcd4>
+                    飞牛OS
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Tailscale" style=color:#879cff>
+                    Tailscale
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/内网穿透" style=color:#ff7d73>
+                    内网穿透
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+
+    <div class="content" v-pre>
+        <p class="post-excerpt">
+本教程详细介绍如何在飞牛 OS NAS 系统上使用 Docker 部署 Tailscale，实现安全可靠的远程访问方案，包含完整的配置步骤和移动端设置指南。
+</p>
+
+<h1 id="在飞牛-OS-上部署-Tailscale"><a href="#在飞牛-OS-上部署-Tailscale" class="headerlink" title="在飞牛 OS 上部署 Tailscale"></a>在飞牛 OS 上部署 Tailscale</h1><h2 id="💡-背景说明"><a href="#💡-背景说明" class="headerlink" title="💡 背景说明"></a>💡 背景说明</h2><p>飞牛 OS 是一款国产免费的 NAS 系统，提供个人私有云盘功能。虽然系统自带免费的内网穿透服务，但为了更稳定的远程访问体验，我们可以使用 Tailscale 作为替代方案。</p>
+<h2 id="🔑-获取-Tailscale-授权码"><a href="#🔑-获取-Tailscale-授权码" class="headerlink" title="🔑 获取 Tailscale 授权码"></a>🔑 获取 Tailscale 授权码</h2><ol>
+<li>访问 <a target="_blank" rel="noopener" href="https://login.tailscale.com/">Tailscale 登录页面</a></li>
+<li>进入 <a target="_blank" rel="noopener" href="https://login.tailscale.com/admin/settings/keys">密钥设置页面</a></li>
+<li>创建授权密钥，注意启用以下权限：<ul>
+<li>开启 VPN 访问权限</li>
+<li>允许子网路由</li>
+</ul>
+</li>
+</ol>
+<p><img src="/assets/images/tailscale/auth-key-settings.jpg" alt="Tailscale 密钥设置界面"></p>
+<h2 id="🐳-Docker-部署配置"><a href="#🐳-Docker-部署配置" class="headerlink" title="🐳 Docker 部署配置"></a>🐳 Docker 部署配置</h2><h3 id="方法一：使用-Docker-命令行"><a href="#方法一：使用-Docker-命令行" class="headerlink" title="方法一：使用 Docker 命令行"></a>方法一：使用 Docker 命令行</h3><pre><code class="bash">docker run -d \
+  --name=tailscaled \
+  --network=host \
+  --cap-add=NET_ADMIN \
+  --cap-add=NET_RAW \
+  -v /var/lib:/var/lib \
+  -v /dev/net/tun:/dev/net/tun \
+  -v /var/lib/tailscale:/var/lib/tailscale \
+  -e TS_AUTHKEY=tskey-auth-xxxxx \
+  -e TS_ROUTES=192.168.1.0/24 \
+  tailscale/tailscale
+</code></pre>
+<blockquote>
+<p>注意：将 <code>tskey-auth-xxxxx</code> 替换为你的授权码，<code>192.168.1.0/24</code> 替换为你的内网网段</p>
+</blockquote>
+<h3 id="方法二：通过飞牛-OS-界面配置"><a href="#方法二：通过飞牛-OS-界面配置" class="headerlink" title="方法二：通过飞牛 OS 界面配置"></a>方法二：通过飞牛 OS 界面配置</h3><ol>
+<li><p><strong>安装 Docker 镜像</strong></p>
+<ul>
+<li>在 Docker 商店搜索 <code>tailscale</code></li>
+<li>下载官方镜像</li>
+</ul>
+</li>
+<li><p><strong>创建容器并配置参数</strong></p>
+<p>基础设置：</p>
+<ul>
+<li>容器名：tailscale</li>
+<li>镜像：tailscale&#x2F;tailscale:latest</li>
+</ul>
+</li>
+<li><p><strong>存储配置</strong></p>
+<pre><code class="plaintext">/var/lib -&gt; /var/lib
+/dev/net/tun -&gt; /dev/net/tun
+TS_STATE_DIR -&gt; /var/lib/tailscale
+</code></pre>
+</li>
+<li><p><strong>环境变量设置</strong></p>
+<pre><code class="plaintext">TS_AUTHKEY=你的授权码
+TS_ROUTES=192.168.1.0/24
+TS_STATE_DIR=/var/lib/tailscale
+</code></pre>
+</li>
+<li><p><strong>网络设置</strong></p>
+<ul>
+<li>选择 <code>host</code> 网络模式</li>
+</ul>
+</li>
+</ol>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="📱-移动端配置"><a href="#📱-移动端配置" class="headerlink" title="📱 移动端配置"></a>📱 移动端配置</h2><h3 id="iOS-Android-客户端设置"><a href="#iOS-Android-客户端设置" class="headerlink" title="iOS&#x2F;Android 客户端设置"></a>iOS&#x2F;Android 客户端设置</h3><ol>
+<li>从应用商店安装 Tailscale 客户端</li>
+<li>使用相同账号登录</li>
+<li>允许 VPN 配置权限</li>
+<li>在设备列表中应该能看到 NAS</li>
+</ol>
+<p><img src="/assets/images/tailscale/mobile-connection.jpg" alt="移动端连接界面"></p>
+<h2 id="🌐-子网路由配置"><a href="#🌐-子网路由配置" class="headerlink" title="🌐 子网路由配置"></a>🌐 子网路由配置</h2><h3 id="开启子网路由"><a href="#开启子网路由" class="headerlink" title="开启子网路由"></a>开启子网路由</h3><ol>
+<li>访问 Tailscale 管理后台</li>
+<li>进入 <code>Machines</code> 页面</li>
+<li>找到 NAS 设备</li>
+<li>开启 <code>Subnet routes</code> 选项</li>
+<li>确认要分享的子网范围</li>
+</ol>
+<pre><code class="plaintext">Subnet: 192.168.1.0/24
+Routes via: your-nas-name
+</code></pre>
+<h3 id="ACL-策略配置"><a href="#ACL-策略配置" class="headerlink" title="ACL 策略配置"></a>ACL 策略配置</h3><pre><code class="json">&#123;
+    &quot;acls&quot;: [
+        &#123;
+            &quot;action&quot;: &quot;accept&quot;,
+            &quot;users&quot;: [&quot;*&quot;],
+            &quot;ports&quot;: [&quot;*:*&quot;]
+        &#125;
+    ],
+    &quot;tagOwners&quot;: &#123;
+        &quot;tag:nas&quot;: [&quot;your-email@domain.com&quot;],
+    &#125;,
+    &quot;nodes&quot;: &#123;
+        &quot;your-nas-name&quot;: [&quot;tag:nas&quot;],
+    &#125;
+&#125;
+</code></pre>
+<h2 id="⚙️-验证配置"><a href="#⚙️-验证配置" class="headerlink" title="⚙️ 验证配置"></a>⚙️ 验证配置</h2><h3 id="检查连接状态"><a href="#检查连接状态" class="headerlink" title="检查连接状态"></a>检查连接状态</h3><pre><code class="bash"># 在 Docker 容器内执行
+docker exec -it tailscaled tailscale status
+
+# 检查路由表
+docker exec -it tailscaled ip route
+</code></pre>
+<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><ol>
+<li>从移动设备 ping NAS 内网 IP</li>
+<li>尝试访问 NAS Web 界面</li>
+<li>验证文件共享访问</li>
+</ol>
+<h2 id="🔧-故障排查"><a href="#🔧-故障排查" class="headerlink" title="🔧 故障排查"></a>🔧 故障排查</h2><h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
+<li><strong>容器无法启动</strong><ul>
+<li>检查 Docker 权限</li>
+<li>确认 tun 设备存在</li>
+<li>查看容器日志</li>
+</ul>
+</li>
+</ol>
+<pre><code class="bash">docker logs tailscaled
+</code></pre>
+<ol start="2">
+<li><p><strong>无法访问内网设备</strong></p>
+<ul>
+<li>验证子网路由配置</li>
+<li>检查 ACL 策略</li>
+<li>确认防火墙设置</li>
+</ul>
+</li>
+<li><p><strong>连接不稳定</strong></p>
+<ul>
+<li>检查网络质量</li>
+<li>验证 DERP 服务器连接</li>
+<li>尝试更换节点</li>
+</ul>
+</li>
+</ol>
+<h2 id="📝-运维建议"><a href="#📝-运维建议" class="headerlink" title="📝 运维建议"></a>📝 运维建议</h2><ol>
+<li>定期检查连接状态</li>
+<li>备份 Tailscale 配置</li>
+<li>监控容器资源使用</li>
+<li>及时更新 Docker 镜像</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tailscale.com/kb/">Tailscale 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/r/tailscale/tailscale">Docker Hub - Tailscale</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.phoenixos.com/forum/">飞牛 OS 官方论坛</a></li>
+</ul>
+<h2 id="🏷️-安全提示"><a href="#🏷️-安全提示" class="headerlink" title="🏷️ 安全提示"></a>🏷️ 安全提示</h2><ol>
+<li>定期轮换授权密钥</li>
+<li>限制访问设备范围</li>
+<li>使用最小权限原则</li>
+<li>开启双因素认证</li>
+<li>监控异常访问行为</li>
+</ol>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+
+    </div>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <div id="comment">
+        <div id="gitalk-container">
+        </div>
+    </div>
+    
+</div>
+                     
+<footer id="footer">
+    <div class="footer-wrap">
+        <div>
+            © 2025 - 2025 EchoSpace
+            <span class="footer-icon">
+                <a-icon type="flag" theme="filled" /></span>
+            @Echo Wang
+        </div>
+        <div></div>
+        <div>Based on the <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo Engine</a> & <a
+                target="_blank" rel="noopener" href="https://github.com/korilin/hexo-theme-particle">Particle Theme</a></div>
+        
+    </div>
+
+</footer>
+
+<script src="/js/highlight.min.js"></script>
+<script src="/js/particle.js"></script>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+    new Vue({
+        el: "#layout",
+        data: {
+            show_page: false,
+            onload_menu: false,
+            menu_show: false,
+            card_top: 100
+        },
+        created: function () {
+            var that = this
+            window.onload = function () {
+                that.show_page = true
+                document.getElementById("loadcontent").style.opacity = 0
+                setTimeout(function () {
+                    document.getElementById("loadleft").style.width = 0
+                    document.getElementById("loadright").style.width = 0
+                }, 300)
+                setTimeout(function () {
+                    document.getElementById("loading").style = "display:none"
+                }, 600)
+            }
+        },
+        mounted: function () {
+            var that = this
+            window.addEventListener('scroll', function (e) {
+                that.menu_show = false
+            })
+        },
+        methods: {
+            home_click: function () {
+                window.scrollTo({
+                    top: window.innerHeight - 80,
+                    behavior: "smooth",
+                });
+            }
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'EchoSnake',      // The repository of store comments,
+        owner: 'EchoSnake',
+        admin: ['EchoSnake'],
+        language: 'zh-CN',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: true  // Facebook-like distraction free mode
+    })
+    gitalk.render('gitalk-container')
+</script>
+
+</body>
+
+</html>
