@@ -1,0 +1,2777 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo Next主题配置指南</title>
+    <url>//next0123/</url>
+    <content><![CDATA[<p>这是一个非常详尽的 Hexo Next 主题进阶配置指南。<br>本文记录了对 Hexo + NexT 博客进行定制和美化的进阶技巧。</p>
+<blockquote>
+<p>作者：多多是只猫 (<a href="https://blog.echospace.top/">https://blog.echospace.top</a>)_<br>原作者：木鸟杂记 （<a href="https://www.qtmuniao.com)/">https://www.qtmuniao.com）</a></p>
+</blockquote>
+<h1 id="🎨-Hexo-NexT-主题进阶定制指南"><a href="#🎨-Hexo-NexT-主题进阶定制指南" class="headerlink" title="🎨 Hexo NexT 主题进阶定制指南"></a>🎨 Hexo NexT 主题进阶定制指南</h1><p><strong>提示：</strong> 每次修改配置后，请在本地运行</p>
+<pre><code class="bash">hexo clean 
+hexo generate 
+hexo deploy
+</code></pre>
+<p>(<code>http://localhost:4000/</code>) 预览效果。NexT 主题的配置修改建议在站点根目录的 <code>_config.next.yml</code> 中进行。</p>
+<h2 id="一、页面与菜单配置"><a href="#一、页面与菜单配置" class="headerlink" title="一、页面与菜单配置"></a>一、页面与菜单配置</h2><h3 id="1-添加-“关于”-页面"><a href="#1-添加-“关于”-页面" class="headerlink" title="1. 添加 “关于” 页面"></a>1. 添加 “关于” 页面</h3><p>通过两步完成“关于”页面的创建和菜单显示。</p>
+<ol>
+<li><p><strong>新建页面：</strong></p>
+<pre><code class="Bash">hexo new page &quot;about&quot;
+</code></pre>
+</li>
+<li><p><strong>菜单显示：</strong> 在主题配置文件（<code>_config.next.yml</code>）中，取消 <code>menu</code> 下 <code>about</code> 的注释。</p>
+<pre><code class="YAML"># _config.next.yml
+menu:
+  home: /
+  archives: /archives || archive
+  tags: /tags || tags
+  about: /about || user # 去掉注释
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="2-强制-HTTPS"><a href="#2-强制-HTTPS" class="headerlink" title="2. 强制 HTTPS"></a>2. 强制 HTTPS</h3><p>如果您的博客托管在 GitHub Pages 上，强制 HTTPS 访问非常简单：</p>
+<ul>
+<li><strong>操作：</strong> 登录 GitHub，进入您的博客仓库的 <strong>Settings</strong>，勾选 <strong>Enforce HTTPS</strong> 即可。</li>
+</ul>
+<h2 id="二、文章管理与布局"><a href="#二、文章管理与布局" class="headerlink" title="二、文章管理与布局"></a>二、文章管理与布局</h2><h3 id="1-草稿布局定制"><a href="#1-草稿布局定制" class="headerlink" title="1. 草稿布局定制"></a>1. 草稿布局定制</h3><p>为避免未完成的文章被发布，使用 <code>draft</code> 布局，并定制其模板以包含日期。</p>
+<ul>
+<li><p><strong>新建草稿：</strong> <code>hexo new draft &quot;blog title&quot;</code></p>
+</li>
+<li><h2 id="修改模板：-找到-scaffolds-draft-md，添加-date-字段。-Markdown"><a href="#修改模板：-找到-scaffolds-draft-md，添加-date-字段。-Markdown" class="headerlink" title="修改模板： 找到 scaffolds/draft.md，添加 date 字段。  &#96;&#96;&#96;Markdown"></a><strong>修改模板：</strong> 找到 <code>scaffolds/draft.md</code>，添加 <code>date</code> 字段。<br><br>  &#96;&#96;&#96;Markdown</h2><h2 id="title-tags-categories-description-date"><a href="#title-tags-categories-description-date" class="headerlink" title="  title:   tags:  categories:  description:  date:  "></a>  title: Hexo Next主题配置指南<br>  tags:<br>  categories:<br>  description:<br>  date: 1761801696000 </h2><pre><code>
+</code></pre>
+</li>
+</ul>
+<h3 id="2-广义布局定制"><a href="#2-广义布局定制" class="headerlink" title="2. 广义布局定制"></a>2. 广义布局定制</h3><p>您可以在 <code>scaffolds</code> 文件夹中定制任意多个布局模板（例如 <code>test.md</code>），用于不同类型的文章。</p>
+<ul>
+<li><p><strong>示例：</strong></p>
+<pre><code class="Bash"># 复制 page 模板并重命名为 test.md
+cp scaffolds/page.md scaffolds/test.md 
+
+# 使用新模板创建文章
+hexo new test &#39;test&#39;
+# 文章会被创建在 source/_posts/ 中，并使用 test 模板
+</code></pre>
+</li>
+</ul>
+<h3 id="3-文章截断设置"><a href="#3-文章截断设置" class="headerlink" title="3. 文章截断设置"></a>3. 文章截断设置</h3><p>控制首页文章显示长度，避免全文显示。</p>
+<ol>
+<li><p><strong>启用截断功能：</strong> 在主题配置文件（<code>_config.next.yml</code>）中设置：</p>
+<pre><code class="YAML">excerpt_description: true
+</code></pre>
+</li>
+<li><p><strong>在文章中插入标记：</strong> 在 Markdown 文件中您希望截断的位置插入 &#96;&#96;。</p>
+<pre><code class="Markdown">这是文章摘要部分。
+这是文章的剩余部分，只在文章页显示。
+</code></pre>
+<p> <em>（或者，您可以在文章的 Front-matter 中直接使用 <code>description</code> 字段作为摘要。）</em></p>
+</li>
+</ol>
+<h2 id="三、文章增强功能"><a href="#三、文章增强功能" class="headerlink" title="三、文章增强功能"></a>三、文章增强功能</h2><h3 id="1-相关文章推荐"><a href="#1-相关文章推荐" class="headerlink" title="1. 相关文章推荐"></a>1. 相关文章推荐</h3><p>通过插件实现文章详情页的相关文章推荐。</p>
+<ol>
+<li><p><strong>安装插件：</strong></p>
+<pre><code class="Bash">npm install hexo-related-popular-posts --save
+</code></pre>
+</li>
+<li><p><strong>配置 NexT 主题：</strong> 在主题配置文件（<code>_config.next.yml</code>）中启用并设置推荐参数：</p>
+<pre><code class="YAML">related_posts:
+  enable: true
+  title: 猜你喜欢 # 自定义标题
+  display_in_home: false # 不在首页显示
+  params:
+    maxCount: 5 # 最多推荐5篇
+    PPMixingRate: 0.4 # 火热文章与相关文章的推荐比率
+</code></pre>
+</li>
+</ol>
+<h3 id="2-博客文章搜索-本地搜索"><a href="#2-博客文章搜索-本地搜索" class="headerlink" title="2. 博客文章搜索 (本地搜索)"></a>2. 博客文章搜索 (本地搜索)</h3><p>安装插件，实现站内文章的本地搜索功能。</p>
+<ol>
+<li><p><strong>安装插件：</strong></p>
+<pre><code class="Bash">npm install hexo-generator-searchdb --save
+</code></pre>
+</li>
+<li><p><strong>配置站点文件 (<code>_config.yml</code>)：</strong> 在博客根目录的 <code>_config.yml</code> 中添加搜索配置：</p>
+<pre><code class="YAML">search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+</code></pre>
+</li>
+<li><p><strong>配置主题文件 (<code>_config.next.yml</code>)：</strong> 启用本地搜索功能：</p>
+<pre><code class="YAML">local_search:
+  enable: true
+  trigger: manual # 或 auto
+  top_n_per_article: 1
+  # ...其他配置...
+</code></pre>
+</li>
+</ol>
+<h3 id="3-专题系列组织"><a href="#3-专题系列组织" class="headerlink" title="3. 专题系列组织"></a>3. 专题系列组织</h3><p>通过创建自定义标签页，并手动组织站内文章链接，实现专题系列。</p>
+<ol>
+<li><p><strong>新建专题页：</strong></p>
+<pre><code class="Bash">hexo new page series
+</code></pre>
+</li>
+<li><p><strong>配置菜单：</strong> 在主题配置 (<code>_config.next.yml</code>) 和语言文件 (<code>themes/next/languages/zh-CN.yml</code>) 中添加 <code>series: /series/ || reorder</code> 和 <code>series: 专题</code>。</p>
+</li>
+<li><p><strong>编辑专题内容：</strong> 编辑 <code>source/series/index.md</code>，使用 Hexo 语法引用站内文章：</p>
+<pre><code class="Markdown">## 专题系列目录
+&#123;% post_link post-name 链接标题 %&#125;
+</code></pre>
+</li>
+</ol>
+<h2 id="四、网站优化与美化"><a href="#四、网站优化与美化" class="headerlink" title="四、网站优化与美化"></a>四、网站优化与美化</h2><h3 id="1-站内访客量统计-不蒜子"><a href="#1-站内访客量统计-不蒜子" class="headerlink" title="1. 站内访客量统计 (不蒜子)"></a>1. 站内访客量统计 (不蒜子)</h3><p>在页脚添加简单的访客数和访问量统计。</p>
+<ul>
+<li><p><strong>添加代码：</strong> 找到主题的页脚模板文件（通常是 <code>themes/next/layout/_partials/footer.swig</code> 或类似的模板），添加以下代码：</p>
+<pre><code class="HTML">&lt;div class=&quot;powered-by&quot;&gt;
+  &lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;
+  &lt;i class=&quot;fa fa-user-md&quot;&gt;&lt;/i&gt;
+  &lt;span id=&quot;busuanzi_container_site_uv&quot;&gt;
+    本站访客数:&lt;span id=&quot;busuanzi_value_site_uv&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;post-meta-divider&quot;&gt;|&lt;/span&gt;
+  &lt;span id=&quot;busuanzi_container_site_pv&quot;&gt;
+    本站访问量&lt;span id=&quot;busuanzi_value_site_pv&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+</li>
+</ul>
+<h3 id="2-显示浏览进度条"><a href="#2-显示浏览进度条" class="headerlink" title="2. 显示浏览进度条"></a>2. 显示浏览进度条</h3><p>在页面顶部或底部显示阅读进度条。</p>
+<ul>
+<li><p><strong>配置主题文件 (<code>_config.next.yml</code>)：</strong></p>
+<pre><code class="YAML">reading_progress:
+  enable: true
+  position: top # 或 bottom
+  color: &quot;#37c6c0&quot;
+  height: 2px
+</code></pre>
+</li>
+</ul>
+<h3 id="3-站点地图-SEO-优化"><a href="#3-站点地图-SEO-优化" class="headerlink" title="3. 站点地图 (SEO 优化)"></a>3. 站点地图 (SEO 优化)</h3><p>为搜索引擎提供网站结构图，利于 SEO。</p>
+<ol>
+<li><p><strong>安装插件：</strong></p>
+<pre><code class="Bash">npm install hexo-generator-sitemap --save
+</code></pre>
+</li>
+<li><p><strong>Hexo 配置 (<code>_config.yml</code>)：</strong> 在站点配置文件中添加插件：</p>
+<pre><code class="YAML"># Extensions
+plugins: hexo-generator-sitemap
+</code></pre>
+</li>
+<li><p><strong>NexT 配置 (<code>_config.next.yml</code>)：</strong> 在菜单中添加站点地图链接：</p>
+<pre><code class="YAML">menu: 
+  # ...其他菜单项
+  sitemap: /sitemap.xml || sitemap
+</code></pre>
+<p> <em>（生成后，您可以通过 <code>www.yoursite.com/sitemap.xml</code> 访问，并提交给 Google Search Console。）</em></p>
+</li>
+</ol>
+<h3 id="4-相册页面"><a href="#4-相册页面" class="headerlink" title="4. 相册页面"></a>4. 相册页面</h3><p>利用 NexT 的 Tag Plugin 创建相册展示页面。</p>
+<ol>
+<li><p><strong>新建相册页：</strong></p>
+<pre><code class="Bash">hexo new page photos
+</code></pre>
+<p> 并在语言文件 (<code>zh-CN.yml</code>) 中配置菜单中文名称 <code>photos: 相册</code>。</p>
+</li>
+<li><p><strong>编辑图片：</strong> 在 <code>source/photos/index.md</code> 中使用 <code>group picture</code> 标签组织图片：</p>
+<pre><code class="Markdown">## 某某地方玩
+&#123;% gp 6-3 %&#125;
+      ![](/images/pic1.png)
+      ![](/images/pic2.png)
+      ...
+    &#123;% endgp %&#125;
+</code></pre>
+<p> <em>（<code>6-3</code> 表示该组有 6 张图片，每行最多排 3 张。）</em></p>
+</li>
+</ol>
+<h3 id="5-Google-AdSense-广告"><a href="#5-Google-AdSense-广告" class="headerlink" title="5. Google AdSense 广告"></a>5. Google AdSense 广告</h3><p>如果您已通过 Google AdSense 审核：</p>
+<ol>
+<li><p><strong>限制尺寸和位置：</strong> 建议只选择<strong>展示广告</strong>，并限制尺寸（如 280px * 100px），将其放在侧边栏底部。</p>
+</li>
+<li><p><strong>自定义样式：</strong></p>
+<ul>
+<li><p>在 <code>themes/next/source/css/_my/</code> 目录下新建 <code>mycss.styl</code>。</p>
+</li>
+<li><p>在 <code>themes/next/source/css/main.styl</code> 中引用：<code>@import &quot;_my/mycss&quot;;</code></p>
+</li>
+<li><p>在 <code>mycss.styl</code> 中添加广告的 CSS 样式，例如：</p>
+<pre><code class="CSS">.sidebar-ads &#123;
+  border-top: 1px dotted #ccc;
+  width: 100%;
+  height: 100px;
+  padding-top: 15px;
+  margin-bottom: 5px;
+&#125;
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>（多多是只猫：<a href="https://blog.echospace.top/">https://blog.echospace.top</a>）。</p>
+</blockquote>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+        <category>Next</category>
+        <category>Themes</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>blog</tag>
+        <tag>Next Themes</tag>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo博客完整部署指南</title>
+    <url>//hexo9012/</url>
+    <content><![CDATA[<p>本指南总结了您从零开始创建 Hexo 博客，解决配置问题，并最终实现双仓库（Source + Pages）分离管理的全部流程。</p>
+<h2 id="一、环境准备与-Hexo-初始化"><a href="#一、环境准备与-Hexo-初始化" class="headerlink" title="一、环境准备与 Hexo 初始化"></a>一、环境准备与 Hexo 初始化</h2><p>在开始之前，确保您的电脑上已安装 <strong>Node.js</strong> 和 <strong>Git</strong>。</p>
+<ol>
+<li><p><strong>全局安装 Hexo 命令行工具 (CLI)：</strong></p>
+<pre><code class="bash">npm install -g hexo-cli
+</code></pre>
+</li>
+<li><p>创建博客文件夹并初始化项目：<br> （假设新目录为 C:\Users\EchoWang\Documents\WEb\EchoSpace）</p>
+<pre><code class="Bash"># 切换到目标目录
+cd C:\Users\EchoWang\Documents\WEb\
+
+# 创建并初始化 Hexo 项目
+hexo init EchoSpace   
+cd EchoSpace  #进入根目录
+
+# 安装本地依赖
+npm install
+</code></pre>
+</li>
+<li><p><strong>安装部署插件：</strong></p>
+<pre><code class="Bash">npm install hexo-deployer-git --save
+</code></pre>
+</li>
+</ol>
+<h2 id="二、站点配置与部署（Pages-仓库）"><a href="#二、站点配置与部署（Pages-仓库）" class="headerlink" title="二、站点配置与部署（Pages 仓库）"></a>二、站点配置与部署（Pages 仓库）</h2><p>这一步配置 Hexo 如何生成和部署您的网站到 GitHub Pages 仓库 (这里是我的域名<code>blog.echospace.top</code>)。</p>
+<ol>
+<li><p>配置站点文件<code>_config.yml</code>：</p>
+<p> 打开博客根目录下的<code>_config.yml</code>，修改基本信息和部署设置。</p>
+<pre><code class="YAML"># URL (确保正确配置)
+url: https://blog.echospace.top
+root: /
+
+# 主题设置 (使用您最终选择的主题，例如 next)
+theme: next
+
+# 部署设置 (部署到您的 Pages 仓库)
+deploy:
+  type: git
+  repo: git@github.com:EchoSnake/echospace.github.io.git 
+  #这里替换为你自己的仓库,建议使用ssh进行链接，更加安全
+  branch: main # 或 gh-pages
+</code></pre>
+</li>
+<li><p><strong>解决主题配置冲突（若遇到）：</strong></p>
+<ul>
+<li><p>如果遇到 <code>Cannot read properties of undefined</code> 错误，请在主题配置文件中<strong>配置或禁用</strong>对应的功能块（如 <code>donate</code> 或 <code>comment</code>）。</p>
+</li>
+<li><p>如果使用 Git 安装 NexT 等主题，请在 <code>themes/next/_config.yml</code> 中进行配置。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>部署上线测试：</strong></p>
+<pre><code class="Bash">hexo clean
+hexo generate
+hexo deploy
+</code></pre>
+<p> <em>（<code>hexo deploy</code> 会将 <code>public/</code> 文件夹的内容推送到您的 Pages 仓库。）</em></p>
+</li>
+</ol>
+<hr>
+<h2 id="三、源代码管理（Source-仓库）"><a href="#三、源代码管理（Source-仓库）" class="headerlink" title="三、源代码管理（Source 仓库）"></a>三、源代码管理（Source 仓库）</h2><p>这一步将您的 Hexo 源代码 (<code>.md</code> 文件、<code>_config.yml</code> 等) 推送到您的源代码仓库 <code>echospace-source.git</code>。</p>
+<ol>
+<li><p>创建 .gitignore 文件（关键步骤）：</p>
+<p> 在博客根目录 EchoSpace 下创建 .gitignore 文件，防止推送生成文件和依赖。</p>
+<pre><code class="shell"># 必须忽略的文件和文件夹
+node_modules/
+public/
+db.json
+.deploy*/
+# ...其他配置...
+</code></pre>
+</li>
+<li><p><strong>初始化本地 Git 仓库并提交：</strong></p>
+<pre><code class="Bash">git init
+git add .
+git commit -m &quot;Initial commit for Hexo source files&quot;
+</code></pre>
+</li>
+<li><p><strong>连接并推送到您的 Source 仓库：</strong>    </p>
+<pre><code class="Bash"># 移除旧的远程仓库（如果存在）
+git remote remove origin
+
+# 连接到您的 Source 仓库
+git remote add origin https://github.com/EchoSnake/echospace-source.git
+
+# 推送源代码
+git branch -M main
+git push -u origin main
+</code></pre>
+</li>
+</ol>
+<h2 id="四、VS-Code-代码管理工作流"><a href="#四、VS-Code-代码管理工作流" class="headerlink" title="四、VS Code 代码管理工作流"></a>四、VS Code 代码管理工作流</h2><p>在 VS Code 中，您主要进行写作和源代码的备份管理。</p>
+<table>
+<thead>
+<tr>
+<th><strong>操作目的</strong></th>
+<th><strong>对应工具 &#x2F; 命令</strong></th>
+<th><strong>目标仓库</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>写作&#x2F;配置修改</strong></td>
+<td>VS Code 编辑器</td>
+<td>本地文件</td>
+</tr>
+<tr>
+<td><strong>备份源代码</strong></td>
+<td>VS Code 源代码管理 (提交 $\rightarrow$ 推送)</td>
+<td><strong><code>echospace-source.git</code></strong></td>
+</tr>
+<tr>
+<td><strong>网站更新上线</strong></td>
+<td>PowerShell: <code>hexo deploy</code></td>
+<td><strong><code>echospace.github.io.git</code></strong></td>
+</tr>
+</tbody></table>
+<h3 id="异地工作恢复（在新电脑上）"><a href="#异地工作恢复（在新电脑上）" class="headerlink" title="异地工作恢复（在新电脑上）"></a>异地工作恢复（在新电脑上）</h3><p>在新电脑上继续工作时，您只需执行以下步骤：</p>
+<ol>
+<li><p>安装 Node.js, Git, <code>hexo-cli</code>。</p>
+</li>
+<li><p>克隆源代码：<code>git clone https://github.com/EchoSnake/echospace-source.git</code></p>
+</li>
+<li><p>进入目录并恢复依赖：<code>npm install</code></p>
+</li>
+<li><p>开始工作。</p>
+</li>
+</ol>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Blog</category>
+        <category>博客</category>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Nginx</tag>
+        <tag>Git</tag>
+        <tag>Github</tag>
+        <tag>Vscode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>K8s部署Prometheus和Grafana</title>
+    <url>//k8sp7890/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍如何在 Kubernetes 集群中使用 Helm 部署 Prometheus 和 Grafana，包含完整的安装配置步骤、持久化存储设置、以及 UI 自定义方案。
+</p>
+
+<h1 id="在-K8s-上部署-Prometheus-和-Grafana"><a href="#在-K8s-上部署-Prometheus-和-Grafana" class="headerlink" title="在 K8s 上部署 Prometheus 和 Grafana"></a>在 K8s 上部署 Prometheus 和 Grafana</h1><h2 id="🔧-准备工作"><a href="#🔧-准备工作" class="headerlink" title="🔧 准备工作"></a>🔧 准备工作</h2><h3 id="1-环境要求"><a href="#1-环境要求" class="headerlink" title="1. 环境要求"></a>1. 环境要求</h3><ul>
+<li><strong>操作系统</strong>: Ubuntu 20.04+</li>
+<li><strong>Kubernetes</strong>: 正常运行的集群</li>
+<li><strong>Helm</strong>: 3.x 版本</li>
+<li><strong>kubectl</strong>: 已配置且可用</li>
+</ul>
+<h3 id="2-安装必要工具"><a href="#2-安装必要工具" class="headerlink" title="2. 安装必要工具"></a>2. 安装必要工具</h3><pre><code class="bash"># 安装 Helm 3
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# 安装 kubectl（如未安装）
+sudo snap install kubectl --classic
+
+# 验证安装
+helm version
+kubectl cluster-info
+</code></pre>
+<h3 id="3-创建监控命名空间"><a href="#3-创建监控命名空间" class="headerlink" title="3. 创建监控命名空间"></a>3. 创建监控命名空间</h3><pre><code class="bash">kubectl create namespace monitoring
+</code></pre>
+<h2 id="📦-部署-Prometheus"><a href="#📦-部署-Prometheus" class="headerlink" title="📦 部署 Prometheus"></a>📦 部署 Prometheus</h2><h3 id="1-添加-Helm-仓库"><a href="#1-添加-Helm-仓库" class="headerlink" title="1. 添加 Helm 仓库"></a>1. 添加 Helm 仓库</h3><pre><code class="bash">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+</code></pre>
+<h3 id="2-安装-Prometheus-Stack"><a href="#2-安装-Prometheus-Stack" class="headerlink" title="2. 安装 Prometheus Stack"></a>2. 安装 Prometheus Stack</h3><pre><code class="bash">helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --set prometheus.service.type=NodePort \
+  --set prometheus.service.nodePort=30090
+</code></pre>
+<h3 id="3-自定义配置（可选）"><a href="#3-自定义配置（可选）" class="headerlink" title="3. 自定义配置（可选）"></a>3. 自定义配置（可选）</h3><p>创建 <code>values.yaml</code>:</p>
+<pre><code class="yaml">prometheus:
+  prometheusSpec:
+    retention: 15d
+    resources:
+      requests:
+        memory: &quot;512Mi&quot;
+        cpu: &quot;500m&quot;
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: [&quot;ReadWriteOnce&quot;]
+          resources:
+            requests:
+              storage: 10Gi
+</code></pre>
+<p>应用配置：</p>
+<pre><code class="bash">helm upgrade prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  -f values.yaml
+</code></pre>
+<h2 id="🎨-配置-Grafana"><a href="#🎨-配置-Grafana" class="headerlink" title="🎨 配置 Grafana"></a>🎨 配置 Grafana</h2><h3 id="1-暴露-Grafana-服务"><a href="#1-暴露-Grafana-服务" class="headerlink" title="1. 暴露 Grafana 服务"></a>1. 暴露 Grafana 服务</h3><pre><code class="bash">helm upgrade prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30000
+</code></pre>
+<h3 id="2-获取访问凭证"><a href="#2-获取访问凭证" class="headerlink" title="2. 获取访问凭证"></a>2. 获取访问凭证</h3><pre><code class="bash"># 获取管理员密码
+kubectl get secret -n monitoring prometheus-grafana \
+  -o jsonpath=&#39;&#123;.data.admin-password&#125;&#39; | base64 --decode
+</code></pre>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="🔄-持久化存储配置"><a href="#🔄-持久化存储配置" class="headerlink" title="🔄 持久化存储配置"></a>🔄 持久化存储配置</h2><h3 id="1-创建持久卷声明（PVC）"><a href="#1-创建持久卷声明（PVC）" class="headerlink" title="1. 创建持久卷声明（PVC）"></a>1. 创建持久卷声明（PVC）</h3><pre><code class="yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+</code></pre>
+<h3 id="2-更新-Grafana-配置"><a href="#2-更新-Grafana-配置" class="headerlink" title="2. 更新 Grafana 配置"></a>2. 更新 Grafana 配置</h3><pre><code class="yaml">grafana:
+  persistence:
+    enabled: true
+    existingClaim: grafana-pvc
+    size: 10Gi
+</code></pre>
+<h2 id="🌐-配置-Ingress-访问"><a href="#🌐-配置-Ingress-访问" class="headerlink" title="🌐 配置 Ingress 访问"></a>🌐 配置 Ingress 访问</h2><h3 id="1-创建-Ingress-规则"><a href="#1-创建-Ingress-规则" class="headerlink" title="1. 创建 Ingress 规则"></a>1. 创建 Ingress 规则</h3><pre><code class="yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: grafana.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-grafana
+            port:
+              number: 80
+</code></pre>
+<h3 id="2-应用-Ingress-配置"><a href="#2-应用-Ingress-配置" class="headerlink" title="2. 应用 Ingress 配置"></a>2. 应用 Ingress 配置</h3><pre><code class="bash">kubectl apply -f ingress.yaml
+</code></pre>
+<h2 id="📊-导入-Dashboard"><a href="#📊-导入-Dashboard" class="headerlink" title="📊 导入 Dashboard"></a>📊 导入 Dashboard</h2><h3 id="1-常用-Dashboard-ID"><a href="#1-常用-Dashboard-ID" class="headerlink" title="1. 常用 Dashboard ID"></a>1. 常用 Dashboard ID</h3><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>Dashboard ID</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>节点监控</td>
+<td>1860</td>
+<td>Node Exporter 全量指标</td>
+</tr>
+<tr>
+<td>集群概览</td>
+<td>13105</td>
+<td>Kubernetes 集群监控</td>
+</tr>
+<tr>
+<td>资源使用</td>
+<td>8685</td>
+<td>Pod 资源使用详情</td>
+</tr>
+<tr>
+<td>网络监控</td>
+<td>12175</td>
+<td>网络流量分析</td>
+</tr>
+</tbody></table>
+<h3 id="2-导入步骤"><a href="#2-导入步骤" class="headerlink" title="2. 导入步骤"></a>2. 导入步骤</h3><ol>
+<li>访问 Grafana UI</li>
+<li>点击 <code>+</code> &gt; <code>Import</code></li>
+<li>输入 Dashboard ID</li>
+<li>选择数据源（默认 <code>Prometheus</code>）</li>
+<li>点击 <code>Import</code></li>
+</ol>
+<h2 id="🔍-监控验证"><a href="#🔍-监控验证" class="headerlink" title="🔍 监控验证"></a>🔍 监控验证</h2><h3 id="1-检查组件状态"><a href="#1-检查组件状态" class="headerlink" title="1. 检查组件状态"></a>1. 检查组件状态</h3><pre><code class="bash"># 检查 Pod 状态
+kubectl get pods -n monitoring
+
+# 检查服务状态
+kubectl get svc -n monitoring
+
+# 查看资源使用
+kubectl top nodes
+</code></pre>
+<h3 id="2-验证数据采集"><a href="#2-验证数据采集" class="headerlink" title="2. 验证数据采集"></a>2. 验证数据采集</h3><pre><code class="bash"># 查看目标状态
+curl -s http://&lt;节点IP&gt;:30090/targets | grep &quot;UP&quot;
+
+# 检查告警规则
+kubectl get prometheusrules -n monitoring
+</code></pre>
+<h2 id="⚠️-常见问题排查"><a href="#⚠️-常见问题排查" class="headerlink" title="⚠️ 常见问题排查"></a>⚠️ 常见问题排查</h2><ol>
+<li><p><strong>Pod 无法启动</strong></p>
+<pre><code class="bash"># 查看详细错误
+kubectl describe pod &lt;pod-name&gt; -n monitoring
+</code></pre>
+</li>
+</ol>
+<h1 id="查看容器日志"><a href="#查看容器日志" class="headerlink" title="查看容器日志"></a>查看容器日志</h1><p>kubectl logs <pod-name> -n monitoring</pod-name></p>
+<pre><code>2. **数据采集异常**
+- 检查 ServiceMonitor 配置
+- 验证标签选择器
+- 确认端口暴露正确
+
+3. **Grafana 访问问题**
+- 确认服务暴露方式
+- 检查 Ingress 配置
+- 验证网络策略
+
+## 📝 运维建议
+
+1. 定期备份 Grafana 配置
+```bash
+kubectl cp monitoring/prometheus-grafana-xxx:/var/lib/grafana ./grafana-backup
+</code></pre>
+<ol start="2">
+<li><p>监控资源使用</p>
+<pre><code class="bash"># 设置资源告警
+kubectl apply -f prometheus-rules.yaml
+</code></pre>
+</li>
+<li><p>日志轮转配置</p>
+<pre><code class="yaml">prometheus:
+prometheusSpec:
+ retention: 15d
+ retentionSize: &quot;10GB&quot;
+</code></pre>
+</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a href="https://prometheus-operator.dev/">Prometheus Operator 文档</a></li>
+<li><a href="https://grafana.com/docs/">Grafana 官方文档</a></li>
+<li><a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack</a></li>
+<li><a href="https://prometheus.io/docs/practices/naming/">Prometheus 最佳实践</a></li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Kubernetes</category>
+        <category>监控</category>
+      </categories>
+      <tags>
+        <tag>K8s</tag>
+        <tag>Prometheus</tag>
+        <tag>Grafana</tag>
+        <tag>监控</tag>
+        <tag>Helm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Kubernetes集群部署指南</title>
+    <url>//kube1234/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程提供了在 Ubuntu 系统上部署 Kubernetes 集群的详细步骤，包括环境准备、containerd 配置、集群初始化以及网络插件部署，并附带完整的命令参考。
+</p>
+
+<h1 id="Kubernetes-集群部署指南-Ubuntu"><a href="#Kubernetes-集群部署指南-Ubuntu" class="headerlink" title="Kubernetes 集群部署指南 (Ubuntu)"></a>Kubernetes 集群部署指南 (Ubuntu)</h1><h2 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h2><ul>
+<li>Ubuntu 20.04 或更高版本</li>
+<li>最少 2 CPU、2GB 内存</li>
+<li>所有节点网络互通</li>
+<li>每个节点唯一的 MAC&#x2F;产品 UUID</li>
+</ul>
+<h2 id="1️⃣-所有节点初始化"><a href="#1️⃣-所有节点初始化" class="headerlink" title="1️⃣ 所有节点初始化"></a>1️⃣ 所有节点初始化</h2><h3 id="系统更新"><a href="#系统更新" class="headerlink" title="系统更新"></a>系统更新</h3><pre><code class="bash"># 更新系统包
+sudo apt update &amp;&amp; sudo apt upgrade -y
+</code></pre>
+<h3 id="关闭-swap"><a href="#关闭-swap" class="headerlink" title="关闭 swap"></a>关闭 swap</h3><pre><code class="bash"># 临时关闭
+sudo swapoff -a
+
+# 永久关闭（编辑 /etc/fstab）
+sudo sed -i &#39;/ swap / s/^/#/&#39; /etc/fstab
+</code></pre>
+<h3 id="配置内核模块"><a href="#配置内核模块" class="headerlink" title="配置内核模块"></a>配置内核模块</h3><pre><code class="bash"># 加载必要模块
+cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+# 立即加载
+sudo modprobe overlay
+sudo modprobe br_netfilter
+</code></pre>
+<h3 id="设置内核参数"><a href="#设置内核参数" class="headerlink" title="设置内核参数"></a>设置内核参数</h3><pre><code class="bash"># 配置 sysctl
+cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+# 应用配置
+sudo sysctl --system
+</code></pre>
+<h2 id="2️⃣-安装容器运行时"><a href="#2️⃣-安装容器运行时" class="headerlink" title="2️⃣ 安装容器运行时"></a>2️⃣ 安装容器运行时</h2><h3 id="安装-containerd"><a href="#安装-containerd" class="headerlink" title="安装 containerd"></a>安装 containerd</h3><pre><code class="bash"># 安装 containerd
+sudo apt install -y containerd
+
+# 创建默认配置
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+# 启用 SystemdCgroup
+sudo sed -i &#39;s/SystemdCgroup = false/SystemdCgroup = true/&#39; /etc/containerd/config.toml
+
+# 重启服务
+sudo systemctl restart containerd
+sudo systemctl enable containerd
+</code></pre>
+<h2 id="3️⃣-安装-Kubernetes-组件"><a href="#3️⃣-安装-Kubernetes-组件" class="headerlink" title="3️⃣ 安装 Kubernetes 组件"></a>3️⃣ 安装 Kubernetes 组件</h2><h3 id="添加-apt-源"><a href="#添加-apt-源" class="headerlink" title="添加 apt 源"></a>添加 apt 源</h3><pre><code class="bash"># 安装依赖
+sudo apt install -y apt-transport-https ca-certificates curl gpg
+
+# 添加 K8s 源密钥
+sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# 添加 apt 源
+echo &quot;deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /&quot; | \
+  sudo tee /etc/apt/sources.list.d/kubernetes.list
+</code></pre>
+<h3 id="安装必要组件"><a href="#安装必要组件" class="headerlink" title="安装必要组件"></a>安装必要组件</h3><pre><code class="bash"># 安装 kubeadm、kubelet、kubectl
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+</code></pre>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="4️⃣-初始化主节点"><a href="#4️⃣-初始化主节点" class="headerlink" title="4️⃣ 初始化主节点"></a>4️⃣ 初始化主节点</h2><h3 id="准备初始化配置"><a href="#准备初始化配置" class="headerlink" title="准备初始化配置"></a>准备初始化配置</h3><pre><code class="bash"># 创建 kubeadm 配置文件
+cat &lt;&lt;EOF &gt; kubeadm-config.yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+nodeRegistration:
+  criSocket: &quot;unix:///var/run/containerd/containerd.sock&quot;
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+networking:
+  podSubnet: &quot;10.244.0.0/16&quot;  # Flannel 默认网段
+EOF
+</code></pre>
+<h3 id="执行初始化"><a href="#执行初始化" class="headerlink" title="执行初始化"></a>执行初始化</h3><pre><code class="bash"># 初始化集群
+sudo kubeadm init --config kubeadm-config.yaml
+
+# 配置 kubectl（对于当前用户）
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<h2 id="5️⃣-部署网络插件"><a href="#5️⃣-部署网络插件" class="headerlink" title="5️⃣ 部署网络插件"></a>5️⃣ 部署网络插件</h2><h3 id="安装-Flannel"><a href="#安装-Flannel" class="headerlink" title="安装 Flannel"></a>安装 Flannel</h3><pre><code class="bash"># 下载并应用 Flannel 配置
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+
+# 等待 Flannel pods 就绪
+kubectl wait --namespace kube-system \
+  --for=condition=ready pod \
+  --selector=app=flannel \
+  --timeout=90s
+</code></pre>
+<h2 id="6️⃣-添加工作节点"><a href="#6️⃣-添加工作节点" class="headerlink" title="6️⃣ 添加工作节点"></a>6️⃣ 添加工作节点</h2><p>在其他节点执行 <code>kubeadm join</code> 命令（从主节点初始化输出中获取）：</p>
+<pre><code class="bash"># 示例（请使用实际的 token 和 hash）
+sudo kubeadm join 192.168.1.10:6443 \
+  --token abcdef.0123456789abcdef \
+  --discovery-token-ca-cert-hash \
+  sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+</code></pre>
+<h2 id="🔍-验证集群状态"><a href="#🔍-验证集群状态" class="headerlink" title="🔍 验证集群状态"></a>🔍 验证集群状态</h2><pre><code class="bash"># 查看节点状态
+kubectl get nodes -o wide
+
+# 检查系统组件
+kubectl get pods -n kube-system
+
+# 验证 DNS
+kubectl run test-nginx --image=nginx
+kubectl get pods -o wide
+</code></pre>
+<h2 id="📝-常见问题处理"><a href="#📝-常见问题处理" class="headerlink" title="📝 常见问题处理"></a>📝 常见问题处理</h2><h3 id="1-重置集群"><a href="#1-重置集群" class="headerlink" title="1. 重置集群"></a>1. 重置集群</h3><pre><code class="bash"># 在所有节点执行
+sudo kubeadm reset
+sudo rm -rf $HOME/.kube
+sudo rm -rf /etc/kubernetes /var/lib/kubelet /var/lib/etcd
+</code></pre>
+<h3 id="2-重新生成-join-令牌"><a href="#2-重新生成-join-令牌" class="headerlink" title="2. 重新生成 join 令牌"></a>2. 重新生成 join 令牌</h3><pre><code class="bash"># 在主节点执行
+kubeadm token create --print-join-command
+</code></pre>
+<h3 id="3-Pod-网络故障排查"><a href="#3-Pod-网络故障排查" class="headerlink" title="3. Pod 网络故障排查"></a>3. Pod 网络故障排查</h3><pre><code class="bash"># 检查 CNI 配置
+ls /etc/cni/net.d/
+
+# 查看 Flannel 日志
+kubectl logs -n kube-system -l app=flannel
+</code></pre>
+<h2 id="🔧-实用命令参考"><a href="#🔧-实用命令参考" class="headerlink" title="🔧 实用命令参考"></a>🔧 实用命令参考</h2><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看节点详情</td>
+<td><code>kubectl describe node &lt;node-name&gt;</code></td>
+</tr>
+<tr>
+<td>驱逐节点上的 Pod</td>
+<td><code>kubectl drain &lt;node-name&gt; --ignore-daemonsets</code></td>
+</tr>
+<tr>
+<td>设置节点不可调度</td>
+<td><code>kubectl cordon &lt;node-name&gt;</code></td>
+</tr>
+<tr>
+<td>恢复节点可调度</td>
+<td><code>kubectl uncordon &lt;node-name&gt;</code></td>
+</tr>
+</tbody></table>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li>确保所有节点时间同步</li>
+<li>检查防火墙是否允许必要端口<ul>
+<li>6443: API Server</li>
+<li>2379-2380: etcd</li>
+<li>10250: Kubelet</li>
+<li>8472: Flannel VXLAN</li>
+</ul>
+</li>
+<li>生产环境建议使用高可用配置</li>
+<li>定期备份 etcd 数据</li>
+</ol>
+<hr>
+<p>更多资源：</p>
+<ul>
+<li><a href="https://kubernetes.io/docs/">Kubernetes 官方文档</a></li>
+<li><a href="https://containerd.io/">containerd 文档</a></li>
+<li><a href="https://github.com/flannel-io/flannel">Flannel GitHub</a></li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Kubernetes</category>
+        <category>运维部署</category>
+      </categories>
+      <tags>
+        <tag>K8s</tag>
+        <tag>Ubuntu</tag>
+        <tag>containerd</tag>
+        <tag>集群部署</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux磁盘分区自动挂载配置</title>
+    <url>//disk2345/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍了如何在 Linux 系统中配置磁盘分区的自动挂载，包括查看磁盘信息、创建挂载点、配置 fstab 文件以及处理 NTFS 分区等常见场景。
+</p>
+
+<h1 id="Linux-磁盘分区自动挂载配置指南"><a href="#Linux-磁盘分区自动挂载配置指南" class="headerlink" title="Linux 磁盘分区自动挂载配置指南"></a>Linux 磁盘分区自动挂载配置指南</h1><h2 id="🔍-前期准备"><a href="#🔍-前期准备" class="headerlink" title="🔍 前期准备"></a>🔍 前期准备</h2><p>在开始配置自动挂载之前，请确保：</p>
+<ul>
+<li>具有 root 或 sudo 权限</li>
+<li>了解目标磁盘的文件系统类型</li>
+<li>备份重要数据（如修改 fstab）</li>
+</ul>
+<h2 id="📋-详细步骤"><a href="#📋-详细步骤" class="headerlink" title="📋 详细步骤"></a>📋 详细步骤</h2><h3 id="🧩-步骤-1：查看磁盘信息"><a href="#🧩-步骤-1：查看磁盘信息" class="headerlink" title="🧩 步骤 1：查看磁盘信息"></a>🧩 步骤 1：查看磁盘信息</h3><p>首先需要获取磁盘的 UUID 和文件系统类型：</p>
+<pre><code class="bash"># 显示所有磁盘的详细信息，包括 UUID 和文件系统类型
+sudo lsblk -f
+
+# 或使用 blkid 命令（需要 root 权限）
+sudo blkid
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="plaintext">NAME   FSTYPE LABEL UUID                                 MOUNTPOINT
+sda                                                      
+├─sda1 ext4         a1b2c3d4-e5f6-1234-5678-abcdef123456  /
+sdb                                                      
+└─sdb1 ext4         9988aabb-ccdd-eeff-0011-223344556677  
+</code></pre>
+<h3 id="📁-步骤-2：创建挂载目录"><a href="#📁-步骤-2：创建挂载目录" class="headerlink" title="📁 步骤 2：创建挂载目录"></a>📁 步骤 2：创建挂载目录</h3><p>为磁盘分区创建挂载点：</p>
+<pre><code class="bash"># 创建挂载目录
+sudo mkdir -p /mnt/data
+
+# 设置适当的权限（可选）
+sudo chmod 755 /mnt/data
+</code></pre>
+<h3 id="📝-步骤-3：配置-fstab"><a href="#📝-步骤-3：配置-fstab" class="headerlink" title="📝 步骤 3：配置 fstab"></a>📝 步骤 3：配置 fstab</h3><p>编辑 <code>/etc/fstab</code> 文件添加自动挂载配置：</p>
+<pre><code class="bash"># 使用你喜欢的编辑器打开 fstab
+sudo nano /etc/fstab
+</code></pre>
+<p>添加配置行（基本格式）：</p>
+<pre><code class="plaintext"># &lt;file system&gt;  &lt;mount point&gt;  &lt;type&gt;  &lt;options&gt;  &lt;dump&gt;  &lt;pass&gt;
+UUID=9988aabb-ccdd-eeff-0011-223344556677  /mnt/data  ext4  defaults  0  2
+</code></pre>
+<blockquote>
+<p>💡 <strong>参数说明</strong></p>
+<ul>
+<li><code>UUID=xxx</code>：分区的唯一标识符</li>
+<li><code>/mnt/data</code>：挂载点路径</li>
+<li><code>ext4</code>：文件系统类型</li>
+<li><code>defaults</code>：默认挂载选项</li>
+<li><code>0</code>：dump 备份选项（0 表示不备份）</li>
+<li><code>2</code>：fsck 检查顺序（0 不检查，1 根分区，2 其他分区）</li>
+</ul>
+</blockquote>
+<h3 id="🧪-步骤-4：测试配置"><a href="#🧪-步骤-4：测试配置" class="headerlink" title="🧪 步骤 4：测试配置"></a>🧪 步骤 4：测试配置</h3><p>在重启之前，先测试配置是否正确：</p>
+<pre><code class="bash"># 测试 fstab 中的所有挂载点
+sudo mount -a
+
+# 检查挂载结果
+df -h | grep /mnt/data
+</code></pre>
+<h2 id="🪟-NTFS-分区挂载示例"><a href="#🪟-NTFS-分区挂载示例" class="headerlink" title="🪟 NTFS 分区挂载示例"></a>🪟 NTFS 分区挂载示例</h2><p>如果需要挂载 Windows NTFS 分区，请先安装必要的驱动：</p>
+<pre><code class="bash"># 安装 NTFS 支持
+sudo apt install ntfs-3g
+</code></pre>
+<p>在 <code>/etc/fstab</code> 中添加 NTFS 配置：</p>
+<pre><code class="plaintext"># Windows NTFS 分区示例
+UUID=XXXX-XXXX  /mnt/windows  ntfs-3g  defaults,uid=1000,gid=1000,umask=022  0  0
+</code></pre>
+<blockquote>
+<p>🔔 <strong>NTFS 挂载选项说明</strong></p>
+<ul>
+<li><code>uid=1000,gid=1000</code>：指定所有者和组（使用 <code>id</code> 命令查看）</li>
+<li><code>umask=022</code>：设置默认权限</li>
+<li><code>defaults</code>：包含 <code>rw,suid,dev,exec,auto,nouser,async</code></li>
+</ul>
+</blockquote>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li><p>修改 fstab 前务必备份：</p>
+<pre><code class="bash">sudo cp /etc/fstab /etc/fstab.backup
+</code></pre>
+</li>
+<li><p>确保挂载点目录存在且权限正确</p>
+</li>
+<li><p>UUID 比设备名（如 &#x2F;dev&#x2F;sdb1）更可靠</p>
+</li>
+<li><p>使用 <code>mount -a</code> 测试新配置</p>
+</li>
+<li><p>如遇问题，可用备份恢复：</p>
+<pre><code class="bash">sudo cp /etc/fstab.backup /etc/fstab
+</code></pre>
+</li>
+</ol>
+<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><p>如果遇到挂载问题：</p>
+<pre><code class="bash"># 查看挂载错误
+dmesg | tail
+
+# 检查文件系统
+sudo fsck /dev/sdb1
+
+# 查看详细挂载信息
+mount | grep /mnt/data
+</code></pre>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统管理</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>磁盘管理</tag>
+        <tag>fstab</tag>
+        <tag>自动挂载</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux自动内存缓存清理方案</title>
+    <url>//memo8901/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程提供了基于 Systemd 的 Linux 内存缓存自动清理方案。通过 Shell 脚本和 Systemd Timer 实现定时、安全的缓存清理，并包含可用内存阈值检查和完整的日志监控配置。
+</p>
+
+<h1 id="🛡️-Linux-自动内存缓存清理方案-Systemd-版本"><a href="#🛡️-Linux-自动内存缓存清理方案-Systemd-版本" class="headerlink" title="🛡️ Linux 自动内存缓存清理方案 (Systemd 版本)"></a>🛡️ Linux 自动内存缓存清理方案 (Systemd 版本)</h1><h2 id="📂-1-创建缓存清理脚本"><a href="#📂-1-创建缓存清理脚本" class="headerlink" title="📂 1. 创建缓存清理脚本"></a>📂 1. 创建缓存清理脚本</h2><p>创建脚本文件：</p>
+<pre><code class="bash">sudo vim /usr/local/bin/cache_cleaner.sh
+</code></pre>
+<h3 id="脚本内容"><a href="#脚本内容" class="headerlink" title="脚本内容"></a>脚本内容</h3><pre><code class="bash">#!/bin/bash
+# 内存缓存清理脚本 v1.2
+# 安全模式：当可用内存 &gt;20% 时不执行清理
+
+MIN_FREE_PERCENT=20  # 触发清理的阈值
+
+echo &quot;[$(date +&#39;%F %T&#39;)] 检查内存状态...&quot;
+
+# 获取内存信息（total, used）
+read -r total used _ &lt;&lt;&lt; $(free -m | awk &#39;/Mem:/&#123;print $2,$3&#125;&#39;)
+# 计算当前&quot;可用率&quot;（使用 available 字段更准确）
+free_percent=$(( (total - used) * 100 / total ))
+
+if [ &quot;$free_percent&quot; -lt &quot;$MIN_FREE_PERCENT&quot; ]; then
+    echo &quot;内存可用率 $&#123;free_percent&#125;% &lt; $&#123;MIN_FREE_PERCENT&#125;%，执行清理...&quot;
+
+    # 安全清理步骤
+    sync
+    echo 1 &gt; /proc/sys/vm/drop_caches
+    sleep 1
+    echo 2 &gt; /proc/sys/vm/drop_caches
+    sleep 1
+    echo 3 &gt; /proc/sys/vm/drop_caches
+
+    # 使用 available 字段计算最新可用百分比（更准确）
+    new_free=$(free -m | awk &#39;/Mem:/&#123;printf &quot;%.1f&quot;, $7/$2*100&#125;&#39;)
+    echo &quot;清理完成 → 当前可用: $&#123;new_free&#125;%&quot;
+else
+    echo &quot;内存充足 ($&#123;free_percent&#125;%)，跳过清理&quot;
+fi
+</code></pre>
+<h3 id="设置脚本权限"><a href="#设置脚本权限" class="headerlink" title="设置脚本权限"></a>设置脚本权限</h3><pre><code class="bash">sudo chmod 755 /usr/local/bin/cache_cleaner.sh
+sudo chown root:root /usr/local/bin/cache_cleaner.sh
+</code></pre>
+<h2 id="⚙️-2-配置-Systemd-服务单元"><a href="#⚙️-2-配置-Systemd-服务单元" class="headerlink" title="⚙️ 2. 配置 Systemd 服务单元"></a>⚙️ 2. 配置 Systemd 服务单元</h2><p>创建服务文件：</p>
+<pre><code class="bash">sudo vim /etc/systemd/system/cache_cleaner.service
+</code></pre>
+<h3 id="服务配置内容"><a href="#服务配置内容" class="headerlink" title="服务配置内容"></a>服务配置内容</h3><pre><code class="ini">[Unit]
+Description=Memory Cache Cleaner
+After=syslog.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/cache_cleaner.sh
+User=root
+ProtectSystem=full
+</code></pre>
+<h2 id="🕒-3-创建-Systemd-定时器"><a href="#🕒-3-创建-Systemd-定时器" class="headerlink" title="🕒 3. 创建 Systemd 定时器"></a>🕒 3. 创建 Systemd 定时器</h2><p>创建定时器文件：</p>
+<pre><code class="bash">sudo vim /etc/systemd/system/cache_cleaner.timer
+</code></pre>
+<h3 id="定时器配置内容"><a href="#定时器配置内容" class="headerlink" title="定时器配置内容"></a>定时器配置内容</h3><pre><code class="ini">[Unit]
+Description=Run memory cleaner every 3 hours
+
+[Timer]
+OnCalendar=*-*-* 0/3:00:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+</code></pre>
+<h2 id="🔧-4-启用并测试服务"><a href="#🔧-4-启用并测试服务" class="headerlink" title="🔧 4. 启用并测试服务"></a>🔧 4. 启用并测试服务</h2><pre><code class="bash"># 重载 systemd 配置
+sudo systemctl daemon-reload
+
+# 测试脚本
+sudo /usr/local/bin/cache_cleaner.sh
+
+# 启用定时器
+sudo systemctl enable --now cache_cleaner.timer
+
+# 验证状态
+systemctl list-timers | grep cache_cleaner
+journalctl -u cache_cleaner.service -f
+</code></pre>
+<h2 id="📊-5-监控与日志管理"><a href="#📊-5-监控与日志管理" class="headerlink" title="📊 5. 监控与日志管理"></a>📊 5. 监控与日志管理</h2><table>
+<thead>
+<tr>
+<th>命令目的</th>
+<th>具体命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看最近记录</td>
+<td><code>journalctl -u cache_cleaner.service -n 10</code></td>
+</tr>
+<tr>
+<td>跟踪实时日志</td>
+<td><code>journalctl -u cache_cleaner.service -f</code></td>
+</tr>
+</tbody></table>
+<h3 id="配置每日日志导出（可选）"><a href="#配置每日日志导出（可选）" class="headerlink" title="配置每日日志导出（可选）"></a>配置每日日志导出（可选）</h3><pre><code class="bash"># 编辑 root 的 crontab
+sudo crontab -e
+
+# 添加以下内容：
+0 0 * * * journalctl -u cache_cleaner.service --since &quot;1 day ago&quot; &gt; /var/log/memclean_daily.log
+</code></pre>
+<h2 id="📝-注意事项"><a href="#📝-注意事项" class="headerlink" title="📝 注意事项"></a>📝 注意事项</h2><ol>
+<li>脚本会在可用内存低于 20% 时触发清理</li>
+<li>使用 sync 确保数据安全</li>
+<li>通过 sleep 间隔确保清理操作平滑执行</li>
+<li>可以根据实际需求调整定时器间隔</li>
+<li>建议定期检查日志确保服务正常运行</li>
+</ol>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统管理</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>内存管理</tag>
+        <tag>Systemd</tag>
+        <tag>自动化运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MicrosoftOffice-手把手教你安装Office并激活</title>
+    <url>//office5269/</url>
+    <content><![CDATA[<h3 id="Office-Tool-Plus下载链接："><a href="#Office-Tool-Plus下载链接：" class="headerlink" title="Office Tool Plus下载链接："></a>Office Tool Plus下载链接：</h3><ul>
+<li><a href="https://www.officetool.plus/zh-cn/introduction/download.html">官网</a></li>
+<li><a href="https://www.officetool.plus/redirect/download.php?site=sdumirror&type=runtime&arch=x64">下载链接1</a>    </li>
+<li><a href="https://www.officetool.plus/redirect/download.php?site=sjtumirror&type=runtime&arch=x64">下载链接2</a>    </li>
+<li><a href="https://www.officetool.plus/redirect/download.php?site=nju&type=runtime&arch=x64">下载链接3</a>    </li>
+<li><a href="https://www.officetool.plus/redirect/download.php?site=lzu&type=runtime&arch=x64">下载链接4</a>    </li>
+<li><a href="https://www.officetool.plus/redirect/download.php?site=nyist&type=runtime&arch=x64">下载链接5</a>    </li>
+<li><a href="https://www.officetool.plus/redirect/download.php?site=yuntu&type=runtime&arch=x64">下载链接6</a></li>
+</ul>
+<h1 id="Microsoft-Office安装激活教程"><a href="#Microsoft-Office安装激活教程" class="headerlink" title="Microsoft Office安装激活教程"></a>Microsoft Office安装激活教程</h1><p>怎么装Office，怎么激活？很简单。</p>
+<h2 id="下载工具"><a href="#下载工具" class="headerlink" title="下载工具"></a>下载工具</h2><ul>
+<li>进入这个网页<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208164223094.png" alt="图片"></li>
+<li>点击下载，如果下载不下来就换后面的地址<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208172218676.png" alt="图片"></li>
+<li>左键单机下载下来的压缩文件，点击上方全部解压缩，点击提取<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162329372.png" alt="图片"></li>
+<li>在弹出窗口的文件夹中找到  office tool plus.exe<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162418891.png" alt="图片"></li>
+<li>双击打开它，若有提示选择  同意</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li>选择左边的部署<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162508733.png" alt="图片"></li>
+<li>系统里自带的Office如果没有激活，点击这个垃圾桶进行卸载它<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162544186.png" alt="图片"></li>
+<li>点击添加产品<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162605944.png" alt="图片"></li>
+<li>推荐选择Office 2021 专业版<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162634235.png" alt="图片"></li>
+<li>选择你想要的组件，我这里勾选的是幻灯片，表格，文本文档，其他组件按照你自己的需求<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162755780.png" alt="图片"></li>
+<li>点击开始部署<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162827236.png" alt="图片"></li>
+<li>选择  是<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162842029.png" alt="图片"></li>
+<li>期间会弹出窗口，什么都不用管，等他自己安装完成<br> <img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162858654.png" alt="图片"><br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208162905097.png" alt="图片"></li>
+<li>显示  一切已就绪  字样，点击关闭<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163118175.png" alt="图片"></li>
+</ul>
+<h2 id="激活"><a href="#激活" class="headerlink" title="激活"></a>激活</h2><ul>
+<li>右键开始菜单，选择”Windows PowerShell(管理员)”<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163154155.png" alt="图片"></li>
+<li>输入命令后按回车<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163224511.png" alt="图片"><pre><code class="shell">irm https://get.activated.win | iex
+</code></pre>
+</li>
+<li>在弹出的窗口按2<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163306077.png" alt="图片"></li>
+<li>这个窗口再按1<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163320986.png" alt="图片"></li>
+<li>激活完成后会这样提示，点叉叉关闭这些窗口<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163409989.png" alt="图片"></li>
+</ul>
+<h2 id="检查激活"><a href="#检查激活" class="headerlink" title="检查激活"></a>检查激活</h2><ul>
+<li>找到word并打开<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163450541.png" alt="图片"></li>
+<li>点接受<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163506397.png" alt="图片"></li>
+<li>点击左下角账户，就可以查看到已经激活<br><img src="/images/MicrosoftOffice-%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%89%E8%A3%85Office%E5%B9%B6%E6%BF%80%E6%B4%BB/file-20251208163546063.png" alt="图片"></li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>安装+激活，两步搞定Office！永久激活，一次到位。有问题评论区见~</p>
+<hr>
+<h2 id="免责声明"><a href="#免责声明" class="headerlink" title="免责声明"></a>免责声明</h2><p>本文仅用于技术学习和研究目的，分享HWID激活方法仅供了解技术原理。</p>
+<p><strong>重要提示</strong>：</p>
+<ul>
+<li>HWID激活可能违反微软软件许可协议</li>
+<li>本文内容不构成对任何非法行为的鼓励或支持</li>
+<li>使用此类激活方法可能存在法律和安全风险</li>
+<li>建议用户购买正版软件以获得完整服务和支持</li>
+</ul>
+<p><strong>合法替代方案</strong>：</p>
+<ul>
+<li>Microsoft 365订阅服务</li>
+<li>Office免费在线版</li>
+<li>教育用户免费授权</li>
+<li>开源办公软件（如OnlyOffice）</li>
+</ul>
+<p>使用者应自行承担使用本文方法的一切风险和后果，作者不承担任何责任。</p>
+<hr>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用技术教程，让你的数字生活更自由！</p>
+<p>关注我，发现更多实用技巧与教程！</p>
+<p>#Office #Office激活 #技术教程 #电脑技巧 #HWID</p>
+]]></content>
+      <categories>
+        <category>技术指南</category>
+      </categories>
+      <tags>
+        <tag>Office</tag>
+        <tag>激活</tag>
+        <tag>办公软件</tag>
+        <tag>PPT</tag>
+        <tag>EXCEL</tag>
+        <tag>WORD</tag>
+        <tag>Windows</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Prometheus配置文件完整解析</title>
+    <url>//prom3456/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本文详细解析了 Prometheus 配置文件 (prometheus.yml) 的所有关键部分，包括全局设置、规则加载、告警配置、指标采集和远程存储等核心功能的配置方法。
+</p>
+
+<h1 id="Prometheus-配置文件完整解析"><a href="#Prometheus-配置文件完整解析" class="headerlink" title="Prometheus 配置文件完整解析"></a>Prometheus 配置文件完整解析</h1><h2 id="📝-配置文件概述"><a href="#📝-配置文件概述" class="headerlink" title="📝 配置文件概述"></a>📝 配置文件概述</h2><p>Prometheus 的配置基于 YAML 格式，定义了其所有核心行为：</p>
+<ul>
+<li>全局默认参数</li>
+<li>规则文件加载</li>
+<li>告警管理集成</li>
+<li>指标采集任务</li>
+<li>远程存储配置</li>
+</ul>
+<h2 id="1️⃣-全局配置（global）"><a href="#1️⃣-全局配置（global）" class="headerlink" title="1️⃣ 全局配置（global）"></a>1️⃣ 全局配置（global）</h2><p><code>global</code> 块定义了适用于所有配置的默认参数：</p>
+<pre><code class="yaml">global:
+  # 默认抓取间隔
+  scrape_interval: 15s    # 每 15 秒采集一次指标
+
+  # 抓取超时时间
+  scrape_timeout: 10s     # 等待目标响应的最长时间
+
+  # 规则评估间隔
+  evaluation_interval: 15s # 每 15 秒评估一次规则
+
+  # 外部标签（用于区分不同 Prometheus 实例）
+  external_labels:
+    monitor: &#39;prom-prod-01&#39;  # 生产环境实例标识
+    region: &#39;us-east-1&#39;      # 区域标识
+</code></pre>
+<blockquote>
+<p>💡 <strong>提示</strong>：外部标签仅附加在时间序列数据发送到外部系统（如 Alertmanager）时。</p>
+</blockquote>
+<h2 id="2️⃣-规则文件配置（rule-files）"><a href="#2️⃣-规则文件配置（rule-files）" class="headerlink" title="2️⃣ 规则文件配置（rule_files）"></a>2️⃣ 规则文件配置（rule_files）</h2><p>指定需要加载的规则文件路径：</p>
+<pre><code class="yaml">rule_files:
+  # 使用 glob 模式加载规则文件
+  - &quot;/etc/prometheus/rules/*.yml&quot;
+  # 也可以指定具体文件
+  - &quot;/etc/prometheus/recording.rules&quot;
+  - &quot;/etc/prometheus/alerting.rules&quot;
+</code></pre>
+<h2 id="3️⃣-告警配置（alerting）"><a href="#3️⃣-告警配置（alerting）" class="headerlink" title="3️⃣ 告警配置（alerting）"></a>3️⃣ 告警配置（alerting）</h2><p>配置 Alertmanager 连接信息：</p>
+<pre><code class="yaml">alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - &#39;alertmanager:9093&#39;  # Alertmanager 服务地址
+      scheme: http                 # 连接协议（http/https）
+      timeout: 10s                # 请求超时时间
+</code></pre>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="4️⃣-抓取配置（scrape-configs）"><a href="#4️⃣-抓取配置（scrape-configs）" class="headerlink" title="4️⃣ 抓取配置（scrape_configs）"></a>4️⃣ 抓取配置（scrape_configs）</h2><p>定义指标采集任务：</p>
+<pre><code class="yaml">scrape_configs:
+  # Prometheus 自身监控
+  - job_name: &#39;prometheus&#39;
+    static_configs:
+      - targets: [&#39;localhost:9090&#39;]
+
+  # 节点导出器监控
+  - job_name: &#39;node&#39;
+    static_configs:
+      - targets: [&#39;node-exporter:9100&#39;]
+
+  # Kubernetes 服务发现示例
+  - job_name: &#39;kubernetes-pods&#39;
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+</code></pre>
+<h3 id="🔍-标签重写（relabel-configs）"><a href="#🔍-标签重写（relabel-configs）" class="headerlink" title="🔍 标签重写（relabel_configs）"></a>🔍 标签重写（relabel_configs）</h3><pre><code class="yaml">relabel_configs:
+  # 保留特定标签的目标
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: my-app
+    action: keep
+
+  # 替换标签值
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+
+  # 删除特定标签
+  - regex: &#39;__meta_kubernetes_.*&#39;
+    action: labeldrop
+</code></pre>
+<h2 id="5️⃣-远程存储配置（remote-write-remote-read）"><a href="#5️⃣-远程存储配置（remote-write-remote-read）" class="headerlink" title="5️⃣ 远程存储配置（remote_write&#x2F;remote_read）"></a>5️⃣ 远程存储配置（remote_write&#x2F;remote_read）</h2><pre><code class="yaml"># 远程写入配置
+remote_write:
+  - url: &#39;http://remote-storage:9201/write&#39;
+    queue_config:
+      capacity: 10000
+      max_samples_per_send: 1000
+      batch_send_deadline: 30s
+
+# 远程读取配置
+remote_read:
+  - url: &#39;http://remote-storage:9201/read&#39;
+    read_recent: true
+</code></pre>
+<h2 id="6️⃣-存储配置（storage）"><a href="#6️⃣-存储配置（storage）" class="headerlink" title="6️⃣ 存储配置（storage）"></a>6️⃣ 存储配置（storage）</h2><pre><code class="yaml">storage:
+  tsdb:
+    # 数据保留时间
+    retention.time: 15d
+    # 数据目录
+    path: /prometheus
+    # 启用压缩
+    compression: true
+</code></pre>
+<h2 id="⚙️-完整配置示例"><a href="#⚙️-完整配置示例" class="headerlink" title="⚙️ 完整配置示例"></a>⚙️ 完整配置示例</h2><pre><code class="yaml">global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    env: &#39;production&#39;
+
+rule_files:
+  - &#39;/etc/prometheus/rules/*.yml&#39;
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: [&#39;alertmanager:9093&#39;]
+
+scrape_configs:
+  - job_name: &#39;prometheus&#39;
+    static_configs:
+      - targets: [&#39;localhost:9090&#39;]
+
+  - job_name: &#39;node-exporter&#39;
+    static_configs:
+      - targets: [&#39;node-exporter:9100&#39;]
+
+  - job_name: &#39;kubernetes-pods&#39;
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+
+remote_write:
+  - url: &#39;http://thanos-receive:9090/api/v1/receive&#39;
+
+storage:
+  tsdb:
+    retention.time: 15d
+    path: /prometheus
+</code></pre>
+<h2 id="📋-配置验证"><a href="#📋-配置验证" class="headerlink" title="📋 配置验证"></a>📋 配置验证</h2><pre><code class="bash"># 检查配置文件语法
+promtool check config /etc/prometheus/prometheus.yml
+
+# 验证规则文件
+promtool check rules /etc/prometheus/rules/*.yml
+
+# 单元测试规则
+promtool test rules test.yml
+</code></pre>
+<h2 id="⚠️-最佳实践"><a href="#⚠️-最佳实践" class="headerlink" title="⚠️ 最佳实践"></a>⚠️ 最佳实践</h2><ol>
+<li>合理设置采集间隔，避免过于频繁</li>
+<li>使用服务发现替代静态配置</li>
+<li>配置适当的数据保留期限</li>
+<li>定期备份配置文件</li>
+<li>使用版本控制管理配置</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/">Prometheus 配置文档</a></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">服务发现配置</a></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/storage/">存储配置说明</a></li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>监控</category>
+        <category>Prometheus</category>
+      </categories>
+      <tags>
+        <tag>Prometheus</tag>
+        <tag>YAML</tag>
+        <tag>配置文件</tag>
+        <tag>监控系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SSH远程端口转发配置指南</title>
+    <url>//sshf5678/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍如何通过 Systemd 配置持久化的 SSH 远程端口转发服务，包含完整的配置文件、自启动设置和故障排查方法。
+</p>
+
+<h1 id="SSH-远程端口转发服务配置指南"><a href="#SSH-远程端口转发服务配置指南" class="headerlink" title="SSH 远程端口转发服务配置指南"></a>SSH 远程端口转发服务配置指南</h1><h2 id="🔧-配置步骤"><a href="#🔧-配置步骤" class="headerlink" title="🔧 配置步骤"></a>🔧 配置步骤</h2><h3 id="1-创建-Systemd-服务文件"><a href="#1-创建-Systemd-服务文件" class="headerlink" title="1. 创建 Systemd 服务文件"></a>1. 创建 Systemd 服务文件</h3><pre><code class="bash">sudo nano /etc/systemd/system/ssh-tunnel.service
+</code></pre>
+<h3 id="2-服务文件配置"><a href="#2-服务文件配置" class="headerlink" title="2. 服务文件配置"></a>2. 服务文件配置</h3><pre><code class="ini">[Unit]
+Description=SSH Remote Port Forward Service
+After=network.target
+
+[Service]
+# 本地运行服务的用户
+User=your_local_user
+
+# SSH 命令配置
+ExecStart=/usr/bin/ssh -N -R 22300:192.168.1.201:22300 username@8.154.81.6 \
+    -o &quot;ExitOnForwardFailure=yes&quot; \
+    -o &quot;ServerAliveInterval=60&quot; \
+    -o &quot;ServerAliveCountMax=3&quot;
+
+# 服务运行参数
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<blockquote>
+<p>📝 <strong>参数说明</strong></p>
+<ul>
+<li><code>-N</code>: 仅建立端口转发，不执行远程命令</li>
+<li><code>-R</code>: 设置远程端口转发</li>
+<li><code>ExitOnForwardFailure</code>: 端口转发失败时立即退出</li>
+<li><code>ServerAliveInterval</code>: 保活检测间隔（秒）</li>
+<li><code>ServerAliveCountMax</code>: 最大重试次数</li>
+</ul>
+</blockquote>
+<h3 id="3-服务管理命令"><a href="#3-服务管理命令" class="headerlink" title="3. 服务管理命令"></a>3. 服务管理命令</h3><pre><code class="bash"># 重新加载配置
+sudo systemctl daemon-reload
+
+# 启动服务
+sudo systemctl start ssh-tunnel
+
+# 设置开机自启
+sudo systemctl enable ssh-tunnel
+
+# 查看服务状态
+sudo systemctl status ssh-tunnel
+
+# 实时查看日志
+journalctl -u ssh-tunnel -f
+</code></pre>
+<h2 id="📋-前置检查清单"><a href="#📋-前置检查清单" class="headerlink" title="📋 前置检查清单"></a>📋 前置检查清单</h2><ol>
+<li><p><strong>SSH 密钥配置</strong></p>
+<pre><code class="bash"># 生成 SSH 密钥（如果没有）
+ssh-keygen -t ed25519 -C &quot;your_email@example.com&quot;
+</code></pre>
+</li>
+</ol>
+<h1 id="复制公钥到远程服务器"><a href="#复制公钥到远程服务器" class="headerlink" title="复制公钥到远程服务器"></a>复制公钥到远程服务器</h1><p>ssh-copy-id <a href="mailto:&#x75;&#115;&#x65;&#114;&#110;&#x61;&#x6d;&#101;&#x40;&#56;&#x2e;&#x31;&#53;&#52;&#46;&#x38;&#49;&#46;&#54;">&#x75;&#115;&#x65;&#114;&#110;&#x61;&#x6d;&#101;&#x40;&#56;&#x2e;&#x31;&#53;&#52;&#46;&#x38;&#49;&#46;&#54;</a></p>
+<pre><code>2. **防火墙设置**
+```bash
+# 在远程服务器上检查端口
+sudo netstat -tlnp | grep 22300
+
+# 配置 UFW（如果使用）
+sudo ufw allow 22300/tcp
+</code></pre>
+<h2 id="🔍-故障排查"><a href="#🔍-故障排查" class="headerlink" title="🔍 故障排查"></a>🔍 故障排查</h2><h3 id="常见问题检查"><a href="#常见问题检查" class="headerlink" title="常见问题检查"></a>常见问题检查</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>检查命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>服务状态</td>
+<td><code>systemctl status ssh-tunnel</code></td>
+</tr>
+<tr>
+<td>详细日志</td>
+<td><code>journalctl -u ssh-tunnel -n 50</code></td>
+</tr>
+<tr>
+<td>端口占用</td>
+<td><code>netstat -tlnp | grep 22300</code></td>
+</tr>
+<tr>
+<td>SSH 连接</td>
+<td><code>ssh -v username@8.154.81.6</code></td>
+</tr>
+</tbody></table>
+<h3 id="连接测试"><a href="#连接测试" class="headerlink" title="连接测试"></a>连接测试</h3><pre><code class="bash"># 本地测试
+curl http://localhost:22300
+
+# 远程测试
+curl http://8.154.81.6:22300
+</code></pre>
+<h2 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h2><ol>
+<li>确保 SSH 密钥已正确配置</li>
+<li>检查远程服务器防火墙设置</li>
+<li>验证本地服务用户权限</li>
+<li>定期检查日志确保服务正常</li>
+<li>建议配置备用端口或故障转移方案</li>
+</ol>
+<h2 id="🔒-安全建议"><a href="#🔒-安全建议" class="headerlink" title="🔒 安全建议"></a>🔒 安全建议</h2><ol>
+<li>使用强密钥加密（ED25519&#x2F;RSA 4096）</li>
+<li>限制远程服务器上的端口访问范围</li>
+<li>配置 SSH 密钥使用限制</li>
+<li>定期更新系统和 SSH 服务</li>
+<li>监控异常连接尝试</li>
+</ol>
+<hr>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
+<li><a href="https://www.openssh.com/manual.html">SSH 官方文档</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">Systemd 服务配置指南</a></li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>网络配置</category>
+      </categories>
+      <tags>
+        <tag>Systemd</tag>
+        <tag>SSH</tag>
+        <tag>端口转发</tag>
+        <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Tailscale私有DERP中继部署</title>
+    <url>//tail4567/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程指导您在 VPS 上自建 Tailscale DERP 中继服务，包含 Go 环境安装、derper 编译/安装、自签名证书生成、derpMap 配置及 systemd 服务化示例，帮助提升无法 P2P 直连设备的连接稳定性。
+</p>
+
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>通过部署专属 DERP，您可以显著降低延迟、提升连接速度，并为无法 P2P 直连的设备提供稳定可靠的备用通道。本文涵盖环境准备、安装、证书配置、Tailscale 控制台设置与 systemd 服务化。</p>
+<h2 id="1-安装-Tailscale（可选，用于测试）"><a href="#1-安装-Tailscale（可选，用于测试）" class="headerlink" title="1. 安装 Tailscale（可选，用于测试）"></a>1. 安装 Tailscale（可选，用于测试）</h2><pre><code class="bash">curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+</code></pre>
+<hr>
+<h2 id="2-安装-Golang"><a href="#2-安装-Golang" class="headerlink" title="2. 安装 Golang"></a>2. 安装 Golang</h2><ol>
+<li>从 <a href="https://go.dev/dl/">https://go.dev/dl/</a> 下载适合的 Go 安装包（例如 <code>go1.22.4.linux-amd64.tar.gz</code>）。</li>
+<li>解压到 <code>/usr/local</code>：</li>
+</ol>
+<pre><code class="bash">sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.22.4.linux-amd64.tar.gz
+</code></pre>
+<ol start="3">
+<li>配置环境变量（在 <code>~/.bashrc</code> 或 <code>~/.profile</code> 中）：</li>
+</ol>
+<pre><code class="bash">export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+</code></pre>
+<ol start="4">
+<li>使配置生效：</li>
+</ol>
+<pre><code class="bash">source ~/.bashrc
+</code></pre>
+<hr>
+<h2 id="3-安装-derper-可执行文件"><a href="#3-安装-derper-可执行文件" class="headerlink" title="3. 安装 derper 可执行文件"></a>3. 安装 derper 可执行文件</h2><pre><code class="bash">go install tailscale.com/cmd/derper@latest
+# 安装完成后（示例），将可执行文件移动到系统路径
+cp &quot;$HOME/go/bin/derper&quot; /usr/bin/
+</code></pre>
+<hr>
+<h2 id="4-生成自签名-SSL-证书（使用-IP-时）"><a href="#4-生成自签名-SSL-证书（使用-IP-时）" class="headerlink" title="4. 生成自签名 SSL 证书（使用 IP 时）"></a>4. 生成自签名 SSL 证书（使用 IP 时）</h2><pre><code class="bash">mkdir -p /home/user/derp
+cd /home/user/derp
+
+DERP_IP=&quot;154.222.24.65&quot;  # 替换为你的 VPS 公网 IP
+
+openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+  -keyout &quot;$&#123;DERP_IP&#125;.key&quot; -out &quot;$&#123;DERP_IP&#125;.crt&quot; \
+  -subj &quot;/CN=$&#123;DERP_IP&#125;&quot; \
+  -addext &quot;subjectAltName=IP:$&#123;DERP_IP&#125;&quot;
+</code></pre>
+<blockquote>
+<p>提示：如果使用域名，建议改用 Let’s Encrypt（<code>certmode letsencrypt</code>），无需手动生成证书。</p>
+</blockquote>
+<hr>
+<h2 id="5-启动-derper-服务（示例）"><a href="#5-启动-derper-服务（示例）" class="headerlink" title="5. 启动 derper 服务（示例）"></a>5. 启动 derper 服务（示例）</h2><p>假设 HTTPS（DERP）端口为 <code>10001</code>，STUN 端口 <code>10002</code>，可用如下命令启动：</p>
+<pre><code class="bash">derper -a :10001 \
+  -http-port -1 \
+  -stun \
+  -stun-port 10002 \
+  -hostname 154.222.24.65 \
+  -certmode manual \
+  -certdir /home/user/derp \
+  -verify-client
+</code></pre>
+<p>常用参数说明（节选）：</p>
+<ul>
+<li><code>-a :PORT</code>：监听地址与端口。</li>
+<li><code>-http-port -1</code>：禁用 HTTP，仅启用 HTTPS。</li>
+<li><code>-stun</code> &#x2F; <code>-stun-port</code>：启用 STUN 服务与端口。</li>
+<li><code>-hostname</code>：证书中的主机名或 IP。</li>
+<li><code>-certmode manual|letsencrypt</code>：证书获取模式。</li>
+<li><code>-verify-clients</code>：通过本地 tailscaled 验证客户端（推荐）。</li>
+</ul>
+<hr>
+<h2 id="6-在-Tailscale-控制台添加-DERP-配置（derpMap）"><a href="#6-在-Tailscale-控制台添加-DERP-配置（derpMap）" class="headerlink" title="6. 在 Tailscale 控制台添加 DERP 配置（derpMap）"></a>6. 在 Tailscale 控制台添加 DERP 配置（derpMap）</h2><p>编辑 Tailscale 控制台中的 ACL JSON，向 <code>derpMap</code> 添加自定义区域。例如：</p>
+<pre><code class="json">&quot;randomizeClientPort&quot;: true,
+&quot;derpMap&quot;: &#123;
+  &quot;OmitDefaultRegions&quot;: false,
+  &quot;Regions&quot;: &#123;
+    &quot;900&quot;: &#123;
+      &quot;RegionID&quot;: 900,
+      &quot;RegionCode&quot;: &quot;MY-VPS&quot;,
+      &quot;RegionName&quot;: &quot;My Custom VPS DERP&quot;,
+      &quot;Nodes&quot;: [
+        &#123;
+          &quot;Name&quot;: &quot;vps-node-01&quot;,
+          &quot;RegionID&quot;: 900,
+          &quot;HostName&quot;: &quot;154.222.24.65&quot;,
+          &quot;DERPPort&quot;: 10001,
+          &quot;IPv4&quot;: &quot;154.222.24.65&quot;,
+          &quot;InsecureForTests&quot;: true,
+          &quot;STUNPort&quot;: 10002
+        &#125;
+      ]
+    &#125;
+  &#125;
+&#125;
+</code></pre>
+<blockquote>
+<p>注意：若使用 IP 或自签名证书，<code>InsecureForTests</code> 需设为 <code>true</code>，但这会降低安全性，仅在测试或受控环境使用。</p>
+</blockquote>
+<p>保存后，可在任一客户端运行：</p>
+<pre><code class="bash">tailscale netcheck
+</code></pre>
+<p>确认输出中包含自定义 DERP 区域。</p>
+<hr>
+<h2 id="7-systemd-服务化（示例）"><a href="#7-systemd-服务化（示例）" class="headerlink" title="7. systemd 服务化（示例）"></a>7. systemd 服务化（示例）</h2><p>创建 systemd 服务文件 <code>/etc/systemd/system/derp.service</code>：</p>
+<pre><code class="ini">[Unit]
+Description=Tailscale Private DERP Relay
+After=network.target
+
+[Service]
+User=root
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+ExecStart=/usr/bin/derper -a :10001 -http-port -1 -stun -stun-port 10002 -hostname 154.222.24.65 -certmode manual -certdir /home/user/derp -verify-client
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>启用并启动服务：</p>
+<pre><code class="bash">sudo systemctl daemon-reload
+sudo systemctl enable --now derp.service
+sudo systemctl status derp.service
+sudo journalctl -u derp.service -f
+</code></pre>
+<hr>
+<h2 id="验证与故障排查"><a href="#验证与故障排查" class="headerlink" title="验证与故障排查"></a>验证与故障排查</h2><ul>
+<li>检查端口是否开放（服务器防火墙&#x2F;云主机安全组）。</li>
+<li>使用 <code>tailscale netcheck</code> 验证客户端连接。</li>
+<li>若使用自签名证书，确保客户端或控制台配置允许该证书（或在测试时使用 <code>InsecureForTests</code>）。</li>
+<li>查看 systemd 日志：<code>journalctl -u derp.service -n 200</code></li>
+</ul>
+<hr>
+<h2 id="参考与延伸"><a href="#参考与延伸" class="headerlink" title="参考与延伸"></a>参考与延伸</h2><ul>
+<li>Tailscale 官方文档与 derper 源码：<code>https://tailscale.com</code></li>
+<li>若需要使用 Let’s Encrypt，请把 <code>-certmode</code> 改为 <code>letsencrypt</code> 并配置域名与 DNS 解析。</li>
+</ul>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>组网</category>
+        <category>中继节点</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>网络</tag>
+        <tag>组网</tag>
+        <tag>VPS</tag>
+        <tag>中继节点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Ubuntu老电脑焕发新生活</title>
+    <url>//ubun4567/</url>
+    <content><![CDATA[<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>这是一台戴尔灵越5488，2018年9月发布，搭载4核8线程的Intel i7-8565U处理器，配备8GB内存。在2025年的今天，虽然硬件规格不算顶尖，但通过安装Ubuntu系统，完全可以焕发它的第二春，重新获得流畅体验，适合办公、学习甚至轻度服务器使用。</p>
+<hr>
+<h2 id="资源分享"><a href="#资源分享" class="headerlink" title="资源分享"></a>资源分享</h2><p>我把所有资源都放在我的<a href="https://blog.echospace.top/">博客</a>里，方便大家集中下载：</p>
+<ul>
+<li><p><strong><a href="https://mirrors.hit.edu.cn/ubuntu-releases/24.04.3/ubuntu-24.04.3-desktop-amd64.iso">Ubuntu 24.04系统镜像</a></strong></p>
+</li>
+<li><p><strong><a href="https://github.com/balena-io/etcher/releases/download/v2.1.4/balenaEtcher-2.1.4.Setup.exe">Balena Etcher烧录工具</a></strong></p>
+</li>
+</ul>
+<p>部分常用应用包下载链接：</p>
+<ul>
+<li><p><strong><a href="https://gitee.com/spark-store-project/spark-store/releases/download/4.8.2/spark-store_4.8.2_amd64.deb">星火商店</a></strong></p>
+</li>
+<li><p><strong><a href="https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.21_251114_amd64_01.deb">QQ for Linux</a></strong></p>
+</li>
+<li><p><strong><a href="https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb">微信 for Linux</a></strong></p>
+</li>
+<li><p><strong><a href="https://github.com/ONLYOFFICE/DesktopEditors/releases/latest/download/onlyoffice-desktopeditors_amd64.deb">OnlyOffice办公套件</a></strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="开始安装Ubuntu"><a href="#开始安装Ubuntu" class="headerlink" title="开始安装Ubuntu"></a>开始安装Ubuntu</h2><ol>
+<li><p><strong>制作启动U盘</strong><br> 将下载的Ubuntu 24.04镜像使用Balena Etcher烧录到U盘，作为启动盘。</p>
+</li>
+<li><p><strong>进入BIOS设置</strong><br> 重启电脑，进入BIOS或启动菜单（一般按F11或F12），选择U盘启动。</p>
+</li>
+<li><p><strong>安装系统</strong><br> 进入Ubuntu安装界面后，按提示操作：</p>
+</li>
+</ol>
+<ul>
+<li><p>选择语言和键盘布局。</p>
+</li>
+<li><p>建议此处先不联网。</p>
+</li>
+<li><p>磁盘选择：如果没有重要文件，建议格式化整个磁盘安装，若需保留数据务必提前备份。</p>
+</li>
+<li><p>设置用户名和密码。</p>
+</li>
+<li><p>确认安装开始。</p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>安装完成并重启</strong><br> 安装完毕后，立即拔出U盘，系统自动重启进入已安装的Ubuntu。</li>
+</ol>
+<hr>
+<h2 id="系统初步配置"><a href="#系统初步配置" class="headerlink" title="系统初步配置"></a>系统初步配置</h2><ol>
+<li><strong>联网更新系统</strong></li>
+</ol>
+<p>打开终端，执行这条命令进行组件更新和清理冗余：</p>
+<pre><code class="bash">sudo apt update sudo apt upgrade -y sudo apt autoremove -y
+</code></pre>
+<ol start="2">
+<li><strong>安装星火商店</strong></li>
+</ol>
+<p>推荐使用星火商店简化软件管理，方便安装各种应用。下载安装包后，使用这条命令进行安装：</p>
+<pre><code class="bash">sudo apt-get -y install spark-store_4.8.2_amd64.deb
+</code></pre>
+<p>安装完成后，即可在软件中搜索软件进行一键安装使用。</p>
+<ol start="3">
+<li><strong>安装常用软件</strong></li>
+</ol>
+<p>办公套件推荐OnlyOffice。若在星火商店没有找到你需要的对应客户端，大部分的软件都有 Linux 的版本。<br>官网都可以下载到对应 <code>.deb</code> 安装包，结合系统自带的 <code>apt-get</code>  一键安装即可。</p>
+<hr>
+<h2 id="系统优势与扩展应用"><a href="#系统优势与扩展应用" class="headerlink" title="系统优势与扩展应用"></a>系统优势与扩展应用</h2><p>Ubuntu相比Windows更轻量，能显著提升老旧机器的运行流畅度。你还可以将电脑变为家庭服务器：</p>
+<ul>
+<li><p><strong>配置Samba文件服务器</strong>：轻松共享文件和资料。</p>
+</li>
+<li><p><strong>部署Docker容器</strong>：运行多个轻量级服务，提高硬件利用率。</p>
+</li>
+<li><p><strong>远程办公与开发环境搭建</strong>：用Linux工具链带来更高效的生产力。</p>
+</li>
+</ul>
+<hr>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>尽管这台戴尔灵越5488已发行近7年，但通过Ubuntu系统的重新安装和配置，它依然可以作为一台稳定、高效且多功能的电脑继续服役。</p>
+<p>我是多多他爹，一位失业的运维工程师，你的一键三连是我坚持创作的动力，我们下期再见。</p>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>笔记本</category>
+        <category>服务器</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>Ubuntu</tag>
+        <tag>博客</tag>
+        <tag>AI</tag>
+        <tag>服务器</tag>
+        <tag>操作系统</tag>
+        <tag>Docker</tag>
+        <tag>废物利用</tag>
+        <tag>老电脑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows系统增强神器PowerToys</title>
+    <url>//powe6789/</url>
+    <content><![CDATA[<p>三星有 GoodLock，Windows 也有自己的外挂——PowerToys！<br>免费、开源、零广告，装完直接发现新大陆！<br>GitHub 搜 PowerToys，或者在微软商店中也可以一键下载,网络不支持的同学,也可以在我的博客自取.</p>
+<h3 id="点击此处下载"><a href="#点击此处下载" class="headerlink" title="点击此处下载"></a><em><a href="https://s.fnnas.net/s/5f525d2a6bde4943b8">点击此处下载</a></em></h3><p><code>这软件是微软亲儿子，稳得一批。 花几分钟时间,带你看完 9 个我个人觉得最神级功能， 程序员、设计师、办公党全部原地升天！</code></p>
+<h2 id="①-高级粘贴-Win-Shift-V（0-23-0-43）"><a href="#①-高级粘贴-Win-Shift-V（0-23-0-43）" class="headerlink" title="① 高级粘贴 | Win+Shift+V（0:23-0:43）"></a>① 高级粘贴 | Win+Shift+V（0:23-0:43）</h2><p>直接复制代码,会有方方面面的格式问题,<br>使用粘贴 <code>json</code> <code>markdown</code> 就可以一键自动排版,<br>所有复制的图片都可以直接用<code>.png</code>格式粘贴,<br>写代码，爽到飞起！<br>他还自带转码:<br>MP4 想抽音频？顺手选 MP3 粘贴，批量转码省掉格式工厂。</p>
+<hr>
+<h2 id="②-颜色选择器-Alt-C（0-43-0-58）"><a href="#②-颜色选择器-Alt-C（0-43-0-58）" class="headerlink" title="② 颜色选择器 | Alt+C（0:43-0:58）"></a>② 颜色选择器 | Alt+C（0:43-0:58）</h2><p>设计师看过来！<br>任何时候见到好看的颜色,直接呼出 <code>颜色选择器</code><br>左键单击你想要的颜色格式应有尽有<br>比PS吸管,微信QQ截图都快不少.</p>
+<hr>
+<h2 id="③-PowerToys-Run-Alt-Space（0-58-1-10）"><a href="#③-PowerToys-Run-Alt-Space（0-58-1-10）" class="headerlink" title="③ PowerToys Run | Alt+Space（0:58-1:10）"></a>③ PowerToys Run | Alt+Space（0:58-1:10）</h2><p>Win11 搜索卡顿还时不时资源管理器未响应？<br>Alt+Space 毫秒呼出，拼音首字母就能开软件，<br>路径直达，省去大量找图标的时间。</p>
+<hr>
+<h2 id="④-屏幕标尺-Ctrl-Shift-R（1-10-1-23）"><a href="#④-屏幕标尺-Ctrl-Shift-R（1-10-1-23）" class="headerlink" title="④ 屏幕标尺 | Ctrl+Shift+R（1:10-1:23）"></a>④ 屏幕标尺 | Ctrl+Shift+R（1:10-1:23）</h2><p>前端牛马神器！<br>横竖随便拉，<code>px像素</code>、<code>cm厘米</code>、<code>inch英寸</code> 一键切换，<br>数值左键自动复制，不用再去PS里使用标尺慢慢比对。</p>
+<hr>
+<h2 id="⑤-文本提取器-Win-Shift-T（1-23-1-35）"><a href="#⑤-文本提取器-Win-Shift-T（1-23-1-35）" class="headerlink" title="⑤ 文本提取器 | Win+Shift+T（1:23-1:35）"></a>⑤ 文本提取器 | Win+Shift+T（1:23-1:35）</h2><p>系统级 OCR，框一下，图片、PDF、视频字幕一秒出文字，<br>免费不限量，第三方 OCR 软件可以卸载了。</p>
+<hr>
+<h2 id="⑥-窗口裁剪器（1-35-1-45）"><a href="#⑥-窗口裁剪器（1-35-1-45）" class="headerlink" title="⑥ 窗口裁剪器（1:35-1:45）"></a>⑥ 窗口裁剪器（1:35-1:45）</h2><p>查教程必备！<br>框选任意区域，一键生成置顶悬浮窗，<br>左边挂代码，右边写笔记，Alt+Tab 切的自己都不知道哪个窗口是干嘛的？再也不存在了.</p>
+<hr>
+<h2 id="⑦-FancyZones（1-45-2-00）"><a href="#⑦-FancyZones（1-45-2-00）" class="headerlink" title="⑦ FancyZones（1:45-2:00）"></a>⑦ FancyZones（1:45-2:00）</h2><p>分屏狂魔！<br>按住 Shift 拖窗口，4K 屏切成三联、四联、六联，<br>模板还能自定义，比 Win11 自带分屏高到不知道哪里去了。</p>
+<hr>
+<h2 id="⑧-查找我的鼠标（2-00-2-10）"><a href="#⑧-查找我的鼠标（2-00-2-10）" class="headerlink" title="⑧ 查找我的鼠标（2:00-2:10）"></a>⑧ 查找我的鼠标（2:00-2:10）</h2><p>星际党福音！<br>双击左 Ctrl，屏幕瞬间缩小高亮鼠标，<br>还能设白名单，打游戏时自动屏蔽误触。</p>
+<hr>
+<h2 id="⑨-资源管理器预览（2-10-2-20）"><a href="#⑨-资源管理器预览（2-10-2-20）" class="headerlink" title="⑨ 资源管理器预览（2:10-2:20）"></a>⑨ 资源管理器预览（2:10-2:20）</h2><p>开启后，<code>.md</code>、<code>.svg</code>、<code>.pdf</code> 等格式都可以直接预览，<br>搭配「速览」使用 <code>ctrl + space</code> 快速查看，文件管理直接起飞。</p>
+<hr>
+<p>安装包放再我的博客,微软官方出品，无毒无广告,可以放心冲！<br>觉得有用，记得关注,一键三联，我是 多多他爹,一个失业的运维，拜了个拜！</p>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Windows</category>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>Windows效率神器</tag>
+        <tag>PowerToys</tag>
+        <tag>微软官方工具</tag>
+        <tag>免费开源</tag>
+        <tag>电脑技巧</tag>
+        <tag>程序员必备</tag>
+        <tag>设计师必备</tag>
+        <tag>前端必备</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows安装-如何使用PE安装Windows11</title>
+    <url>//win7535/</url>
+    <content><![CDATA[<h1 id="Windows-PE安装教程-手把手教你完整安装Windows系统"><a href="#Windows-PE安装教程-手把手教你完整安装Windows系统" class="headerlink" title="Windows PE安装教程 | 手把手教你完整安装Windows系统"></a>Windows PE安装教程 | 手把手教你完整安装Windows系统</h1><blockquote>
+<p>本期从0开始教你如何安装Windows，适用于所有版本的Windows系统。</p>
+</blockquote>
+<h2 id="推荐使用PE"><a href="#推荐使用PE" class="headerlink" title="推荐使用PE"></a>推荐使用PE</h2><ol>
+<li>功能丰富：可以自己分区，自己选择系统版本，还可以跳过Windows11的TPM2.0限制，任何电脑都可以装上Windows11。</li>
+<li>灵活便携：U盘在制作PE后，依然可以存放其他文件，也可以放入更多其他工具，成为你的便携工具箱。</li>
+</ol>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="1-制作PE-U盘"><a href="#1-制作PE-U盘" class="headerlink" title="1.制作PE U盘"></a>1.制作PE U盘</h3><ol>
+<li>进入 <a href="blog.echospace.top/win7535">这个链接</a></li>
+<li>点击 <a href="https://mirrors.sdu.edu.cn/wepe/WePE_64_V2.3.exe">这个地方下载微PE工具箱</a></li>
+<li>打开微PE工具箱<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214112916829.png" alt="图片"></li>
+</ul>
+</li>
+<li>点击安装PE到U盘<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214112941600.png" alt="图片"></li>
+</ul>
+</li>
+<li>将”待写入U盘”选择为你插入的U盘</li>
+<li>自己修改”U盘卷标”，就是U盘的分区名称</li>
+<li>其他选项建议默认</li>
+<li>设置完成后，点击立即安装PE到U盘<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214113138896.png" alt="图片"></li>
+</ul>
+</li>
+<li>点击开始制作<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214113221386.png" alt="图片"></li>
+</ul>
+</li>
+<li>等待制作完成<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214113241570.png" alt="图片"></li>
+</ul>
+</li>
+<li>点击完成安装,接下来就是下载Windows镜像。<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214113349679.png" alt="图片"></li>
+</ul>
+</li>
+</ol>
+<h3 id="下载Windows系统镜像"><a href="#下载Windows系统镜像" class="headerlink" title="下载Windows系统镜像"></a>下载Windows系统镜像</h3><blockquote>
+<p><em>下载源来自</em> <strong>imsdn</strong> </p>
+</blockquote>
+<ol>
+<li><p>可以在<a href="blog.echospace.top/win7535">这个页面</a>找到下载方式: </p>
+<ul>
+<li><p>Windows7:</p>
+<ul>
+<li>迅雷下载：</li>
+</ul>
+<pre><code class="txt">ed2k://|file|cn_windows_7_enterprise_with_sp1_x64_dvd_u_677685.iso|3265574912|E9DB2607EA3B3540F3FE2E388F8C53C4|/
+</code></pre>
+<ul>
+<li>百度下载,提取码：<strong>MSDN</strong>：</li>
+</ul>
+<pre><code class="txt">https://pan.baidu.com/s/1FnN1x7nvGGdLZdBljTPd2Q?pwd=MSDN
+</code></pre>
+</li>
+<li><p>Windows8:</p>
+<ul>
+<li>迅雷下载:</li>
+</ul>
+<pre><code class="txt">ed2k://|file|cn_windows_8_enterprise_x64_dvd_917570.iso|3560837120|8CAE8064C4B8F9CD84941B4FF4A34722|/
+</code></pre>
+<ul>
+<li>百度下载，提取码：<strong>MSDN</strong>:</li>
+</ul>
+<pre><code class="txt">https://pan.baidu.com/s/1pPYdWxEsGXxAN6p2792j-w?pwd=MSDN
+</code></pre>
+</li>
+<li><p>Windows10:</p>
+<ul>
+<li>迅雷下载：</li>
+</ul>
+<pre><code class="txt">ed2k://|file|zh-cn_windows_10_business_editions_version_22h2_updated_feb_2025_x64_dvd_016e01fc.iso|7005589504|7C2732C85ECF091F1330E60F591B6F65|/
+</code></pre>
+<ul>
+<li>bt下载:</li>
+</ul>
+<pre><code class="txt">magnet:?xt=urn:btih:94e3836b63ef9f5abac47d99974a94a0e8976efd&amp;dn=zh-cn_windows_10_business_editions_version_22h2_updated_feb_2025_x64_dvd_016e01fc.iso&amp;xl=7005589504
+</code></pre>
+</li>
+<li><p>Windows11:</p>
+<ul>
+<li>迅雷下载：</li>
+</ul>
+<pre><code class="txt">ed2k://|file|zh-cn_windows_11_business_editions_version_24h2_updated_jan_2025_x64_dvd_16d6e6a8.iso|6449397760|0DC147C1B38DD5431F2C39D7491CFC8E|/
+</code></pre>
+<ul>
+<li>BT下载：</li>
+</ul>
+<pre><code class="txt">magnet:?xt=urn:btih:9b0ca6ee95d13a35be062f62cba36959aef0c4f3&amp;dn=zh-cn_windows_11_business_editions_version_24h2_updated_jan_2025_x64_dvd_16d6e6a8.iso&amp;xl=6449397760
+</code></pre>
+</li>
+<li><p>更多其他的版本可以在这里找：<a href="https://www.imsdn.cn/">IMSDN镜像站</a></p>
+</li>
+</ul>
+</li>
+<li><p>在U盘中创建一个名为ISO的文件夹用于存放系统镜像</p>
+</li>
+<li><p>将下载好的系统存放在这个文件夹</p>
+</li>
+</ol>
+<h2 id="2-分区流程"><a href="#2-分区流程" class="headerlink" title="2. 分区流程"></a>2. 分区流程</h2><h3 id="第一步：首先进入PE环境"><a href="#第一步：首先进入PE环境" class="headerlink" title="第一步：首先进入PE环境"></a>第一步：首先进入PE环境</h3><ol>
+<li>将制作好的PE U盘插入需要安装系统的电脑</li>
+<li>开机时选择从U盘启动，不知道怎么启动的问一下AI自己的品牌怎么进入</li>
+<li>显示这个画面就进入pe了<ul>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214121239364.png" alt="图片"></li>
+</ul>
+</li>
+</ol>
+<h3 id="第二步：磁盘分区"><a href="#第二步：磁盘分区" class="headerlink" title="第二步：磁盘分区"></a>第二步：磁盘分区</h3><p>我这里采用UEFI格式进行分区：</p>
+<ol>
+<li>在桌面中找到并打开”DiskGenius”分区工具<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214121644010.png" alt="图片"></li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a><strong>注意</strong></h1><h1 id="以下的操作在保存后均不可逆"><a href="#以下的操作在保存后均不可逆" class="headerlink" title="以下的操作在保存后均不可逆"></a><strong>以下的操作在保存后均不可逆</strong></h1><h1 id="请操作前自己保留好重要数据。"><a href="#请操作前自己保留好重要数据。" class="headerlink" title="请操作前自己保留好重要数据。"></a><strong>请操作前自己保留好重要数据。</strong></h1></blockquote>
+<h3 id="全盘安装"><a href="#全盘安装" class="headerlink" title="全盘安装"></a>全盘安装</h3><ol>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E7%9B%98%E5%AE%89%E8%A3%85">只重装C盘的这一步 <strong>点击跳过</strong></a> 后面会讲到，这里讲如果 <strong>整个硬盘</strong> 重新装，注意，是<strong>整个硬盘</strong>,就在盘标这里点击删除所有分区，然后左上角<strong>保存更改</strong><ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214121717856.png" alt="图片"></li>
+</ol>
+</li>
+<li>点击整个灰色区域，点击新建分区<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122356821.png" alt="图片"></li>
+<li>建立ESP分区，且注意设置4K对齐后确认 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122438525.png" alt="图片"></li>
+<li>这里配置你自己想要的系统盘大小点确认<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122612736.png" alt="图片"></li>
+</ol>
+</li>
+<li>保存<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122637476.png" alt="图片"></li>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122648474.png" alt="图片"></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="系统盘安装"><a href="#系统盘安装" class="headerlink" title="系统盘安装"></a>系统盘安装</h3><ol>
+<li>如果是只重装C盘，就右键C盘进行格式化，如果有EFI分区，也要同样的方式格式化EFI分区<ol>
+<li>我这里PE把盘符识别成了F盘，各位按照实际情况进行格式化 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214121840924.png" alt="图片"></li>
+</ol>
+</li>
+<li>如果没有EFI分区，单击<strong>硬盘</strong>——再点击左上角<strong>磁盘</strong>——切换到<strong>GUID</strong>磁盘格式<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122029345.png" alt="图片"></li>
+<li>我这里是GUID是灰色的，代表已经是这个格式  <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214122049797.png" alt="图片"></li>
+</ol>
+</li>
+<li>有EFI分区格式化即可。进行变更GUID格式的观众，还需要新建一个EFI分区</li>
+<li>找到你的C盘，右键，<strong>调整分区大小</strong><ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123441730.png" alt="图片"></li>
+</ol>
+</li>
+<li><strong>分区前部的空间300MB</strong>，点击开始 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123422887.png" alt="图片"><ol>
+<li>点击是 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123505140.png" alt="图片"></li>
+<li>是  <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123514682.png" alt="图片"></li>
+<li>完成  <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123527084.png" alt="图片"></li>
+</ol>
+</li>
+<li>左键单击前方灰色部分，点击新建分区<ol>
+<li>按照我的界面进行设置 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123741220.png" alt="图片"></li>
+<li>点击确认，随后点击左上角进行保存 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123814250.png" alt="图片"></li>
+</ol>
+</li>
+<li>给EFI分区分配盘符<ol>
+<li>右键ESP分区，点击<strong>指派新的驱动器号（盘符）</strong>  <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123849296.png" alt="图片"></li>
+<li>随便指定一个，随后确认 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214123932819.png" alt="图片"></li>
+</ol>
+</li>
+</ol>
+<h2 id="3-安装系统"><a href="#3-安装系统" class="headerlink" title="3. 安装系统"></a>3. 安装系统</h2><ol>
+<li>回到桌面，双击打开Windows安装器，第一个选项设置到U盘中存放的系统</li>
+<li>第二个选择刚刚指派了盘符的EFI分区，设置正确右边会变成绿的</li>
+<li>第三个选择安装系统的盘符，重装的观众应该是C盘，我这里全新安装PE识别是F盘，各位按实际情况进行选择<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214124247322.png" alt="图片"></li>
+</ol>
+</li>
+<li>点击选项中的版本可以自己选择想要安装的版本，我这里安装专业版<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214124411419.png" alt="图片"></li>
+</ol>
+</li>
+<li>点击安装——确认<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214124429977.png" alt="图片"></li>
+</ol>
+</li>
+<li>等待安装完成<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214124453887.png" alt="图片"></li>
+</ol>
+</li>
+<li>完成安装后<strong>点击重启</strong>，立马拔出U盘<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214124705730.png" alt="图片"></li>
+</ol>
+</li>
+<li>若没问题，系统会开始引导，期间会重启数次等待进入Windows的配置界面。<ol>
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214124730763.png" alt="图片"></li>
+</ol>
+</li>
+</ol>
+<h2 id="4-系统配置"><a href="#4-系统配置" class="headerlink" title="4. 系统配置"></a>4. 系统配置</h2><h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><ol>
+<li>进入系统后会显示这个界面，建议<strong>台式机先拔出网线</strong>，<strong>笔记本暂不联网</strong><ol>
+<li>选择地区 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125111915.png" alt="图片"></li>
+<li>选择键盘 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125146206.png" alt="图片"></li>
+<li>跳过第二个键盘布局 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125205960.png" alt="图片"></li>
+<li>选择<strong>我没有Internet连接</strong> <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125537580.png" alt="图片"></li>
+<li><strong>继续执行受限设置</strong> <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125610336.png" alt="图片"></li>
+<li>接受 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125647882.png" alt="图片"></li>
+<li>设置用户名 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125708171.png" alt="图片"></li>
+<li>设置密码 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125723181.png" alt="图片"></li>
+<li>确认密码 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125739881.png" alt="图片"></li>
+<li>安全问题自行设置 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125816228.png" alt="图片"></li>
+<li>建议关闭所有<strong>隐私设置</strong> <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125915208.png" alt="图片"></li>
+<li>等待系统自己部署 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214125945103.png" alt="图片"></li>
+<li>点击下一步。恭喜你，超越了80%的人，你已经完整的安装了操作系统。</li>
+</ol>
+</li>
+</ol>
+<h3 id="驱动安装"><a href="#驱动安装" class="headerlink" title="驱动安装"></a>驱动安装</h3><ol>
+<li>这时候能连WIFI连WIFI，能插网线插网线。</li>
+<li>开始安装驱动，intel平台可以直接搜索<strong>Intel驱动助理</strong>下载安装后补齐驱动，我这里使用更加广泛的驱动安装方式。 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214130356367.png" alt="图片"></li>
+<li>360驱动大师，我给大家准备好了单文件版本，免得被360恶鬼缠身</li>
+</ol>
+<ul>
+<li>点击下载<ol>
+<li><a href="https://www.lanzouo.com/iU3Kt29vl2pg">360驱动大师</a></li>
+<li><a href="https://www.lanzouo.com/izKMC29vl2ij">带网卡版本</a></li>
+<li><a href="https://www.360.cn/">360官网</a></li>
+</ol>
+</li>
+</ul>
+<ol start="4">
+<li>下载好后打开软件，选择驱动安装 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131035838.png" alt="图片"></li>
+<li>软件会自己寻找适配你电脑的驱动，点击一键安装即可 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131102419.png" alt="图片"></li>
+<li>安装完成后重启电脑就可以进入激活步骤</li>
+</ol>
+<h2 id="激活"><a href="#激活" class="headerlink" title="激活"></a>激活</h2><ol>
+<li>右键开始菜单，选择终端管理员，有的会显示<strong>PowerShell管理员</strong> <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131338892.png" alt="图片"></li>
+<li>复制我准备好的链接，使用右键粘贴进入命令行，按回车<br> 1. <pre><code class="shell">irm https://get.activated.win | iex
+</code></pre>
+<ol start="2">
+<li><img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131745655.png" alt="图片"></li>
+<li>弹出的窗口选择1进入HWID系统激活 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131810359.png" alt="图片"></li>
+<li>在这个窗口等待激活完成就行 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131916802.png" alt="图片"></li>
+<li>激活完成后会显示这个，随便按个键退出，关闭窗口 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214131948636.png" alt="图片"></li>
+<li>右键开始菜单运行，输入<code>Slmgr.vbs -xpr</code>查看系统激活状态 <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214132119130.png" alt="图片"> <img src="/images/Windows%E5%AE%89%E8%A3%85-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8PE%E5%AE%89%E8%A3%85Windows11/file-20251214132132643.png" alt="图片"></li>
+</ol>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>恭喜你！你成功：</p>
+<ul>
+<li>掌握了完整的PE安装系统流程</li>
+<li>正确的UEFI分区设置</li>
+<li>成功安装了所有必要的驱动程序</li>
+<li>激活了Windows系统</li>
+</ul>
+<p>这种安装方法适用于各种电脑配置和任何版本，是一套通用的安装解决方案。通过PE，你可以顺便跳过TPM2.0，也可以为空间爆满的磁盘进行扩容。</p>
+<p>如果遇到问题，欢迎在评论区交流~关注我解锁更多技能，下期再见</p>
+<hr>
+<h2 id="免责声明"><a href="#免责声明" class="headerlink" title="免责声明"></a>免责声明</h2><p>本教程仅用于技术学习和研究目的，分享HWID激活方法仅供了解技术原理。</p>
+<p><strong>重要提示</strong>：</p>
+<ul>
+<li>HWID激活可能违反微软软件许可协议</li>
+<li>本文内容不构成对任何非法行为的鼓励或支持</li>
+<li>使用此类激活方法可能存在法律和安全风险</li>
+<li>建议用户购买正版软件以获得完整服务和支持</li>
+</ul>
+<p><strong>合法替代方案</strong>：</p>
+<ul>
+<li>Microsoft官方订阅服务</li>
+<li>微软官方购买系统安装盘</li>
+<li>微软官方购买key进行激活</li>
+</ul>
+<p>使用者应自行承担一切风险和后果，作者不承担任何责任。</p>
+<hr>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用技术教程，让你的数字生活更自由！</p>
+<p>关注我，发现更多实用技巧与教程！</p>
+<p>#Windows11 #PE安装 #系统安装 #技术教程 #电脑技巧</p>
+]]></content>
+      <categories>
+        <category>技术指南</category>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>激活</tag>
+        <tag>Windows</tag>
+        <tag>技术</tag>
+        <tag>教程</tag>
+        <tag>指南</tag>
+        <tag>系统</tag>
+        <tag>安装</tag>
+        <tag>PE</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows系统安装完整指南</title>
+    <url>//windo1234/</url>
+    <content><![CDATA[<blockquote>
+<p>所有的内容我都将放在我的博客中,可以在博客中对照着进行操作,所有需要的软件以及工具都可以在我的博客中进行下载.</p>
+</blockquote>
+<p>[微软U盘制作工具](Media Creation Tool)</p>
+<p>各个品牌官方驱动网址<br><a href="https://www.msi.cn/support">微星</a> <a href="https://www.asus.com.cn/support/download-center/">华硕</a> <a href="https://www.gigabyte.cn/Support">技嘉</a> <a href="https://www.asrockchina.com.cn/">华擎</a> <a href="https://newsupport.lenovo.com.cn/">联想</a> <a href="https://www.dell.com/support/home/zh-cn?app=drivers">戴尔</a> <a href="https://support.hp.com/cn-zh/drivers">惠普</a></p>
+<h2 id="01｜准备工具：只要一个U盘"><a href="#01｜准备工具：只要一个U盘" class="headerlink" title="01｜准备工具：只要一个U盘"></a>01｜准备工具：只要一个U盘</h2><p>要求：</p>
+<ul>
+<li><p><strong>8GB 以上 U 盘</strong>（用于制作系统的引导盘,会进行格式化,有数据做好备份工作）</p>
+</li>
+<li><p><strong>一台能正常上网的电脑</strong>(用于下载系统镜像和制作引导U盘)</p>
+</li>
+<li><p>想安装系统的那台机器（废话但必须说，因为有人真的会问🤣）</p>
+</li>
+<li><p>提前下载好</p>
+<ul>
+<li><a href="https://go.microsoft.com/fwlink/?linkid=2156295">微软U盘制作工具</a></li>
+<li>对应的驱动,特别是<strong>网卡</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="02｜制作系统U盘：微软官方工具最稳"><a href="#02｜制作系统U盘：微软官方工具最稳" class="headerlink" title="02｜制作系统U盘：微软官方工具最稳"></a>02｜制作系统U盘：微软官方工具最稳</h2><p>小白不要乱下“XX装机大师”,”XX一键装机”等一系列软件。</p>
+<p>直接用微软官方的：</p>
+<h3 id="下载入口"><a href="#下载入口" class="headerlink" title="下载入口"></a>下载入口</h3><p>打开浏览器,搜索 Windows11<br><img src="/.top//%E7%94%B5%E8%84%91%E6%80%8E%E4%B9%88%E8%A3%85%E7%B3%BB%E7%BB%9F,%E6%89%8B%E6%8A%8A%E6%89%8B%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B/file-20251123133246245.png"></p>
+<p>进入微软官网 → 搜索 “Media Creation Tool”。<br><img src="/.top//%E7%94%B5%E8%84%91%E6%80%8E%E4%B9%88%E8%A3%85%E7%B3%BB%E7%BB%9F,%E6%89%8B%E6%8A%8A%E6%89%8B%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B/file-20251123133908559.png"></p>
+<p>步骤非常顺滑：</p>
+<ol>
+<li><p>打开工具</p>
+</li>
+<li><p>选你要安装的 Windows 版本</p>
+</li>
+<li><p>按提示选择 “U 盘”</p>
+</li>
+<li><p>等待进度条拉满</p>
+</li>
+</ol>
+<p>结束后，你的 U 盘就变成了“系统安装盘”。</p>
+<p>在我的博客中点击对应链接,进入官网,使用对应型号下载网卡驱动,组装机就进入主板品牌中下载网络驱动</p>
+<hr>
+<h2 id="03｜进入-BIOS-设置-U-盘启动"><a href="#03｜进入-BIOS-设置-U-盘启动" class="headerlink" title="03｜进入 BIOS 设置 U 盘启动"></a>03｜进入 BIOS 设置 U 盘启动</h2><p>找到你电脑上的</p>
+<p>常见按键：</p>
+<table>
+<thead>
+<tr>
+<th>品牌</th>
+<th>进入 BIOS</th>
+<th>启动菜单（Boot Menu）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>联想 Lenovo（ThinkPad）</strong></td>
+<td>F1</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>联想 Lenovo（IdeaPad）</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>华硕 ASUS</strong></td>
+<td>F2</td>
+<td>ESC</td>
+</tr>
+<tr>
+<td><strong>惠普 HP</strong></td>
+<td>F10</td>
+<td>ESC 或 F9</td>
+</tr>
+<tr>
+<td><strong>戴尔 Dell</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>宏碁 Acer</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>微星 MSI（笔记本）</strong></td>
+<td>DEL</td>
+<td>F11</td>
+</tr>
+<tr>
+<td><strong>机械革命 MECHREVO</strong></td>
+<td>DEL</td>
+<td>F7</td>
+</tr>
+<tr>
+<td><strong>雷神 ThundeRobot</strong></td>
+<td>F2</td>
+<td>F12 或 F7</td>
+</tr>
+<tr>
+<td><strong>神舟 Hasee</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>小米 &#x2F; RedmiBook</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>华为 MateBook</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>荣耀 MagicBook</strong></td>
+<td>F2</td>
+<td>F12</td>
+</tr>
+<tr>
+<td><strong>三星 Samsung</strong></td>
+<td>F2</td>
+<td>F10 或 F12</td>
+</tr>
+<tr>
+<td><strong>Surface（部分机型）</strong></td>
+<td>长按音量+ 开机</td>
+<td>不支持传统 Boot Menu</td>
+</tr>
+<tr>
+<td>直接在 Boot 选项中选择对应的 USB 启动项</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>或者：</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>进入 BIOS 后找到引导选项：</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Boot → 把 USB 放第一位</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>保存退出（Save &amp; Exit）。</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>电脑这时会从 U 盘启动。</p>
+<hr>
+<h2 id="04｜开始安装系统（正式环节）"><a href="#04｜开始安装系统（正式环节）" class="headerlink" title="04｜开始安装系统（正式环节）"></a>04｜开始安装系统（正式环节）</h2><p>启动后会看到蓝色的 Windows 安装界面。</p>
+<p>你确保自己只干两件事：</p>
+<h3 id="①-选择-“自定义安装（高级）”"><a href="#①-选择-“自定义安装（高级）”" class="headerlink" title="① 选择 “自定义安装（高级）”"></a>① 选择 “自定义安装（高级）”</h3><p>让你能看到磁盘分区。</p>
+<h3 id="②-选择要安装系统的盘"><a href="#②-选择要安装系统的盘" class="headerlink" title="② 选择要安装系统的盘"></a>② 选择要安装系统的盘</h3><p>一般是：</p>
+<ul>
+<li><p><strong>C盘</strong></p>
+</li>
+<li><p>或者容量 100GB 左右的系统盘</p>
+</li>
+</ul>
+<p>如果小白懒得分区，直接格式化原系统盘就好，别乱动数据盘。</p>
+<p>然后点 <strong>下一步</strong> —— 然后就是等。</p>
+<p>（期间喝杯水、刷个视频，不要怀疑人生，进度条动得很慢很正常。）</p>
+<hr>
+<h2 id="05｜进入桌面：装驱动，解锁满血性能"><a href="#05｜进入桌面：装驱动，解锁满血性能" class="headerlink" title="05｜进入桌面：装驱动，解锁满血性能"></a>05｜进入桌面：装驱动，解锁满血性能</h2><p>装完系统只是“点亮屏幕”，真正的满血是：</p>
+<h3 id="1-安装显卡驱动"><a href="#1-安装显卡驱动" class="headerlink" title="1.安装显卡驱动"></a>1.安装显卡驱动</h3><h4 id="Nvidia"><a href="#Nvidia" class="headerlink" title="Nvidia:"></a>Nvidia:</h4><p>进入<a href="https://www.nvidia.cn/drivers/lookup/"> Nvidia 驱动下载</a>页面 —— 选择到自己对应的显卡驱动进行下载，然后安装即可。</p>
+<h4 id="AMD"><a href="#AMD" class="headerlink" title="AMD:"></a>AMD:</h4><p>进入 <a href="https://www.amd.com/en/support/download/drivers.html">AMD</a> 驱动下载页面，选择自己对应的显卡驱动下载，安装即可。</p>
+<h4 id="INTEL"><a href="#INTEL" class="headerlink" title="INTEL:"></a>INTEL:</h4><p>进入 <a href="https://www.intel.cn/content/www/cn/zh/download-center/home.html">INTEL</a> 驱动下载，输入自己对应的显卡型号进行下载，安装即可。</p>
+<h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips:"></a>Tips:</h4><p>笔记本的驱动建议都在对应品牌的官网进行下载，以免遇见兼容性或者部分快捷键组件失灵。</p>
+<h3 id="2-主板驱动"><a href="#2-主板驱动" class="headerlink" title="2.主板驱动"></a>2.主板驱动</h3><p>最简单方式：<br><strong>各品牌官网 → 输入你电脑主板型号 → 下载所有的驱动进行安装。</strong></p>
+<h3 id="3-组装机"><a href="#3-组装机" class="headerlink" title="3.组装机"></a>3.组装机</h3><p>如果你是组装机,那就按照你主板的品牌,显卡的品牌,进入官网,找到对应的驱动进行下载安装。</p>
+<hr>
+<h2 id="06-完成安装"><a href="#06-完成安装" class="headerlink" title="06 | 完成安装"></a>06 | 完成安装</h2><p>右击 <em>Win菜单键</em>  点击 <em>设备管理器</em>，当没有感叹号的时候，就代表你的驱动已经完全安装完成可以开始体验了。<br>如果你有部分第三方的硬件或者是类似于加装的摄像头之类的外部配件，请前往对应硬件的品牌官网下载驱动。</p>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>Windows</category>
+        <category>系统</category>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>博客</tag>
+        <tag>装机</tag>
+        <tag>装系统</tag>
+        <tag>自维修</tag>
+        <tag>Windows10</tag>
+        <tag>Windows11</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>扩展屏幕--手机平板做副屏是怎么实现的</title>
+    <url>//se7892/</url>
+    <content><![CDATA[<h1 id="扩展屏幕–手机平板做副屏是怎么实现的"><a href="#扩展屏幕–手机平板做副屏是怎么实现的" class="headerlink" title="扩展屏幕–手机平板做副屏是怎么实现的"></a>扩展屏幕–手机平板做副屏是怎么实现的</h1><p>扩展屏幕–手机平板做副屏是怎么实现的，跟着我操作</p>
+<h2 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h2><p>在<a href="blog.echospace.top/screen-extend-7892">我的博客</a>找到这两个软件下载：</p>
+<ul>
+<li>**<a href="https://wwbip.lanzoum.com/ireKA3dxypwb">ParsecVDisplay</a>**：用于生成虚拟屏幕</li>
+<li>UU远程：可以用任意远程软件替代<ul>
+<li><a href="https://a56.gdl.netease.com/UURemote_Setup_4.10.0.6147_1216211815_gwqd.exe?key1=11aa6d972fa948b32e55a1cd95cbd453&key2=69446e9f&n=uuyc_4.10.0.exe">电脑版</a></li>
+<li><a href="https://a56.gdl.netease.com/uuyc_4.10.0.apk?key1=14c69d896f5f4cb02032fe6410fffcd6&key2=69446ec1">安卓版</a></li>
+<li><a href="https://apps.apple.com/cn/app/uu%E8%BF%9C%E7%A8%8B-%E8%BF%9C%E7%A8%8B%E5%8A%9E%E5%85%AC-%E6%B8%B8%E6%88%8F%E4%B8%B2%E6%B5%81/id1642306791">IOS版本</a></li>
+<li><a href="https://a56.gdl.netease.com/uuyc_4.10.0.pkg?key1=94909a3feed147423221228ba8499ffc&key2=69446ea3">MACOS版本</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="装虚拟显示器"><a href="#装虚拟显示器" class="headerlink" title="装虚拟显示器"></a>装虚拟显示器</h2><ol>
+<li>打开安装包</li>
+<li>点击同意继续</li>
+<li>等它装完</li>
+<li>安装好后会自动打开，点击中间的添加屏幕</li>
+</ol>
+<h2 id="装UU远程"><a href="#装UU远程" class="headerlink" title="装UU远程"></a>装UU远程</h2><p><strong>主机端（电脑）：</strong></p>
+<ol>
+<li>打开UU远程安装包，安装</li>
+<li>打开后输入手机号收验证码登录</li>
+</ol>
+<p><strong>副设备（手机&#x2F;平板&#x2F;笔记本）：</strong></p>
+<ol>
+<li>下载UU远程，登录同一个账号</li>
+<li>找到电脑，点击连接</li>
+<li>点击右上角图标，启用按键映射（显示鼠标指针）</li>
+<li>显示里选择到显示屏2</li>
+</ol>
+<h2 id="开始用"><a href="#开始用" class="headerlink" title="开始用"></a>开始用</h2><ol>
+<li>连好后回到桌面</li>
+<li>在桌面右键显示设置，将屏幕2拖到你实际拜访的位置方便使用</li>
+<li>完成</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>有问题评论区见，觉得有用一键三连！<br>我是多多他爹，一个失业的运维，拜了个拜！</p>
+<hr>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用技术教程，让你的数字生活更自由！</p>
+<p>关注我，发现更多实用技巧与教程！</p>
+<p>#扩展屏幕 #效率工具 #远程桌面 #多屏办公 #技术教程</p>
+]]></content>
+      <categories>
+        <category>技术指南</category>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>技术</tag>
+        <tag>教程</tag>
+        <tag>指南</tag>
+        <tag>效率工具</tag>
+        <tag>工具</tag>
+        <tag>远程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>飞牛OS Docker部署Tailscale</title>
+    <url>//feinu2345/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍如何在飞牛 OS NAS 系统上使用 Docker 部署 Tailscale，实现安全可靠的远程访问方案，包含完整的配置步骤和移动端设置指南。
+</p>
+
+<h1 id="在飞牛-OS-上部署-Tailscale"><a href="#在飞牛-OS-上部署-Tailscale" class="headerlink" title="在飞牛 OS 上部署 Tailscale"></a>在飞牛 OS 上部署 Tailscale</h1><h2 id="💡-背景说明"><a href="#💡-背景说明" class="headerlink" title="💡 背景说明"></a>💡 背景说明</h2><p>飞牛 OS 是一款国产免费的 NAS 系统，提供个人私有云盘功能。虽然系统自带免费的内网穿透服务，但为了更稳定的远程访问体验，我们可以使用 Tailscale 作为替代方案。</p>
+<h2 id="🔑-获取-Tailscale-授权码"><a href="#🔑-获取-Tailscale-授权码" class="headerlink" title="🔑 获取 Tailscale 授权码"></a>🔑 获取 Tailscale 授权码</h2><ol>
+<li>访问 <a href="https://login.tailscale.com/">Tailscale 登录页面</a></li>
+<li>进入 <a href="https://login.tailscale.com/admin/settings/keys">密钥设置页面</a></li>
+<li>创建授权密钥，注意启用以下权限：<ul>
+<li>开启 VPN 访问权限</li>
+<li>允许子网路由</li>
+</ul>
+</li>
+</ol>
+<p><img src="/assets/images/tailscale/auth-key-settings.jpg" alt="Tailscale 密钥设置界面"></p>
+<h2 id="🐳-Docker-部署配置"><a href="#🐳-Docker-部署配置" class="headerlink" title="🐳 Docker 部署配置"></a>🐳 Docker 部署配置</h2><h3 id="方法一：使用-Docker-命令行"><a href="#方法一：使用-Docker-命令行" class="headerlink" title="方法一：使用 Docker 命令行"></a>方法一：使用 Docker 命令行</h3><pre><code class="bash">docker run -d \
+  --name=tailscaled \
+  --network=host \
+  --cap-add=NET_ADMIN \
+  --cap-add=NET_RAW \
+  -v /var/lib:/var/lib \
+  -v /dev/net/tun:/dev/net/tun \
+  -v /var/lib/tailscale:/var/lib/tailscale \
+  -e TS_AUTHKEY=tskey-auth-xxxxx \
+  -e TS_ROUTES=192.168.1.0/24 \
+  tailscale/tailscale
+</code></pre>
+<blockquote>
+<p>注意：将 <code>tskey-auth-xxxxx</code> 替换为你的授权码，<code>192.168.1.0/24</code> 替换为你的内网网段</p>
+</blockquote>
+<h3 id="方法二：通过飞牛-OS-界面配置"><a href="#方法二：通过飞牛-OS-界面配置" class="headerlink" title="方法二：通过飞牛 OS 界面配置"></a>方法二：通过飞牛 OS 界面配置</h3><ol>
+<li><p><strong>安装 Docker 镜像</strong></p>
+<ul>
+<li>在 Docker 商店搜索 <code>tailscale</code></li>
+<li>下载官方镜像</li>
+</ul>
+</li>
+<li><p><strong>创建容器并配置参数</strong></p>
+<p>基础设置：</p>
+<ul>
+<li>容器名：tailscale</li>
+<li>镜像：tailscale&#x2F;tailscale:latest</li>
+</ul>
+</li>
+<li><p><strong>存储配置</strong></p>
+<pre><code class="plaintext">/var/lib -&gt; /var/lib
+/dev/net/tun -&gt; /dev/net/tun
+TS_STATE_DIR -&gt; /var/lib/tailscale
+</code></pre>
+</li>
+<li><p><strong>环境变量设置</strong></p>
+<pre><code class="plaintext">TS_AUTHKEY=你的授权码
+TS_ROUTES=192.168.1.0/24
+TS_STATE_DIR=/var/lib/tailscale
+</code></pre>
+</li>
+<li><p><strong>网络设置</strong></p>
+<ul>
+<li>选择 <code>host</code> 网络模式</li>
+</ul>
+</li>
+</ol>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="📱-移动端配置"><a href="#📱-移动端配置" class="headerlink" title="📱 移动端配置"></a>📱 移动端配置</h2><h3 id="iOS-Android-客户端设置"><a href="#iOS-Android-客户端设置" class="headerlink" title="iOS&#x2F;Android 客户端设置"></a>iOS&#x2F;Android 客户端设置</h3><ol>
+<li>从应用商店安装 Tailscale 客户端</li>
+<li>使用相同账号登录</li>
+<li>允许 VPN 配置权限</li>
+<li>在设备列表中应该能看到 NAS</li>
+</ol>
+<p><img src="/assets/images/tailscale/mobile-connection.jpg" alt="移动端连接界面"></p>
+<h2 id="🌐-子网路由配置"><a href="#🌐-子网路由配置" class="headerlink" title="🌐 子网路由配置"></a>🌐 子网路由配置</h2><h3 id="开启子网路由"><a href="#开启子网路由" class="headerlink" title="开启子网路由"></a>开启子网路由</h3><ol>
+<li>访问 Tailscale 管理后台</li>
+<li>进入 <code>Machines</code> 页面</li>
+<li>找到 NAS 设备</li>
+<li>开启 <code>Subnet routes</code> 选项</li>
+<li>确认要分享的子网范围</li>
+</ol>
+<pre><code class="plaintext">Subnet: 192.168.1.0/24
+Routes via: your-nas-name
+</code></pre>
+<h3 id="ACL-策略配置"><a href="#ACL-策略配置" class="headerlink" title="ACL 策略配置"></a>ACL 策略配置</h3><pre><code class="json">&#123;
+    &quot;acls&quot;: [
+        &#123;
+            &quot;action&quot;: &quot;accept&quot;,
+            &quot;users&quot;: [&quot;*&quot;],
+            &quot;ports&quot;: [&quot;*:*&quot;]
+        &#125;
+    ],
+    &quot;tagOwners&quot;: &#123;
+        &quot;tag:nas&quot;: [&quot;your-email@domain.com&quot;],
+    &#125;,
+    &quot;nodes&quot;: &#123;
+        &quot;your-nas-name&quot;: [&quot;tag:nas&quot;],
+    &#125;
+&#125;
+</code></pre>
+<h2 id="⚙️-验证配置"><a href="#⚙️-验证配置" class="headerlink" title="⚙️ 验证配置"></a>⚙️ 验证配置</h2><h3 id="检查连接状态"><a href="#检查连接状态" class="headerlink" title="检查连接状态"></a>检查连接状态</h3><pre><code class="bash"># 在 Docker 容器内执行
+docker exec -it tailscaled tailscale status
+
+# 检查路由表
+docker exec -it tailscaled ip route
+</code></pre>
+<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><ol>
+<li>从移动设备 ping NAS 内网 IP</li>
+<li>尝试访问 NAS Web 界面</li>
+<li>验证文件共享访问</li>
+</ol>
+<h2 id="🔧-故障排查"><a href="#🔧-故障排查" class="headerlink" title="🔧 故障排查"></a>🔧 故障排查</h2><h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
+<li><strong>容器无法启动</strong><ul>
+<li>检查 Docker 权限</li>
+<li>确认 tun 设备存在</li>
+<li>查看容器日志</li>
+</ul>
+</li>
+</ol>
+<pre><code class="bash">docker logs tailscaled
+</code></pre>
+<ol start="2">
+<li><p><strong>无法访问内网设备</strong></p>
+<ul>
+<li>验证子网路由配置</li>
+<li>检查 ACL 策略</li>
+<li>确认防火墙设置</li>
+</ul>
+</li>
+<li><p><strong>连接不稳定</strong></p>
+<ul>
+<li>检查网络质量</li>
+<li>验证 DERP 服务器连接</li>
+<li>尝试更换节点</li>
+</ul>
+</li>
+</ol>
+<h2 id="📝-运维建议"><a href="#📝-运维建议" class="headerlink" title="📝 运维建议"></a>📝 运维建议</h2><ol>
+<li>定期检查连接状态</li>
+<li>备份 Tailscale 配置</li>
+<li>监控容器资源使用</li>
+<li>及时更新 Docker 镜像</li>
+</ol>
+<h2 id="🔗-参考资源"><a href="#🔗-参考资源" class="headerlink" title="🔗 参考资源"></a>🔗 参考资源</h2><ul>
+<li><a href="https://tailscale.com/kb/">Tailscale 官方文档</a></li>
+<li><a href="https://hub.docker.com/r/tailscale/tailscale">Docker Hub - Tailscale</a></li>
+<li><a href="https://www.phoenixos.com/forum/">飞牛 OS 官方论坛</a></li>
+</ul>
+<h2 id="🏷️-安全提示"><a href="#🏷️-安全提示" class="headerlink" title="🏷️ 安全提示"></a>🏷️ 安全提示</h2><ol>
+<li>定期轮换授权密钥</li>
+<li>限制访问设备范围</li>
+<li>使用最小权限原则</li>
+<li>开启双因素认证</li>
+<li>监控异常访问行为</li>
+</ol>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>NAS</category>
+        <category>网络工具</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+        <tag>飞牛OS</tag>
+        <tag>Tailscale</tag>
+        <tag>内网穿透</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>飞牛OS-废物转生-老旧笔记本变身全能服务器</title>
+    <url>//HomeServer-5488/</url>
+    <content><![CDATA[<hr>
+<h1 id="飞牛OS-废物转生-老旧笔记本变身全能服务器"><a href="#飞牛OS-废物转生-老旧笔记本变身全能服务器" class="headerlink" title="飞牛OS-废物转生-老旧笔记本变身全能服务器"></a>飞牛OS-废物转生-老旧笔记本变身全能服务器</h1><p>一台2018年的老笔记本，如何让他继续发光发热，不如给它换个赛道，NAS服务器如何。</p>
+<h2 id="为什么会选择飞牛OS"><a href="#为什么会选择飞牛OS" class="headerlink" title="为什么会选择飞牛OS"></a>为什么会选择飞牛OS</h2><ul>
+<li><strong>轻量</strong>：更加适合小型设备使用</li>
+<li><strong>自带WebUI</strong>：简单，上手容易</li>
+<li><strong>访问方便</strong>：提供FN Connect可以更方便的连接到服务</li>
+</ul>
+<h2 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h2><ol>
+<li><p><strong>U盘</strong>：至少8GB容量的U盘</p>
+</li>
+<li><p><strong>系统镜像</strong>：</p>
+</li>
+</ol>
+<ul>
+<li><em><a href="https://www.fnnas.com/download?key=fnos">从飞牛OS官网下载最新版本镜像 </a></em></li>
+</ul>
+<ol start="3">
+<li><strong>刻录工具</strong>：</li>
+</ol>
+<ul>
+<li><p><em><a href="https://github.com/pbatard/rufus/releases/download/v4.11/rufus-4.11.exe">Rufus</a></em></p>
+</li>
+<li><p><em><a href="https://etcher.balena.io/#download-etcher">BalenaEtcher</a></em></p>
+</li>
+</ul>
+<p>以上提到的，都可以在我的博客中下载到。</p>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><h3 id="第一步：制作启动U盘"><a href="#第一步：制作启动U盘" class="headerlink" title="第一步：制作启动U盘"></a>第一步：制作启动U盘</h3><ol>
+<li>插入U盘</li>
+<li>打开balenaEtcher刻录工具</li>
+<li>选择飞牛OS的镜像文件</li>
+<li>选择插入的U盘</li>
+<li><strong>注意</strong>：<strong>制作启动盘</strong>会<strong>清除U盘</strong>中的<strong>所有数据</strong>，自己<em><strong>记得备份</strong></em></li>
+<li>点击”开始”按钮，等待刻录完成</li>
+</ol>
+<h3 id="第二步：BIOS设置"><a href="#第二步：BIOS设置" class="headerlink" title="第二步：BIOS设置"></a>第二步：BIOS设置</h3><ol>
+<li>将制作好的启动U盘插入电脑</li>
+<li>开机进入U盘启动项</li>
+<li>怎么进入自行问AI，每个品牌对应方式不一样</li>
+</ol>
+<h3 id="第三步：安装飞牛OS"><a href="#第三步：安装飞牛OS" class="headerlink" title="第三步：安装飞牛OS"></a>第三步：安装飞牛OS</h3><ol>
+<li>从U盘启动后，进入飞牛OS安装界面</li>
+<li>选择语言：中文（简体）</li>
+<li>选择安装目标：</li>
+</ol>
+<ul>
+<li>我的建议是：<strong>单独拿一整个盘装系统</strong>，或者装在<strong>另一个U盘里</strong>，我这里做测试，就给系统8G。</li>
+<li>swap分区：按照你自己的需求给大小，建议是<strong>内存的两倍</strong>，我这里用作演示不给大小。</li>
+</ul>
+<ol start="4">
+<li>网络我这里用作测试所以选择默认的DHCP，也可以装好后在系统里调整IP，后面我会提到。</li>
+<li>等待安装完成，系统会自动重启</li>
+</ol>
+<h3 id="第四步：初始化配置"><a href="#第四步：初始化配置" class="headerlink" title="第四步：初始化配置"></a>第四步：初始化配置</h3><ol>
+<li>重启时拔掉U盘，自动从硬盘启动飞牛OS</li>
+<li>首次启动会初始化比较慢，等待进入就行</li>
+<li>自己设置一个设备名</li>
+<li>配置一个用户名</li>
+<li>再配置用户密码</li>
+<li>信息录入完成后，继续</li>
+<li>等待进入桌面就安装完成</li>
+</ol>
+<h2 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h2><h3 id="第一步：登录管理界面"><a href="#第一步：登录管理界面" class="headerlink" title="第一步：登录管理界面"></a>第一步：登录管理界面</h3><ol>
+<li>打开另一台设备的浏览器，访问显示的管理地址</li>
+<li>使用安装时设置的用户名和密码登录</li>
+</ol>
+<h3 id="第二步：网络配置"><a href="#第二步：网络配置" class="headerlink" title="第二步：网络配置"></a>第二步：网络配置</h3><ol>
+<li>如果需要使用固定IP，在<strong>系统设置</strong>的<strong>网络设置</strong>面板中配置即可</li>
+<li>我这里暂时使用DHCP</li>
+</ol>
+<h3 id="第三步：存储管理"><a href="#第三步：存储管理" class="headerlink" title="第三步：存储管理"></a>第三步：存储管理</h3><ol>
+<li>在<strong>系统设置</strong>中找到<strong>存储空间管理</strong></li>
+<li>点击<strong>创建存储空间</strong></li>
+<li>个人使用建议选择Btrfs格式</li>
+<li>在下一步中，选择你想要用于创建的磁盘，如果需要阵列，这时也可以选择</li>
+<li>我的笔记本只有一个磁盘，所以我直接下一步。</li>
+<li>创建完成就可以了。</li>
+</ol>
+<h3 id="第四步：用户管理"><a href="#第四步：用户管理" class="headerlink" title="第四步：用户管理"></a>第四步：用户管理</h3><ol>
+<li>在<strong>系统设置</strong>中，找到<strong>用户管理</strong></li>
+<li>可以为家庭的每一个用户都配置不同权限的账户</li>
+<li>免得你珍藏的小电影，哪天出现在别人的软件里</li>
+</ol>
+<h2 id="远程访问配置"><a href="#远程访问配置" class="headerlink" title="远程访问配置"></a>远程访问配置</h2><h2 id="启用FN-Connect"><a href="#启用FN-Connect" class="headerlink" title="启用FN Connect"></a>启用FN Connect</h2><ol>
+<li>在<strong>系统设置</strong>中，找到<strong>远程访问</strong></li>
+<li>启用FN Connect功能</li>
+<li>如果没有飞牛账号，就注册一个进行登录</li>
+<li>而后在外网环境中，就可以使用飞牛App或者Web网页进行访问了</li>
+</ol>
+<h2 id="文件共享"><a href="#文件共享" class="headerlink" title="文件共享"></a>文件共享</h2><ol>
+<li>在<strong>系统设置</strong>中找到<strong>文件共享协议</strong></li>
+<li>选择你想要使用的文件共享方式，我这里选择<strong>samba</strong></li>
+<li>勾选即可</li>
+<li>然后再<strong>高级设置</strong>中选择你要共享的目录，我这里选择整个目录</li>
+<li>而后就可以在局域网中通过IP进行文件访问了</li>
+<li>如果有外网访问的需求，可以去查看我<strong>使用Tailscale部署虚拟局域网</strong>的教程</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>恭喜你！现在你的老旧笔记本已经成功转生为自带PDU的多功能服务器！<br>这台电子垃圾也成为你迈向自部署家庭服务器的第一步！<br>我是多多它爹，一个失业的运维工程师，我们下期再见。</p>
+<hr>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<p>#飞牛OS #NAS #旧物改造 #家庭服务器 #DIY </p>
+]]></content>
+      <categories>
+        <category>技术指南</category>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>指南</tag>
+        <tag>飞牛OS</tag>
+        <tag>NAS</tag>
+        <tag>旧物改造</tag>
+        <tag>家庭服务器</tag>
+        <tag>DIY， 技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>饥荒联机版服务器搭建指南</title>
+    <url>//jihua3456/</url>
+    <content><![CDATA[<p class="post-excerpt">
+本教程详细介绍如何在 Linux 系统上搭建饥荒联机版专用服务器，包括环境准备、SteamCMD 安装、服务器配置、MOD 管理等完整步骤。
+</p>
+
+<h1 id="饥荒联机版专用服务器搭建指南"><a href="#饥荒联机版专用服务器搭建指南" class="headerlink" title="饥荒联机版专用服务器搭建指南"></a>饥荒联机版专用服务器搭建指南</h1><h2 id="🔧-1-安装编译环境"><a href="#🔧-1-安装编译环境" class="headerlink" title="🔧 1. 安装编译环境"></a>🔧 1. 安装编译环境</h2><h3 id="Ubuntu-系统"><a href="#Ubuntu-系统" class="headerlink" title="Ubuntu 系统"></a>Ubuntu 系统</h3><pre><code class="bash">sudo add-apt-repository multiverse
+sudo dpkg --add-architecture i386
+sudo apt update -y
+sudo apt install lib32gcc1 libcurl4-gnutls-dev:i386 lib32stdc++6 lib32z1 -y
+sudo apt install lib32gcc-s1 steamcmd
+</code></pre>
+<h3 id="CentOS-7"><a href="#CentOS-7" class="headerlink" title="CentOS 7"></a>CentOS 7</h3><pre><code class="bash">yum update -y
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+yum install glibc.i686 libstdc++.i686 libcurl.i686 screen -y
+</code></pre>
+<h3 id="CentOS-8"><a href="#CentOS-8" class="headerlink" title="CentOS 8"></a>CentOS 8</h3><pre><code class="bash">yum update -y
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y
+yum install glibc.i686 libstdc++.i686 libcurl.i686 screen -y
+</code></pre>
+<h2 id="📦-2-安装-SteamCMD"><a href="#📦-2-安装-SteamCMD" class="headerlink" title="📦 2. 安装 SteamCMD"></a>📦 2. 安装 SteamCMD</h2><pre><code class="bash"># 创建目录并下载
+mkdir ~/steamcmd
+cd ~/steamcmd
+wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+tar -xvzf steamcmd_linux.tar.gz
+
+# 如果下载失败，可以使用包管理器安装
+sudo apt install steamcmd -y
+</code></pre>
+<h3 id="运行-SteamCMD"><a href="#运行-SteamCMD" class="headerlink" title="运行 SteamCMD"></a>运行 SteamCMD</h3><pre><code class="bash"># 如果是手动安装的
+./steamcmd.sh
+
+# 如果是通过包管理器安装的
+steamcmd
+</code></pre>
+<blockquote>
+<p>💡 <strong>提示</strong>：首次运行时需要按 Tab 键选择 OK，并同意安装协议。</p>
+</blockquote>
+<h2 id="🎮-3-安装饥荒服务器"><a href="#🎮-3-安装饥荒服务器" class="headerlink" title="🎮 3. 安装饥荒服务器"></a>🎮 3. 安装饥荒服务器</h2><p>在 SteamCMD 环境中执行：</p>
+<pre><code class="bash">force_install_dir ../dontstarvetogether_dedicated_server
+login anonymous
+app_update 343050 validate
+quit
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>注意</strong>：343050 是饥荒联机版专用服务器的 Steam AppID</p>
+</blockquote>
+<p>如果遇到 SDL 相关错误，执行：</p>
+<pre><code class="bash">sudo apt install libsdl2-2.0-0:i386
+</code></pre>
+<h3 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h3><pre><code class="bash">cd ~/dontstarvetogether_dedicated_server/bin/
+./dontstarve_dedicated_server_nullrenderer
+</code></pre>
+<p>&#x2F;&#x2F; …existing code…</p>
+<h2 id="🛠️-4-配置服务器"><a href="#🛠️-4-配置服务器" class="headerlink" title="🛠️ 4. 配置服务器"></a>🛠️ 4. 配置服务器</h2><h3 id="创建配置目录"><a href="#创建配置目录" class="headerlink" title="创建配置目录"></a>创建配置目录</h3><pre><code class="bash"># 创建存档目录
+mkdir -p ~/.klei/DoNotStarveTogether/MyDediServer
+
+# 切换到目录
+cd ~/.klei/DoNotStarveTogether/MyDediServer
+</code></pre>
+<h3 id="获取集群令牌"><a href="#获取集群令牌" class="headerlink" title="获取集群令牌"></a>获取集群令牌</h3><ol>
+<li>打开饥荒游戏</li>
+<li>进入游戏后按 <code>~</code> 键打开控制台</li>
+<li>输入：<code>TheNet:GenerateClusterToken()</code></li>
+<li>令牌文件将保存在：<code>C:\Users\[用户名]\Documents\Klei\DoNotStarveTogether</code></li>
+</ol>
+<h3 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h3><pre><code class="bash"># 创建集群配置
+mkdir Master
+mkdir Caves
+
+# 复制令牌
+vim cluster_token.txt
+# 粘贴你的令牌
+</code></pre>
+<h4 id="Master-世界配置"><a href="#Master-世界配置" class="headerlink" title="Master 世界配置"></a>Master 世界配置</h4><pre><code class="bash"># Master/server.ini
+vim Master/server.ini
+</code></pre>
+<pre><code class="ini">[NETWORK]
+server_port = 11000
+
+[SHARD]
+is_master = true
+name = Master
+id = 100
+
+[STEAM]
+master_server_port = 27016
+authentication_port = 8768
+</code></pre>
+<h4 id="Caves-世界配置"><a href="#Caves-世界配置" class="headerlink" title="Caves 世界配置"></a>Caves 世界配置</h4><pre><code class="bash"># Caves/server.ini
+vim Caves/server.ini
+</code></pre>
+<pre><code class="ini">[NETWORK]
+server_port = 11001
+
+[SHARD]
+is_master = false
+name = Caves
+id = 101
+
+[STEAM]
+master_server_port = 27017
+authentication_port = 8769
+</code></pre>
+<h3 id="创建启动脚本"><a href="#创建启动脚本" class="headerlink" title="创建启动脚本"></a>创建启动脚本</h3><pre><code class="bash">vim start_dst.sh
+</code></pre>
+<pre><code class="bash">#!/bin/bash
+dst_dir=&quot;$HOME/dontstarvetogether_dedicated_server/bin&quot;
+conf_dir=&quot;$HOME/.klei/DoNotStarveTogether/MyDediServer&quot;
+
+cd &quot;$dst_dir&quot;
+
+# 启动洞穴世界
+screen -dmS &quot;dst_caves&quot; ./dontstarve_dedicated_server_nullrenderer -conf_dir &quot;$conf_dir&quot; -shard Caves
+
+# 启动地上世界
+screen -dmS &quot;dst_master&quot; ./dontstarve_dedicated_server_nullrenderer -conf_dir &quot;$conf_dir&quot; -shard Master
+</code></pre>
+<pre><code class="bash">chmod +x start_dst.sh
+</code></pre>
+<h2 id="🎯-5-启动服务器"><a href="#🎯-5-启动服务器" class="headerlink" title="🎯 5. 启动服务器"></a>🎯 5. 启动服务器</h2><pre><code class="bash">./start_dst.sh
+</code></pre>
+<h3 id="管理服务器"><a href="#管理服务器" class="headerlink" title="管理服务器"></a>管理服务器</h3><pre><code class="bash"># 查看运行状态
+screen -ls
+
+# 连接到地上世界控制台
+screen -r dst_master
+
+# 连接到洞穴世界控制台
+screen -r dst_caves
+
+# 退出 screen 会话 (Ctrl+A 然后按 D)
+</code></pre>
+<h2 id="📝-服务器管理命令"><a href="#📝-服务器管理命令" class="headerlink" title="📝 服务器管理命令"></a>📝 服务器管理命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>c_save()</code></td>
+<td>保存游戏</td>
+</tr>
+<tr>
+<td><code>c_reset()</code></td>
+<td>重置世界</td>
+</tr>
+<tr>
+<td><code>c_shutdown()</code></td>
+<td>关闭服务器</td>
+</tr>
+<tr>
+<td><code>c_announce(&quot;消息&quot;)</code></td>
+<td>发送公告</td>
+</tr>
+<tr>
+<td><code>c_regenerateworld()</code></td>
+<td>重新生成世界</td>
+</tr>
+</tbody></table>
+<h2 id="🔒-防火墙配置"><a href="#🔒-防火墙配置" class="headerlink" title="🔒 防火墙配置"></a>🔒 防火墙配置</h2><pre><code class="bash"># Ubuntu/Debian
+sudo ufw allow 11000:11001/udp
+sudo ufw allow 27016:27017/udp
+sudo ufw allow 8768:8769/udp
+
+# CentOS
+sudo firewall-cmd --permanent --add-port=11000-11001/udp
+sudo firewall-cmd --permanent --add-port=27016-27017/udp
+sudo firewall-cmd --permanent --add-port=8768-8769/udp
+sudo firewall-cmd --reload
+</code></pre>
+<h2 id="⚠️-故障排查"><a href="#⚠️-故障排查" class="headerlink" title="⚠️ 故障排查"></a>⚠️ 故障排查</h2><ol>
+<li><p><strong>服务器无法启动</strong></p>
+<ul>
+<li>检查目录权限</li>
+<li>确认 token 正确</li>
+<li>查看日志文件</li>
+</ul>
+</li>
+<li><p><strong>无法连接服务器</strong></p>
+<ul>
+<li>检查防火墙配置</li>
+<li>验证端口是否开放</li>
+<li>确认服务器运行状态</li>
+</ul>
+</li>
+</ol>
+<h2 id="📚-参考资源"><a href="#📚-参考资源" class="headerlink" title="📚 参考资源"></a>📚 参考资源</h2><ul>
+<li><a href="https://forums.kleientertainment.com/">Klei 官方论坛</a></li>
+<li><a href="https://developer.valvesoftware.com/wiki/SteamCMD">Steam CMD Wiki</a></li>
+<li><a href="https://dontstarve.fandom.com/wiki/Guides/Dedicated_Server_Setup">DST 配置文档</a></li>
+</ul>
+<h2 id="🖼️-游戏截图"><a href="#🖼️-游戏截图" class="headerlink" title="🖼️ 游戏截图"></a>🖼️ 游戏截图</h2><p><img src="/assets/images/dst/server-running.jpg" alt="饥荒服务器运行界面"><br><img src="/assets/images/dst/gameplay.jpg" alt="游戏内效果展示"></p>
+<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>全平台同名”汪多多是只猫”，专注分享实用开源工具，让你的数字生活更自由！</p>
+<p>关注我，发现更多旧物改造的乐趣与技巧！</p>
+<hr>
+]]></content>
+      <categories>
+        <category>游戏服务器</category>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>饥荒</tag>
+        <tag>DST</tag>
+        <tag>Steam</tag>
+        <tag>服务器搭建</tag>
+      </tags>
+  </entry>
+</search>
